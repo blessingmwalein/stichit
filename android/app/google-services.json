@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "902638070510",
+    "project_id": "stichit-80063",
+    "storage_bucket": "stichit-80063.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902638070510:android:b913f0afb780f260ce61ff",
+        "android_client_info": {
+          "package_name": "com.example.stichit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUMxxHgG30UQ9n_B5QqQMfXbuRLcER6eM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

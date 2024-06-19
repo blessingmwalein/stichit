@@ -1,0 +1,4 @@
+enum UserType {
+  barber,
+  client,
+}
