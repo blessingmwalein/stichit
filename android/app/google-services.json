@@ -12,7 +12,12 @@
           "package_name": "com.example.stichit"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "902638070510-5snv5qo1ogndne374852a11flpsilv4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCUMxxHgG30UQ9n_B5QqQMfXbuRLcER6eM"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "902638070510-5snv5qo1ogndne374852a11flpsilv4s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "902638070510-u4649rkc2gug46q4bm1c8giijsanfpf7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.stichit"
+              }
+            }
+          ]
         }
       }
     }

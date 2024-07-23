@@ -1,0 +1,1 @@
+export 'view/stock_page.dart';
