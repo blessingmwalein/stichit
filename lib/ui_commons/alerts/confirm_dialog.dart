@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:stichit/app/const/colors.dart';
@@ -12,16 +11,16 @@ Future<bool?> showCustomConfirmationDialog(BuildContext context, String title,
     builder: (BuildContext context) {
       return AlertDialog(
         alignment: Alignment.center,
-        backgroundColor: CustomColors.white,
+        backgroundColor: CustomColors.darkBackGround,
         contentPadding: EdgeInsets.zero,
         content: Container(
           height: 200,
           padding: const EdgeInsets.all(20.0),
           decoration: BoxDecoration(
-            color: CustomColors.white,
+            color: CustomColors.darkBackGround,
             borderRadius: BorderRadius.circular(8.0),
             border: Border.all(
-              color: CustomColors.white,
+              color: CustomColors.darkBackGround,
               width: 1.0,
             ),
           ),
@@ -31,30 +30,35 @@ Future<bool?> showCustomConfirmationDialog(BuildContext context, String title,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0),
-                    child: customSvgIcon(path:iconPath, height: 40,width: 40, iconColor: Colors.red),
+                    child: customSvgIcon(
+                        path: iconPath,
+                        height: 40,
+                        width: 40,
+                        iconColor: CustomColors.white),
                   ),
                   Text(title,
                       style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.normal,
-                          color: Colors.black)),
+                          color: CustomColors.white)),
                 ],
               ),
               const SizedBox(height: 10),
               Text(description,
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.normal,
-                      color: Colors.black.withOpacity(0.8)),
+                      color: CustomColors.white.withOpacity(0.8)),
                   textAlign: TextAlign.center),
               const Spacer(),
               Row(
                 children: [
                   Expanded(
                     child: CustomButton(
-                      label:"Cancel",
+                      label: "Cancel",
                       isOutline: false,
                       primaryColor: Colors.red,
+                      radius: 40,
                       onPressed: () {
                         Navigator.of(context).pop(
                             false); // Return false when cancel button is pressed
@@ -66,10 +70,10 @@ Future<bool?> showCustomConfirmationDialog(BuildContext context, String title,
                   ),
                   Expanded(
                     child: CustomButton(
-                      label:"Confirm",
+                      label: "Confirm",
                       isOutline: true,
-                      primaryColor: CustomColors.orange,
-                      backgroundColor: CustomColors.white,
+                      radius: 40,
+                      primaryColor: CustomColors.white,
                       onPressed: () {
                         Navigator.of(context).pop(
                             true); // Return true when confirm button is pressed

@@ -5,7 +5,8 @@ import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/app/layouts/main_layout.dart';
 import 'package:stichit/stock/cubit/stock_cubit.dart';
 import 'package:stichit/stock/data_sources/stock_data_source.dart';
-import 'package:stichit/stock/view/widgets/stock_form_drawer.dart';
+import 'package:stichit/stock/view/widgets/stock_form_drawer.dart'; // Import the new view drawer
+import 'package:stichit/ui_commons/alerts/confirm_dialog.dart';
 import 'package:stichit/ui_commons/buttons/dropdown_button.dart';
 import 'package:stichit/ui_commons/loaders/error_page.dart';
 import 'package:stichit/ui_commons/loaders/no_data_page.dart';
@@ -34,6 +35,7 @@ class _StockPageState extends State<StockPage> {
   }
 
   bool _isDrawerOpen = false;
+  bool _isViewDrawerOpen = false; // Add a boolean for the view drawer
   String _selectedValue = 'Stocks';
 
   void _toggleDrawer() {
@@ -42,13 +44,26 @@ class _StockPageState extends State<StockPage> {
     });
   }
 
+  // Toggle view drawer
+  void _toggleViewDrawer() {
+    setState(() {
+      _isViewDrawerOpen = !_isViewDrawerOpen;
+    });
+  }
+
   void _closeDrawer() {
     setState(() {
       _isDrawerOpen = false;
     });
 
-    //fire clear form event and selected stock frombloc
+    // Clear form and selected stock from bloc
     context.read<StockCubit>().clearForm();
+  }
+
+  void _closeViewDrawer() {
+    setState(() {
+      _isViewDrawerOpen = false;
+    });
   }
 
   @override
@@ -57,14 +72,16 @@ class _StockPageState extends State<StockPage> {
     final stockCubit = context.read<StockCubit>();
 
     return DefaultTabController(
-      length: 4, // Number of tabs
+      length: 3, // Number of tabs
       child: MainLayout(
         crumbs: const ['Home', 'Stock'],
         isOpened: _isDrawerOpen,
-        actionDrawer: StockFormDrawer(
-          title: 'Add $_selectedValue',
-          closeDrawer: _closeDrawer,
-        ),
+        actionDrawers: [
+          StockFormDrawer(
+            title: 'Add $_selectedValue',
+            closeDrawer: _closeDrawer,
+          ),
+        ],
         child: Column(
           children: [
             Row(
@@ -74,7 +91,6 @@ class _StockPageState extends State<StockPage> {
                     dividerColor: Colors.transparent,
                     isScrollable: true,
                     tabs: [
-                      // Tab(text: 'Stocks'),
                       Tab(text: 'Yarn'),
                       Tab(text: 'Cloth'),
                       Tab(text: 'Glue'),
@@ -136,6 +152,24 @@ class _StockPageState extends State<StockPage> {
                         return CustomerDataTable(
                           dataSource: StockDataSource(
                               stockList: stockList,
+                              onView: (Stock stock) {
+                                context
+                                    .read<StockCubit>()
+                                    .setSelectedStock(stock);
+                                _toggleViewDrawer();
+                              },
+                              onDelete: (Stock stock) async {
+                                final bool? isDelete =
+                                    await showCustomConfirmationDialog(
+                                  context,
+                                  'Delete Stock',
+                                  'Are you sure you want to delete this stock?',
+                                  'assets/icons/trash.svg',
+                                );
+                                if (isDelete == true) {
+                                  // context.read<StockCubit>().deleteStock(stock);
+                                }
+                              },
                               onEdit: (Stock stock) {
                                 context.read<StockCubit>().editStock(stock);
                                 _toggleDrawer();

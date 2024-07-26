@@ -361,6 +361,7 @@ class _RugFormDrawerState extends State<RugFormDrawer> {
                                           child: Center(
                                             child: ElevatedButton.icon(
                                               onPressed: () {
+                                                print('ndabaiwa');
                                                 controller.pickImages();
                                               },
                                               icon:

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/bloc/app_bloc.dart';
+import 'package:stichit/app/routes/app.dart';
 import 'package:stichit/app/routes/routes.dart';
 import 'package:stichit/login/login.dart';
 import 'package:stichit/rugs/cubit/rugs_cubit.dart';
@@ -70,13 +71,14 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       theme: theme,
       debugShowCheckedModeBanner: false,
-      home: FlowBuilder<AppStatus>(
-        state: context.select((AppBloc bloc) => bloc.state.status),
-        onGeneratePages: onGenerateAppViewPages,
-      ),
+      routerConfig: AppRouter.userRouter,
+      // home: FlowBuilder<AppStatus>(
+      //   state: context.select((AppBloc bloc) => bloc.state.status),
+      //   onGeneratePages: onGenerateAppViewPages,
+      // ),
     );
   }
 }

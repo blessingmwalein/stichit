@@ -40,7 +40,7 @@ Future<List<ImageFile>> pickImagesUsingFilePicker(bool allowMultiple) async {
               name: e.name,
               extension: e.extension!,
               bytes: e.bytes,
-              path: !kIsWeb ? e.path : null),
+              path: e.path),
         )
         .toList();
   }

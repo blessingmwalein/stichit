@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:stichit/app/const/colors.dart';
+import 'package:stichit/app/routes/routes.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
 import 'package:stichit/ui_commons/cards/logo_card.dart';
 
@@ -96,7 +98,9 @@ class _AuthLayoutState extends State<AuthLayout> {
                       label: 'Sign In',
                       isOutline: false,
                       primaryColor: orange,
-                      onPressed: () {},
+                      onPressed: () {
+                        GoRouter.of(context).go(UserRoutes.login);
+                      },
                     ),
                     const SizedBox(width: 15),
                     CustomButton(

@@ -23,7 +23,7 @@ class LoginCubit extends Cubit<LoginState> {
     );
   }
 
-  //user type changed
+  // User type changed
   void userTypeChanged(UserType userType) {
     emit(state.copyWith(userType: userType));
   }
@@ -38,8 +38,6 @@ class LoginCubit extends Cubit<LoginState> {
     );
   }
 
- 
-
   Future<void> logInWithGoogle() async {
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
@@ -52,8 +50,14 @@ class LoginCubit extends Cubit<LoginState> {
           status: FormzSubmissionStatus.failure,
         ),
       );
-    } catch (_) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+    } catch (e) {
+      print('Error ndipo: $e');
+      emit(
+        state.copyWith(
+          errorMessage: e.toString(),
+          status: FormzSubmissionStatus.failure,
+        ),
+      );
     }
   }
 }

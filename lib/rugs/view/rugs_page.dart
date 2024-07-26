@@ -4,9 +4,12 @@ import 'package:formz/formz.dart';
 import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/app/layouts/main_layout.dart';
+import 'package:stichit/rugs/constant.dart';
 import 'package:stichit/rugs/cubit/rugs_cubit.dart';
 import 'package:stichit/rugs/data_sources/rugs_data_source.dart';
 import 'package:stichit/rugs/view/widgets/rug_form_drawer.dart';
+import 'package:stichit/rugs/view/widgets/view_rug_drawer.dart';
+import 'package:stichit/ui_commons/alerts/confirm_dialog.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
 import 'package:stichit/ui_commons/buttons/dropdown_button.dart';
 import 'package:stichit/ui_commons/loaders/error_page.dart';
@@ -36,18 +39,41 @@ class _StockPageState extends State<RugsPage> {
     BlocProvider.of<RugsCubit>(context).getRugs();
   }
 
-  bool _isDrawerOpen = false;
+  bool _isCreateRugDrawerOpen = false;
+  bool _isViewDrawerOpen = false;
   String _selectedValue = 'Rugs';
 
-  void _toggleDrawer() {
+  void _toggleDrawer(
+    RugDrawerType drawerType,
+  ) {
     setState(() {
-      _isDrawerOpen = !_isDrawerOpen;
+      switch (drawerType) {
+        case RugDrawerType.add:
+          _isCreateRugDrawerOpen = !_isCreateRugDrawerOpen;
+          break;
+        case RugDrawerType.view:
+          _isViewDrawerOpen = !_isViewDrawerOpen;
+          break;
+        default:
+          break;
+      }
     });
   }
 
-  void _closeDrawer() {
+  void _closeDrawer(
+    RugDrawerType drawerType,
+  ) {
     setState(() {
-      _isDrawerOpen = false;
+      switch (drawerType) {
+        case RugDrawerType.add:
+          _isCreateRugDrawerOpen = false;
+          break;
+        case RugDrawerType.view:
+          _isViewDrawerOpen = false;
+          break;
+        default:
+          break;
+      }
     });
 
     //fire clear form event and selected rug frombloc
@@ -60,11 +86,30 @@ class _StockPageState extends State<RugsPage> {
 
     return MainLayout(
       crumbs: const ['Home', 'Rug'],
-      isOpened: _isDrawerOpen,
-      actionDrawer: RugFormDrawer(
-        title: 'Add $_selectedValue',
-        closeDrawer: _closeDrawer,
-      ),
+      isOpened: _isCreateRugDrawerOpen || _isViewDrawerOpen,
+      actionDrawers: [
+        _isCreateRugDrawerOpen
+            ? RugFormDrawer(
+                title: 'Add $_selectedValue',
+                closeDrawer: () {
+                  _closeDrawer(RugDrawerType.add);
+                },
+              )
+            : const SizedBox(),
+        _isViewDrawerOpen
+            ? ViewRugDrawer(
+                title: 'View $_selectedValue',
+                closeDrawer: () {
+                  _closeDrawer(RugDrawerType.view);
+                },
+                editRug: () {
+                  _toggleDrawer(
+                    RugDrawerType.view,
+                  );
+                },
+              )
+            : const SizedBox(),
+      ],
       child: BlocBuilder<RugsCubit, RugsState>(
         builder: (context, state) {
           switch (state.pageStatus) {
@@ -86,9 +131,27 @@ class _StockPageState extends State<RugsPage> {
                 return CustomerDataTable(
                   dataSource: RugsDataSource(
                       rugList: rugList,
+                      onDelete: (Rug rug) async {
+                        // context.read<RugsCubit>().deleteRug(rug);
+                        final bool? isDelete =
+                            await showCustomConfirmationDialog(
+                          context,
+                          'Delete Rug',
+                          'Are you sure you want to delete this rug?',
+                          'assets/icons/trash.svg',
+                        );
+                      },
+                      onView: (Rug rug) {
+                        context.read<RugsCubit>().setSelectedRug(rug);
+                        _toggleDrawer(
+                          RugDrawerType.view,
+                        );
+                      },
                       onEdit: (Rug rug) {
                         context.read<RugsCubit>().editRug(rug);
-                        _toggleDrawer();
+                        _toggleDrawer(
+                          RugDrawerType.add,
+                        );
                       }),
                   sort: true,
                   filter: true,
@@ -127,7 +190,9 @@ class _StockPageState extends State<RugsPage> {
                             primaryColor: CustomColors.orange,
                             primaryTextColor: CustomColors.white,
                             onPressed: () {
-                              _toggleDrawer();
+                              _toggleDrawer(
+                                RugDrawerType.add,
+                              );
                             },
                           ),
                         ),
@@ -157,3 +222,6 @@ class _StockPageState extends State<RugsPage> {
     );
   }
 }
+
+
+//

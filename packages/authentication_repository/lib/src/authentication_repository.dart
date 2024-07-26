@@ -8,64 +8,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 
-/// {@template log_in_with_google_failure}
-/// Thrown during the sign in with google process if a failure occurs.
-/// https://pub.dev/documentation/firebase_auth/latest/firebase_auth/FirebaseAuth/signInWithCredential.html
-/// {@endtemplate}
-class LogInWithGoogleFailure implements Exception {
-  /// {@macro log_in_with_google_failure}
-  const LogInWithGoogleFailure([
-    this.message = 'An unknown exception occurred.',
-  ]);
-
-  /// Create an authentication message
-  /// from a firebase authentication exception code.
-  factory LogInWithGoogleFailure.fromCode(String code) {
-    switch (code) {
-      case 'account-exists-with-different-credential':
-        return const LogInWithGoogleFailure(
-          'Account exists with different credentials.',
-        );
-      case 'invalid-credential':
-        return const LogInWithGoogleFailure(
-          'The credential received is malformed or has expired.',
-        );
-      case 'operation-not-allowed':
-        return const LogInWithGoogleFailure(
-          'Operation is not allowed.  Please contact support.',
-        );
-      case 'user-disabled':
-        return const LogInWithGoogleFailure(
-          'This user has been disabled. Please contact support for help.',
-        );
-      case 'user-not-found':
-        return const LogInWithGoogleFailure(
-          'Email is not found, please create an account.',
-        );
-      case 'wrong-password':
-        return const LogInWithGoogleFailure(
-          'Incorrect password, please try again.',
-        );
-      case 'invalid-verification-code':
-        return const LogInWithGoogleFailure(
-          'The credential verification code received is invalid.',
-        );
-      case 'invalid-verification-id':
-        return const LogInWithGoogleFailure(
-          'The credential verification ID received is invalid.',
-        );
-      default:
-        return const LogInWithGoogleFailure();
-    }
-  }
-
-  /// The associated error message.
-  final String message;
-}
-
-/// Thrown during the logout process if a failure occurs.
-class LogOutFailure implements Exception {}
-
 /// {@template authentication_repository}
 /// Repository which manages user authentication.
 /// {@endtemplate}
@@ -105,8 +47,21 @@ class AuthenticationRepository {
   ///
   /// Emits [User.empty] if the user is not authenticated.
   Stream<User> get user {
-    return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      final user = firebaseUser == null ? User.empty : firebaseUser.toUser;
+    return _firebaseAuth.authStateChanges().asyncMap((firebaseUser) async {
+      if (firebaseUser == null) {
+        _cache.write(key: userCacheKey, value: User.empty);
+        return User.empty;
+      }
+
+      final userDoc =
+          await _firestore.collection('users').doc(firebaseUser.uid).get();
+      if (!userDoc.exists) {
+        _cache.write(key: userCacheKey, value: User.empty);
+
+        return User.empty;
+      }
+
+      final user = firebaseUser.toUser;
       _cache.write(key: userCacheKey, value: user);
       return user;
     });
@@ -138,9 +93,8 @@ class AuthenticationRepository {
       late final firebase_auth.AuthCredential credential;
       if (isWeb) {
         final googleProvider = firebase_auth.GoogleAuthProvider();
-        final userCredential = await _firebaseAuth.signInWithPopup(
-          googleProvider,
-        );
+        final userCredential =
+            await _firebaseAuth.signInWithPopup(googleProvider);
         credential = userCredential.credential!;
       } else {
         final googleUser = await _googleSignIn.signIn();
@@ -151,11 +105,62 @@ class AuthenticationRepository {
         );
       }
 
-      await _firebaseAuth.signInWithCredential(credential);
+      final userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
+
+      // Check if the user exists in Firestore
+      final userDoc = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: credential)
+          .get();
+      print('userDoc: ${userDoc.docs.first}');
+      if (userDoc.docs.isEmpty) {
+        // Sign out the user from Google Authentication
+        await _googleSignIn.signOut();
+        await _firebaseAuth.signOut();
+        throw LogInWithGoogleFailure.fromCode('user-not-found');
+      }
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw LogInWithGoogleFailure.fromCode(e.code);
     } catch (_) {
       throw const LogInWithGoogleFailure();
+    }
+  }
+
+  Future<void> logInWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      //get user by email and set flutter secure storage
+
+      User? user = await getUserByEmail(email);
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
+    } catch (_) {
+      throw const LogInWithEmailAndPasswordFailure();
+    }
+  }
+
+  //get user by email
+  Future<User?> getUserByEmail(String email) async {
+    try {
+      final userDoc = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
+      if (userDoc.docs.isEmpty) {
+        return null;
+      }
+      return User.fromFirestore(userDoc.docs.first);
+    } catch (e) {
+      print('Error: $e');
+      return null;
     }
   }
 }
@@ -163,6 +168,6 @@ class AuthenticationRepository {
 extension on firebase_auth.User {
   /// Maps a [firebase_auth.User] into a [User].
   User get toUser {
-    return User(id: uid, email: email, name: displayName, photo: photoURL);
+    return User(id: uid, email: email, fullName: displayName, photo: photoURL);
   }
 }

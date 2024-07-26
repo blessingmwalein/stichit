@@ -5,20 +5,12 @@ import 'package:stichit/app/layouts/auth_layout.dart';
 import 'package:stichit/login/view/login_form.dart';
 
 class LoginPage extends StatelessWidget {
-  final UserType userType;
+  const LoginPage({Key? key}) : super(key: key);
 
-  const LoginPage({Key? key, required this.userType}) : super(key: key);
-
-  static Page<void> page() => const MaterialPage<void>(
-          child: LoginPage(
-        userType: UserType.barber,
-      ));
+  static Page<void> page() => const MaterialPage<void>(child: LoginPage());
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(
-        builder: (_) => const LoginPage(
-              userType: UserType.barber,
-            ));
+    return MaterialPageRoute<void>(builder: (_) => const LoginPage());
   }
 
   @override

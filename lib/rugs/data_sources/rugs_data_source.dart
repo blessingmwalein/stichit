@@ -11,6 +11,8 @@ class RugsDataSource extends DataGridSource {
   RugsDataSource({
     required List<Rug> rugList,
     required this.onEdit,
+    required this.onView,
+    required this.onDelete,
   }) {
     _rugsList = rugList
         .map<DataGridRow>((e) => DataGridRow(cells: [
@@ -33,6 +35,8 @@ class RugsDataSource extends DataGridSource {
   }
 
   final Function(Rug) onEdit;
+  final Function(Rug) onView;
+  final Function(Rug) onDelete;
 
   List<DataGridRow> _rugsList = [];
 
@@ -121,14 +125,14 @@ class RugsDataSource extends DataGridSource {
             print('Selected: $newValue');
             switch (newValue) {
               case 'View':
-                print('View');
+                onView(selectedStock);
                 break;
               case 'Edit':
                 // Call the editStock method with the selected stock
                 onEdit(selectedStock);
                 break;
               case 'Delete':
-                print('Delete');
+                onDelete(selectedStock);
                 break;
             }
           },

@@ -26,6 +26,7 @@ class RugsCubit extends Cubit<RugsState> {
 
   //update selected images
   void updateImages(List<ImageFile> images) {
+    print('images: $images');
     emit(state.copyWith(images: images));
   }
 
@@ -99,6 +100,8 @@ class RugsCubit extends Cubit<RugsState> {
       formStatus: FormzSubmissionStatus.initial,
       successMessage: null,
       errorMessage: null,
+      images: [],
+      selectedImages: [],
     ));
   }
 

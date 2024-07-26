@@ -65,7 +65,9 @@ class _CustomerDataTableState<T> extends State<CustomerDataTable<T>> {
               allowFiltering: column != 'Actions' ? widget.filter : false,
               label: Container(
                 padding: const EdgeInsets.all(8.0),
-                alignment:column != 'Actions' ? Alignment.centerLeft : Alignment.center,
+                alignment: column != 'Actions'
+                    ? Alignment.centerLeft
+                    : Alignment.center,
                 child: Text(
                   column,
                   style: const TextStyle(

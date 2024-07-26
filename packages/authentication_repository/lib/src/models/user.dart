@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 /// {@template user}
@@ -10,21 +11,18 @@ class User extends Equatable {
   const User({
     required this.id,
     this.email,
-    this.name,
-    this.photo,
-    this.isAccountSetup = false, // Add this field
+    this.fullName,
+    this.photo, // Add this field
   });
 
   /// The current user's email address.
   final String? email;
 
-  final bool isAccountSetup; 
-
   /// The current user's id.
   final String id;
 
-  /// The current user's name (display name).
-  final String? name;
+  /// The current user's fullName (display fullName).
+  final String? fullName;
 
   /// Url for the current user's photo.
   final String? photo;
@@ -38,6 +36,18 @@ class User extends Equatable {
   /// Convenience getter to determine whether the current user is not empty.
   bool get isNotEmpty => this != User.empty;
 
+  factory User.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    final data = snapshot.data()!;
+    return User(
+      id: snapshot.id,
+      email: data['email'],
+      fullName: data['fullName'],
+      photo: data['photo'],
+    );
+  }
+
   @override
-  List<Object?> get props => [email, id, name, photo, isAccountSetup];
+  List<Object?> get props => [email, id, fullName, photo];
 }

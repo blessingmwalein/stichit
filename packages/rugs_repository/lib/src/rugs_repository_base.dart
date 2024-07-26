@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:multi_image_picker_view/multi_image_picker_view.dart';
@@ -98,9 +99,11 @@ class RugsRepositoryBase {
     try {
       Reference storageRef =
           _storage.ref().child('rugs').child('/$rugId').child('/${image.name}');
-
-      print(image);
-      UploadTask uploadTask = storageRef.putData(image.bytes!);
+      UploadTask uploadTask = storageRef.putFile(
+          File(image.path!),
+          SettableMetadata(
+            contentType: 'image/jpeg',
+          ));
 
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
       return await taskSnapshot.ref.getDownloadURL();

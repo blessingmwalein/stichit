@@ -10,6 +10,8 @@ class StockDataSource extends DataGridSource {
   StockDataSource({
     required List<Stock> stockList,
     required this.onEdit,
+    required this.onView,
+    required this.onDelete,
   }) {
     _stockList = stockList
         .map<DataGridRow>((e) => DataGridRow(cells: [
@@ -31,6 +33,8 @@ class StockDataSource extends DataGridSource {
   }
 
   final Function(Stock) onEdit;
+  final Function(Stock) onView;
+  final Function(Stock) onDelete;
 
   List<DataGridRow> _stockList = [];
 
@@ -123,18 +127,16 @@ class StockDataSource extends DataGridSource {
         child: IconDropDownButton(
           items: const ['View', 'Edit', 'Delete'],
           onChanged: (String? newValue) {
-            // Handle the selected value here
-            print('Selected: $newValue');
             switch (newValue) {
               case 'View':
-                print('View');
+                onView(selectedStock);
                 break;
               case 'Edit':
                 // Call the editStock method with the selected stock
                 onEdit(selectedStock);
                 break;
               case 'Delete':
-                print('Delete');
+                onDelete(selectedStock);
                 break;
             }
           },

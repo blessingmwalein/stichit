@@ -8,6 +8,7 @@ import 'package:stichit/home/view/admin.dart';
 import 'package:stichit/login/cubit/login_cubit.dart';
 import 'package:stichit/ui_commons/alerts/snack_bar.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
+import 'package:stichit/ui_commons/forms/custom_text_input.dart';
 import 'package:stichit/ui_commons/icons/custom_svg_icon.dart';
 import 'package:ui_commons/ui_commons.dart';
 
@@ -56,6 +57,45 @@ class LoginForm extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Stack(
               children: [
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(40.0),
+                    child: Column(
+                      children: [
+                        _EmailInput(),
+                        const SizedBox(height: 20),
+                        _PasswordInput(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextButton(
+                                onPressed: () {
+                                  // Navigator.of(context)
+                                  //     .push<void>(AccountTypePage.route());
+                                },
+                                child: Text(
+                                  'Don`t Have an account? Sign Up',
+                                  style: TextStyle(
+                                    color: primaryWhite.withOpacity(0.6),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        const SocialLoginButtons(),
+                        const SizedBox(height: 40),
+
+                        // const SizedBox(height: 8)
+                      ],
+                    ),
+                  ),
+                ),
                 Positioned(
                   bottom: 80, // Adjust the bottom spacing as needed
                   left: 0,
@@ -81,6 +121,101 @@ class LoginForm extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+//sicial login buttons
+class SocialLoginButtons extends StatelessWidget {
+  const SocialLoginButtons({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 18),
+        Text(
+          'Or Login with',
+          style: TextStyle(
+            color: primaryWhite.withOpacity(0.6),
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(width: 20),
+            Container(
+              width: 50,
+              height: 50,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: primaryWhite,
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: customSvgIcon(
+                  path: "assets/icons/google.svg", width: 50, height: 50),
+            ),
+            const SizedBox(width: 20),
+            Container(
+              width: 50,
+              height: 50,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: primaryWhite,
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: customSvgIcon(
+                  path: "assets/icons/facebook.svg", width: 50, height: 50),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _EmailInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LoginCubit, LoginState>(
+      buildWhen: (previous, current) => previous.email != current.email,
+      builder: (context, state) {
+        return CustomTextFieldWidget(
+          key: const Key('loginForm_emailInput_textField'),
+          label: 'Email',
+          hint: 'Enter your email',
+          isPassword: false,
+          controller: TextEditingController(text: state.email.value),
+          textInputType: TextInputType.emailAddress,
+          errorText: state.email.displayError != null ? 'invalid email' : null,
+          onChanged: (email) => context.read<LoginCubit>().emailChanged(email),
+        );
+      },
+    );
+  }
+}
+
+class _PasswordInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LoginCubit, LoginState>(
+      buildWhen: (previous, current) => previous.password != current.password,
+      builder: (context, state) {
+        return CustomTextFieldWidget(
+          key: const Key('loginForm_passwordInput_textField'),
+          label: "Password",
+          hint: "*********",
+          isPassword: true,
+          onChanged: (value) {
+            context.read<LoginCubit>().passwordChanged(value);
+          },
+          errorText:
+              state.password.displayError != null ? 'invalid password' : null,
+        );
+      },
     );
   }
 }

@@ -7,23 +7,27 @@ import 'package:stichit/app/layouts/widgets/top_nav.dart';
 class MainLayout extends StatefulWidget {
   final Widget child;
   final List<String> crumbs;
-  final Widget? actionDrawer;
+  final List<Widget>? actionDrawers; // Updated to a list of widgets
   final bool isOpened;
+  // final VoidCallback? onClickedOut
 
-
-  const MainLayout({super.key, required this.child, required this.crumbs, this.actionDrawer,required this.isOpened});
+  const MainLayout({
+    super.key,
+    required this.child,
+    required this.crumbs,
+    this.actionDrawers, // List of widgets for actions
+    required this.isOpened,
+  });
 
   @override
   State<MainLayout> createState() => _MainLayoutState();
 }
 
 class _MainLayoutState extends State<MainLayout> {
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColors.darkBackGround,
-      
       body: Stack(
         children: [
           Row(
@@ -52,17 +56,25 @@ class _MainLayoutState extends State<MainLayout> {
               const RightActionsPanel(),
             ],
           ),
-          if (widget.isOpened && widget.actionDrawer != null)
+          if (widget.isOpened && widget.actionDrawers != null)
             GestureDetector(
-              onTap: (){},
+              onTap: () {
+                setState(() {
+                  // widget.isOpened =
+                  //     false; // Close the drawer when clicking outside
+                });
+              },
               child: Container(
                 color: Colors.black54, // Semi-transparent background
               ),
             ),
-          if (widget.isOpened && widget.actionDrawer != null)
+          if (widget.isOpened && widget.actionDrawers != null)
             Align(
               alignment: Alignment.centerRight,
-              child: widget.actionDrawer!,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: widget.actionDrawers!,
+              ),
             ),
         ],
       ),
