@@ -60,7 +60,7 @@ class _CustomSelectTextFieldWidgetState<T>
     return DropdownButtonFormField<T>(
       value: widget.selectedOption,
       onChanged: widget.isDisabled == true ? null : widget.onChanged,
-      focusColor: primaryWhite,
+      focusColor: CustomColors.white.withOpacity(0.7),
       dropdownColor: lightBlackForm,
       style: TextStyle(color: primaryWhite.withOpacity(0.7)),
       decoration: InputDecoration(
@@ -84,7 +84,7 @@ class _CustomSelectTextFieldWidgetState<T>
             ? OutlineInputBorder(
                 borderRadius: BorderRadius.circular(40.0),
                 borderSide: BorderSide(
-                  color: primaryWhite.withOpacity(0.2),
+                  color: primaryWhite.withOpacity(0.8),
                 ),
               )
             : OutlineInputBorder(

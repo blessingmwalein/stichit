@@ -48,7 +48,7 @@ class _CustomPhoneNumberTextState extends State<CustomPhoneNumberText> {
             ? OutlineInputBorder(
                 borderRadius: BorderRadius.circular(40.0),
                 borderSide: BorderSide(
-                  color: primaryWhite.withOpacity(0.2),
+                  color: primaryWhite.withOpacity(0.8),
                 ),
               )
             : OutlineInputBorder(
@@ -62,12 +62,14 @@ class _CustomPhoneNumberTextState extends State<CustomPhoneNumberText> {
             const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(40.0),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(
+              width: 2.0, color: CustomColors.white.withOpacity(0.8)),
         ),
-        errorStyle: const TextStyle(color: Colors.redAccent),
+        errorStyle: const TextStyle(color: Colors.yellow),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(40.0),
-          borderSide: const BorderSide(width: 2.0, color: lightBlackForm),
+          borderSide: BorderSide(
+              width: 2.0, color: CustomColors.white.withOpacity(0.8)),
         ),
         suffixIcon: widget.suffixIconPath != null
             ? Padding(

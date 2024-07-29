@@ -18,6 +18,11 @@ dependencies:
   cache:
     path: ../cache
   cloud_firestore: ^4.15.9
+  formz: ^0.7.0
+  flutter_secure_storage: ^9.2.2
+  form_inputs:
+    path: ../form_inputs
+
 
 dev_dependencies:
   flutter_test:

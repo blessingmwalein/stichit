@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomColors {
   static const Color lightBackGround = Color(0xFF282828);
   static const Color darkBackGround = Color(0xFF1C1C1C);
-  static const Color lightGrey = Color(0xFF323232); 
+  static const Color lightGrey = Color(0xFF323232);
   //white
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
@@ -11,8 +11,11 @@ class CustomColors {
   static const Color dashboardbackColor = Color(0xFFE3F5FF);
   //orange
   static const Color orange = Colors.orange;
-}
 
+  ///facebook blue
+
+  static const Color facebookBlue = Color(0xFF1877F2);
+}
 
 const Color blue = Color(0xff382FB8);
 const Color orange = Color(0xffFF6C2E);

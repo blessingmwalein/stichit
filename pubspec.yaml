@@ -80,6 +80,8 @@ dependencies:
   multi_image_picker_view: ^1.0.3
   file_picker: ^8.0.6
   cached_network_image: ^3.3.1
+  flutter_secure_storage: ^9.2.2
+
 
 dev_dependencies:
   flutter_test:

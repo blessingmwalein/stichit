@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cache/cache.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:form_inputs/form_inputs.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 
@@ -17,16 +20,17 @@ class AuthenticationRepository {
     CacheClient? cache,
     firebase_auth.FirebaseAuth? firebaseAuth,
     GoogleSignIn? googleSignIn,
+    FlutterSecureStorage? storage,
   })  : _cache = cache ?? CacheClient(),
         _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn.standard();
+        _googleSignIn = googleSignIn ?? GoogleSignIn.standard(),
+        _storage = storage ?? const FlutterSecureStorage();
 
   final CacheClient _cache;
   final firebase_auth.FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final StreamController<bool> _accountSetupController =
-      StreamController<bool>();
+  final FlutterSecureStorage _storage;
 
   /// Whether or not the current environment is web
   /// Should only be overridden for testing purposes. Otherwise,
@@ -34,7 +38,7 @@ class AuthenticationRepository {
   @visibleForTesting
   bool isWeb = kIsWeb;
 
-  /// User cache key.
+  /// UserModel cache key.
   /// Should only be used for testing purposes.
   @visibleForTesting
   static const userCacheKey = '__user_cache_key__';
@@ -42,23 +46,23 @@ class AuthenticationRepository {
   @visibleForTesting
   static const barberDetailsCacheKey = '__barber_details_cache_key__';
 
-  /// Stream of [User] which will emit the current user when
+  /// Stream of [UserModel] which will emit the current user when
   /// the authentication state changes.
   ///
-  /// Emits [User.empty] if the user is not authenticated.
-  Stream<User> get user {
+  /// Emits [UserModel.empty] if the user is not authenticated.
+  Stream<UserModel> get user {
     return _firebaseAuth.authStateChanges().asyncMap((firebaseUser) async {
       if (firebaseUser == null) {
-        _cache.write(key: userCacheKey, value: User.empty);
-        return User.empty;
+        _cache.write(key: userCacheKey, value: UserModel.empty);
+        return UserModel.empty;
       }
 
       final userDoc =
           await _firestore.collection('users').doc(firebaseUser.uid).get();
       if (!userDoc.exists) {
-        _cache.write(key: userCacheKey, value: User.empty);
+        _cache.write(key: userCacheKey, value: UserModel.empty);
 
-        return User.empty;
+        return UserModel.empty;
       }
 
       final user = firebaseUser.toUser;
@@ -68,13 +72,13 @@ class AuthenticationRepository {
   }
 
   /// Returns the current cached user.
-  /// Defaults to [User.empty] if there is no cached user.
-  User get currentUser {
-    return _cache.read<User>(key: userCacheKey) ?? User.empty;
+  /// Defaults to [UserModel.empty] if there is no cached user.
+  UserModel get currentUser {
+    return _cache.read<UserModel>(key: userCacheKey) ?? UserModel.empty;
   }
 
   /// Signs out the current user which will emit
-  /// [User.empty] from the [user] Stream.
+  /// [UserModel.empty] from the [user] Stream.
   ///
   /// Throws a [LogOutFailure] if an exception occurs.
   Future<void> logOut() async {
@@ -139,7 +143,10 @@ class AuthenticationRepository {
 
       //get user by email and set flutter secure storage
 
-      User? user = await getUserByEmail(email);
+      UserModel? user = await getUserByEmail(email);
+      if (user != null) {
+        await _storage.write(key: 'user', value: jsonEncode(user.toJson()));
+      }
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
     } catch (_) {
@@ -148,7 +155,7 @@ class AuthenticationRepository {
   }
 
   //get user by email
-  Future<User?> getUserByEmail(String email) async {
+  Future<UserModel?> getUserByEmail(String email) async {
     try {
       final userDoc = await _firestore
           .collection('users')
@@ -157,17 +164,55 @@ class AuthenticationRepository {
       if (userDoc.docs.isEmpty) {
         return null;
       }
-      return User.fromFirestore(userDoc.docs.first);
+      return UserModel.fromFirestore(userDoc.docs.first);
     } catch (e) {
       print('Error: $e');
       return null;
     }
   }
+
+  Future<bool> signUp({
+    UserModel? user,
+  }) async {
+    try {
+      await _firebaseAuth.createUserWithEmailAndPassword(
+        email: user?.email?.value ?? "",
+        password: user?.password?.value ?? "",
+      );
+
+      //create user
+      await createUser(user!);
+      //login user
+      await logInWithEmailAndPassword(
+        email: user.email?.value ?? "",
+        password: user.password?.value ?? "",
+      );
+
+      return true;
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
+    } catch (error) {
+      throw SignUpWithEmailAndPasswordFailure(error.toString());
+    }
+  }
+
+  //create user
+  Future<void> createUser(UserModel user) async {
+    try {
+      await _firestore.collection('users').add(user.toFirestore());
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 }
 
 extension on firebase_auth.User {
-  /// Maps a [firebase_auth.User] into a [User].
-  User get toUser {
-    return User(id: uid, email: email, fullName: displayName, photo: photoURL);
+  /// Maps a [firebase_auth.UserModel] into a [UserModel].
+  UserModel get toUser {
+    return UserModel(
+        id: uid,
+        email: Email.dirty(email ?? ''),
+        fullName: displayName,
+        photo: photoURL);
   }
 }

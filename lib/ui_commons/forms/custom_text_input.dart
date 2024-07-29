@@ -14,9 +14,9 @@ class CustomTextFieldWidget extends StatefulWidget {
     this.onChanged,
     this.defaultValue,
     this.isEnabled = true,
-    this.suffixIconPath, // Added suffixIconPath parameter for SVG icon
-    this.isOutline =
-        false, // Added isOutline parameter with default value false
+    this.suffixIconPath,
+    this.isOutline = false,
+    this.maxLines, // Added maxLines parameter for multi-line text fields
   });
 
   final String label;
@@ -30,6 +30,7 @@ class CustomTextFieldWidget extends StatefulWidget {
   final bool isEnabled;
   final String? suffixIconPath;
   final bool isOutline;
+  final int? maxLines; // Nullable parameter for the number of lines
 
   @override
   _CustomTextFieldWidgetState createState() => _CustomTextFieldWidgetState();
@@ -56,6 +57,8 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
       keyboardType: widget.textInputType,
       scrollPadding: EdgeInsets.zero,
       style: TextStyle(color: primaryWhite.withOpacity(0.7)),
+      maxLines: widget.maxLines ?? 1, // Set maxLines with a default value of 1
+      minLines: widget.maxLines ?? 1, // Set minLines for proper height
       decoration: InputDecoration(
         filled: !widget.isOutline,
         fillColor: lightBlackForm,
@@ -68,10 +71,11 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
           color: widget.isEnabled ? primaryWhite.withOpacity(0.7) : Colors.grey,
         ),
         errorText: widget.errorText,
-        errorStyle: const TextStyle(color: Colors.redAccent),
+        errorStyle: const TextStyle(color: Colors.yellow),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(40.0),
-          borderSide:  BorderSide(width: 2.0, color: primaryWhite.withOpacity(0.7)),
+          borderSide:
+              BorderSide(width: 2.0, color: primaryWhite.withOpacity(0.7)),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(40.0),
@@ -83,8 +87,7 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
             ? OutlineInputBorder(
                 borderRadius: BorderRadius.circular(40.0),
                 borderSide: BorderSide(
-                  color: primaryWhite.withOpacity(0.2),
-                ),
+                    width: 2.0, color: primaryWhite.withOpacity(0.7)),
               )
             : OutlineInputBorder(
                 borderRadius: BorderRadius.circular(40.0),
@@ -96,7 +99,7 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
             const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(40.0),
-          borderSide: BorderSide.none,
+          // borderSide: BorderSide.none,
         ),
         suffixIcon: widget.isPassword
             ? IconButton(

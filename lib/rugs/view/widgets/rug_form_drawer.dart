@@ -435,7 +435,6 @@ class _RugFormDrawerState extends State<RugFormDrawer> {
                               if (state.formStatus ==
                                   FormzSubmissionStatus.success) {
                                 context.read<RugsCubit>().clearForm();
-
                                 // Close the drawer
                                 widget.closeDrawer();
                               }

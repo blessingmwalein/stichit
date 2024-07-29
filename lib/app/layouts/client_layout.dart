@@ -5,15 +5,15 @@ import 'package:stichit/app/routes/routes.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
 import 'package:stichit/ui_commons/cards/logo_card.dart';
 
-class AuthLayout extends StatefulWidget {
+class ClientLayout extends StatefulWidget {
   final Widget child;
-  const AuthLayout({super.key, required this.child});
+  const ClientLayout({super.key, required this.child});
 
   @override
-  State<AuthLayout> createState() => _AuthLayoutState();
+  State<ClientLayout> createState() => _ClientLayoutState();
 }
 
-class _AuthLayoutState extends State<AuthLayout> {
+class _ClientLayoutState extends State<ClientLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

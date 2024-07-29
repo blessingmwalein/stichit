@@ -9,6 +9,7 @@ import 'package:stichit/app/routes/app.dart';
 import 'package:stichit/app/routes/routes.dart';
 import 'package:stichit/login/login.dart';
 import 'package:stichit/rugs/cubit/rugs_cubit.dart';
+import 'package:stichit/sign-up/cubit/sign_up_cubit.dart';
 import 'package:stichit/stock/cubit/stock_cubit.dart';
 import 'package:stichit/theme.dart';
 import 'package:stock_repository/stock_repository.dart';
@@ -46,7 +47,7 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => LoginCubit(
-              _authenticationRepository,
+              authenticationRepository: _authenticationRepository,
             ),
           ),
           BlocProvider(
@@ -57,6 +58,11 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (context) => RugsCubit(
               rugRepository: _rugsRepositoryBase,
+            ),
+          ),
+          BlocProvider(
+            create: (context) => SignUpCubit(
+              authenticationRepository: _authenticationRepository,
             ),
           ),
         ],

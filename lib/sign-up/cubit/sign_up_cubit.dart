@@ -5,46 +5,44 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
-import 'package:stichit/sign-up/models/auth_request.dart';
-part 'login_state.dart';
+part 'sign_up_state.dart';
 
-class LoginCubit extends Cubit<LoginState> {
-  LoginCubit({required this.authenticationRepository}) : super(LoginState());
+class SignUpCubit extends Cubit<SignUpState> {
+  SignUpCubit({required this.authenticationRepository}) : super(SignUpState());
 
   final AuthenticationRepository authenticationRepository;
 
   void onFormChange(String field, dynamic value) {
     log("field: $field, value: $value");
-    final updatedAuthRequest = state.authRequest.copyWithField(field, value);
+    final updatedUser = state.userForm.copyWithField(field, value);
 
     final isValid = checkFormValid(
-      updatedAuthRequest.email.value,
-      updatedAuthRequest.password.value,
+      updatedUser.email?.value ?? "",
+      updatedUser.password?.value ?? "",
+      updatedUser.confirmPassword?.value ?? "",
     );
 
     print("isValid: $isValid");
 
     emit(state.copyWith(
-      authRequest: updatedAuthRequest,
+      userForm: updatedUser,
       isFormValid: isValid,
     ));
   }
 
-  // Log in user
-  Future<void> loginUser() async {
-    final authRequest = state.authRequest;
+  // Save user
+  Future<void> saveUser() async {
+    final userForm = state.userForm;
     emit(state.copyWith(formStatus: FormzSubmissionStatus.inProgress));
 
     try {
-      // Call the logIn method from the authentication repository
-      await authenticationRepository.logInWithEmailAndPassword(
-          email: authRequest.email?.value ?? "",
-          password: authRequest.password?.value ?? "");
+      // Call the signUp method from the authentication repository
+      await authenticationRepository.signUp(user: userForm);
       emit(state.copyWith(
         formStatus: FormzSubmissionStatus.success,
-        successMessage: "User logged in successfully",
+        successMessage: "User registered successfully",
       ));
-    } on LogInWithEmailAndPasswordFailure catch (e) {
+    } on SignUpWithEmailAndPasswordFailure catch (e) {
       emit(
         state.copyWith(
           errorMessage: e.message,
@@ -62,8 +60,7 @@ class LoginCubit extends Cubit<LoginState> {
   // Clear form
   void clearForm() {
     emit(state.copyWith(
-      authRequest:
-          const AuthRequest(email: Email.pure(), password: Password.pure()),
+      userForm: UserModel.empty,
       formStatus: FormzSubmissionStatus.initial,
       successMessage: null,
       errorMessage: null,
@@ -71,12 +68,14 @@ class LoginCubit extends Cubit<LoginState> {
     ));
   }
 
-  // Check if form is valid
-  bool checkFormValid(String email, String password) {
+  //check if form is valid chec
+  bool checkFormValid(String email, String password, String confirmPAssword) {
+    //check email
     final newEmail = Email.dirty(email);
     final newPass = Password.dirty(password);
+    final newConfirmPass = Password.dirty(confirmPAssword);
 
-    // Check if form is valid
-    return newEmail.isValid && newPass.isValid;
+    //check if form is valid
+    return newEmail.isValid && newPass.isValid && newConfirmPass.isValid;
   }
 }

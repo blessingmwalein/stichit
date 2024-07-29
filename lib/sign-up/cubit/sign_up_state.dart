@@ -1,34 +1,33 @@
-part of 'login_cubit.dart';
+part of 'sign_up_cubit.dart';
 
-class LoginState extends Equatable {
-  LoginState({
+class SignUpState extends Equatable {
+  SignUpState({
     this.formStatus = FormzSubmissionStatus.initial,
     this.isFormValid = false,
     this.errorMessage,
     this.successMessage,
-    AuthRequest? authRequest,
-  }) : authRequest = authRequest ??
-            const AuthRequest(email: Email.pure(), password: Password.pure());
+    UserModel? userForm,
+  }) : userForm = userForm ?? UserModel.empty;
 
   final FormzSubmissionStatus formStatus;
   final bool isFormValid;
   final String? errorMessage;
   final String? successMessage;
-  final AuthRequest authRequest;
+  final UserModel userForm;
 
-  LoginState copyWith({
+  SignUpState copyWith({
     FormzSubmissionStatus? formStatus,
     bool? isFormValid,
     String? errorMessage,
     String? successMessage,
-    AuthRequest? authRequest,
+    UserModel? userForm,
   }) {
-    return LoginState(
+    return SignUpState(
       formStatus: formStatus ?? this.formStatus,
       isFormValid: isFormValid ?? this.isFormValid,
       errorMessage: errorMessage ?? this.errorMessage,
       successMessage: successMessage ?? this.successMessage,
-      authRequest: authRequest ?? this.authRequest,
+      userForm: userForm ?? this.userForm,
     );
   }
 
@@ -38,6 +37,6 @@ class LoginState extends Equatable {
         isFormValid,
         errorMessage,
         successMessage,
-        authRequest,
+        userForm,
       ];
 }
