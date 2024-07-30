@@ -43,29 +43,29 @@ class SignUpForm extends StatelessWidget {
       },
       child: Align(
         alignment: const Alignment(0, -1 / 3),
-        child: SingleChildScrollView(
-          child: Container(
-            // 50% of the screen
-            height: MediaQuery.of(context).size.height * 0.83,
-            width: MediaQuery.of(context).size.width * 0.5,
-            // Circle radius
-            decoration: BoxDecoration(
-              image: const DecorationImage(
-                image: AssetImage('assets/images/rug.jpeg'), // Background image
-                fit: BoxFit.cover,
-              ),
-              borderRadius: BorderRadius.circular(25),
+        child: Container(
+          // 50% of the screen
+          height: MediaQuery.of(context).size.height * 0.83,
+          width: MediaQuery.of(context).size.width * 0.5,
+          // Circle radius
+          decoration: BoxDecoration(
+            image: const DecorationImage(
+              image: AssetImage('assets/images/rug.jpeg'), // Background image
+              fit: BoxFit.cover,
             ),
-            padding: const EdgeInsets.all(0),
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6), // Overlay color
-                    borderRadius: BorderRadius.circular(25),
-                  ),
+            borderRadius: BorderRadius.circular(25),
+          ),
+          padding: const EdgeInsets.all(0),
+          child: Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6), // Overlay color
+                  borderRadius: BorderRadius.circular(25),
                 ),
-                Container(
+              ),
+              SingleChildScrollView(
+                child: Container(
                   // 70% of the screen width
                   child: Padding(
                     padding: const EdgeInsets.only(left: 30.0, right: 30),
@@ -135,8 +135,8 @@ class SignUpForm extends StatelessWidget {
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

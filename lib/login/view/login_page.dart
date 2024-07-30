@@ -2,6 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stichit/app/layouts/auth_layout.dart';
+import 'package:stichit/app/layouts/client_layout.dart';
 import 'package:stichit/login/view/login_form.dart';
 
 class LoginPage extends StatelessWidget {
@@ -15,6 +16,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AuthLayout(child: LoginForm());
+    return const ClientLayout(child: LoginForm());
   }
 }

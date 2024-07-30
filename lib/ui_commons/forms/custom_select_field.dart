@@ -14,6 +14,8 @@ class CustomSelectTextFieldWidget<T> extends StatefulWidget {
     this.isOutline = false,
     this.bindValue,
     this.bindName,
+    this.primaryColor = CustomColors.white,
+    this.borderColor = CustomColors.white,
   }) : super(key: key);
 
   final String label;
@@ -26,6 +28,8 @@ class CustomSelectTextFieldWidget<T> extends StatefulWidget {
   final bool isOutline;
   final String? bindValue;
   final String? bindName;
+  final Color primaryColor; // Optional primary color
+  final Color borderColor;  // Optional border color
 
   @override
   _CustomSelectTextFieldWidgetState<T> createState() =>
@@ -60,31 +64,31 @@ class _CustomSelectTextFieldWidgetState<T>
     return DropdownButtonFormField<T>(
       value: widget.selectedOption,
       onChanged: widget.isDisabled == true ? null : widget.onChanged,
-      focusColor: CustomColors.white.withOpacity(0.7),
-      dropdownColor: lightBlackForm,
-      style: TextStyle(color: primaryWhite.withOpacity(0.7)),
+      focusColor: widget.primaryColor.withOpacity(0.7),
+      // dropdownColor: lightBlackForm,
+      style: TextStyle(color: widget.primaryColor.withOpacity(0.7)),
       decoration: InputDecoration(
         labelText: widget.label,
-        focusColor: primaryOrange,
+        focusColor: widget.primaryColor,
         filled: !widget.isOutline,
-        fillColor: lightBlackForm,
+        fillColor: widget.isOutline ? null : widget.primaryColor,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-        labelStyle: const TextStyle(
-          color: primaryWhite,
+        labelStyle:  TextStyle(
+          color: widget.primaryColor
         ),
         hintStyle: TextStyle(
-          color: primaryWhite.withOpacity(0.7),
+          color: widget.primaryColor.withOpacity(0.7),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(40.0),
-          borderSide: const BorderSide(width: 1.0, color: lightBlackForm),
+          borderSide: BorderSide(width: 1.0, color: widget.borderColor),
         ),
         enabledBorder: widget.isOutline
             ? OutlineInputBorder(
                 borderRadius: BorderRadius.circular(40.0),
                 borderSide: BorderSide(
-                  color: primaryWhite.withOpacity(0.8),
+                  color: widget.borderColor,
                 ),
               )
             : OutlineInputBorder(
@@ -97,7 +101,7 @@ class _CustomSelectTextFieldWidgetState<T>
           borderRadius: BorderRadius.circular(40.0),
           borderSide: BorderSide(
             width: 1.0,
-            color: primaryWhite.withOpacity(0.7),
+            color: widget.borderColor,
           ),
         ),
       ),

@@ -15,6 +15,9 @@ class CustomColors {
   ///facebook blue
 
   static const Color facebookBlue = Color(0xFF1877F2);
+  static const Color searchFormBack = Color(0xFFF0F0F0);
+
+  static const Color clientBack = Color(0xFFF2F0F1);
 }
 
 const Color blue = Color(0xff382FB8);

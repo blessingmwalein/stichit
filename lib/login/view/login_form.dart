@@ -76,7 +76,7 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 Container(
                   child: Padding(
-                    padding: const EdgeInsets.all(70.0),
+                    padding: const EdgeInsets.only(left:70.0, right: 70),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
