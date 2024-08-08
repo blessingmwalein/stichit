@@ -67,7 +67,7 @@ class SideBar extends StatelessWidget {
           drawerTile(
               icon: 'assets/icons/view-grid.svg',
               title: 'Dashboard',
-              subTitle: 'Stock, Orders, Assets',
+              subTitle: 'RawMaterial, Orders, Assets',
               onTap: () {
                 // Navigator.of(context).push(EditProfilePage.route());
               }),
@@ -80,7 +80,7 @@ class SideBar extends StatelessWidget {
               }),
           drawerTile(
               icon: 'assets/icons/shopping-cart.svg',
-              title: 'Stock',
+              title: 'Raw Materials',
               subTitle: 'Yarn, Cloth, Glue',
               onTap: () {
                 Navigator.of(context).push(StockPage.route());
@@ -116,9 +116,9 @@ class SideBar extends StatelessWidget {
           const SizedBox(
             height: 30,
           ),
-          Padding(
-            padding: const EdgeInsets.all(100),
-            child: const LogoCard(
+          const Padding(
+            padding: EdgeInsets.all(100),
+            child: LogoCard(
                 backgroundColor: CustomColors.white, width: 80, height: 80),
           ),
         ],

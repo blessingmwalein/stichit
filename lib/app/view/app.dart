@@ -12,7 +12,7 @@ import 'package:stichit/rugs/cubit/rugs_cubit.dart';
 import 'package:stichit/sign-up/cubit/sign_up_cubit.dart';
 import 'package:stichit/stock/cubit/stock_cubit.dart';
 import 'package:stichit/theme.dart';
-import 'package:stock_repository/stock_repository.dart';
+import 'package:raw_materials_repository/raw_materials_repository.dart';
 
 class App extends StatelessWidget {
   App({
@@ -66,7 +66,12 @@ class App extends StatelessWidget {
             ),
           ),
         ],
-        child: const AppView(),
+        child: BlocListener<AppBloc, AppState>(
+          listener: (context, state) {
+            // AppRouter.router.refresh();
+          },
+          child: const AppView(),
+        ),
       ),
     );
   }
@@ -77,14 +82,12 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appBloc = context.read<AppBloc>();
+
     return MaterialApp.router(
       theme: theme,
       debugShowCheckedModeBanner: false,
-      routerConfig: AppRouter.userRouter,
-      // home: FlowBuilder<AppStatus>(
-      //   state: context.select((AppBloc bloc) => bloc.state.status),
-      //   onGeneratePages: onGenerateAppViewPages,
-      // ),
+      routerConfig: AppRouter.userRouter(appBloc),
     );
   }
 }

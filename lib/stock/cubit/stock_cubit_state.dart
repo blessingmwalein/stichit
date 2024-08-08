@@ -7,21 +7,21 @@ final class StockCubitState extends Equatable {
     this.isFormValid = false,
     this.errorMessage,
     this.successMessage,
-    Stock? stockForm,
+    RawMaterial? rawMaterialForm,
     this.stocks = const [],
     this.isEditing = false,
     this.selectedStock,
-  }) : stockForm = stockForm ?? Stock.empty();
+  }) : rawMaterialForm = rawMaterialForm ?? RawMaterial.empty();
 
   final FormzSubmissionStatus formStatus;
   final FormzSubmissionStatus pageStatus;
   final bool isFormValid;
   final String? errorMessage;
   final String? successMessage;
-  final Stock stockForm;
+  final RawMaterial rawMaterialForm;
   final bool isEditing;
-  final List<Stock> stocks;
-  final Stock? selectedStock;
+  final List<RawMaterial> stocks;
+  final RawMaterial? selectedStock;
 
   StockCubitState copyWith({
     FormzSubmissionStatus? formStatus,
@@ -29,10 +29,10 @@ final class StockCubitState extends Equatable {
     bool? isFormValid,
     String? errorMessage,
     String? successMessage,
-    Stock? stockForm,
+    RawMaterial? rawMaterialForm,
     bool? isEditing,
-    List<Stock>? stocks,
-    Stock? selectedStock,
+    List<RawMaterial>? stocks,
+    RawMaterial? selectedStock,
   }) {
     return StockCubitState(
       formStatus: formStatus ?? this.formStatus,
@@ -40,7 +40,7 @@ final class StockCubitState extends Equatable {
       isFormValid: isFormValid ?? this.isFormValid,
       errorMessage: errorMessage ?? this.errorMessage,
       successMessage: successMessage ?? this.successMessage,
-      stockForm: stockForm ?? this.stockForm,
+      rawMaterialForm: rawMaterialForm ?? this.rawMaterialForm,
       isEditing: isEditing ?? this.isEditing,
       stocks: stocks ?? this.stocks,
       selectedStock: selectedStock ?? this.selectedStock,
@@ -54,7 +54,7 @@ final class StockCubitState extends Equatable {
         isFormValid,
         errorMessage,
         successMessage,
-        stockForm,
+        rawMaterialForm,
         isEditing,
         stocks,
         selectedStock,

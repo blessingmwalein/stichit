@@ -8,7 +8,7 @@ import 'package:stichit/ui_commons/alerts/snack_bar.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
 import 'package:stichit/ui_commons/forms/custom_select_field.dart';
 import 'package:stichit/ui_commons/forms/custom_text_input.dart';
-import 'package:stock_repository/stock_repository.dart';
+import 'package:raw_materials_repository/raw_materials_repository.dart';
 
 class StockFormDrawer extends StatelessWidget {
   final VoidCallback closeDrawer;
@@ -28,7 +28,7 @@ class StockFormDrawer extends StatelessWidget {
           showCustomSnackbar(
             context,
             'Tapinda!',
-            state.successMessage ?? 'Stock saved successfully',
+            state.successMessage ?? 'RawMaterial saved successfully',
             ContentType.success,
           );
         } else if (state.formStatus == FormzSubmissionStatus.failure) {
@@ -66,8 +66,8 @@ class StockFormDrawer extends StatelessWidget {
                         children: [
                           Text(
                             state.selectedStock != null
-                                ? 'Edit Stock - ${state.selectedStock?.name}'
-                                : 'Add Stock',
+                                ? 'Edit RawMaterial - ${state.selectedStock?.name}'
+                                : 'Add RawMaterial',
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.normal,
@@ -109,7 +109,7 @@ class StockFormDrawer extends StatelessWidget {
                                               .read<StockCubit>()
                                               .onFormChange('name', value),
                                           hint: 'Blessing Mwale',
-                                          defaultValue: state.stockForm?.name ??
+                                          defaultValue: state.rawMaterialForm?.name ??
                                               selectedStock?.name ??
                                               '',
                                         ),
@@ -128,7 +128,7 @@ class StockFormDrawer extends StatelessWidget {
                                                   'description', value),
                                           hint: '',
                                           defaultValue:
-                                              state.stockForm?.description ??
+                                              state.rawMaterialForm?.description ??
                                                   selectedStock?.description ??
                                                   '',
                                         ),
@@ -141,54 +141,52 @@ class StockFormDrawer extends StatelessWidget {
                                   padding: const EdgeInsets.all(13.0),
                                   child: Row(
                                     children: [
-                                      Expanded(
-                                        child: CustomTextFieldWidget(
-                                          isPassword: false,
-                                          isOutline: true,
-                                          suffixIconPath:
-                                              "assets/icons/color-swatch.svg",
-                                          label: 'Color',
-                                          onChanged: (value) => context
-                                              .read<StockCubit>()
-                                              .onFormChange('color', value),
-                                          hint: '0',
-                                          defaultValue:
-                                              state.stockForm?.color ??
-                                                  selectedStock?.color ??
-                                                  '',
-                                        ),
-                                      ),
+                                      // Expanded(
+                                      //   child: CustomTextFieldWidget(
+                                      //     isPassword: false,
+                                      //     isOutline: true,
+                                      //     suffixIconPath:
+                                      //         "assets/icons/color-swatch.svg",
+                                      //     label: 'Color',
+                                      //     onChanged: (value) => context
+                                      //         .read<StockCubit>()
+                                      //         .onFormChange('color', value),
+                                      //     hint: '0',
+                                      //     defaultValue:
+                                      //         state.rawMaterialForm?.color ??
+                                      //             selectedStock?.color ??
+                                      //             '',
+                                      //   ),
+                                      // ),
                                       const SizedBox(width: 16),
-                                      Expanded(
-                                        child: CustomTextFieldWidget(
-                                          isPassword: false,
-                                          isOutline: true,
-                                          suffixIconPath:
-                                              "assets/icons/scale.svg",
-                                          label: 'Quantity',
-                                          onChanged: (value) => context
-                                              .read<StockCubit>()
-                                              .onFormChange(
-                                                  'quantity', int.parse(value)),
-                                          hint: '0',
-                                          defaultValue: state
-                                                  .stockForm?.quantity
-                                                  ?.toString() ??
-                                              selectedStock?.quantity
-                                                  ?.toString() ??
-                                              '',
-                                        ),
-                                      ),
+                                      // Expanded(
+                                      //   child: CustomTextFieldWidget(
+                                      //     isPassword: false,
+                                      //     isOutline: true,
+                                      //     suffixIconPath:
+                                      //         "assets/icons/scale.svg",
+                                      //     label: 'Quantity',
+                                      //     onChanged: (value) => context
+                                      //         .read<StockCubit>()
+                                      //         .onFormChange(
+                                      //             'quantity', int.parse(value)),
+                                      //     hint: '0',
+                                      //     defaultValue: state
+                                      //             .rawMaterialForm?.quantity
+                                      //             ?.toString() ??
+                                      //         selectedStock?.quantity
+                                      //             ?.toString() ??
+                                      //         '',
+                                      //   ),
+                                      // ),
                                       const SizedBox(width: 16),
                                       Expanded(
                                         child: CustomSelectTextFieldWidget(
                                           isOutline: true,
                                           label: 'Category',
                                           selectedOption:
-                                              state.stockForm?.category ??
-                                                  selectedStock?.category ??
-                                                  'Yarn',
-                                          options: StockCategory.values
+                                              state.rawMaterialForm.rawMaterialCategory,
+                                          options: RawMaterialCategory.values
                                               .map((e) =>
                                                   e.toString().split('.').last)
                                               .toList(),
@@ -208,32 +206,32 @@ class StockFormDrawer extends StatelessWidget {
                                   padding: const EdgeInsets.all(13.0),
                                   child: Row(
                                     children: [
-                                      Expanded(
-                                        child: CustomTextFieldWidget(
-                                          isPassword: false,
-                                          isOutline: true,
-                                          suffixIconPath:
-                                              "assets/icons/currency-dollar.svg",
-                                          label: 'Buy Price',
-                                          onChanged: (value) => context
-                                              .read<StockCubit>()
-                                              .onFormChange(
-                                                  'price', double.parse(value)),
-                                          hint: '0.00',
-                                          defaultValue: state.stockForm?.price
-                                                  ?.toString() ??
-                                              selectedStock?.price
-                                                  ?.toString() ??
-                                              '',
-                                        ),
-                                      ),
+                                      // Expanded(
+                                      //   child: CustomTextFieldWidget(
+                                      //     isPassword: false,
+                                      //     isOutline: true,
+                                      //     suffixIconPath:
+                                      //         "assets/icons/currency-dollar.svg",
+                                      //     label: 'Buy Price',
+                                      //     onChanged: (value) => context
+                                      //         .read<StockCubit>()
+                                      //         .onFormChange(
+                                      //             'price', double.parse(value)),
+                                      //     hint: '0.00',
+                                      //     defaultValue: state.rawMaterialForm?.price
+                                      //             ?.toString() ??
+                                      //         selectedStock?.price
+                                      //             ?.toString() ??
+                                      //         '',
+                                      //   ),
+                                      // ),
                                       const SizedBox(width: 16),
                                       Expanded(
                                         child: CustomSelectTextFieldWidget(
                                           isOutline: true,
                                           label: 'Measure Type',
                                           selectedOption:
-                                              state.stockForm?.measureType ??
+                                              state.rawMaterialForm?.measureType ??
                                                   selectedStock?.measureType ??
                                                   'Cm',
                                           options: MeasureType.values
@@ -252,25 +250,7 @@ class StockFormDrawer extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 15),
-                                Padding(
-                                  padding: const EdgeInsets.all(13.0),
-                                  child: CustomTextFieldWidget(
-                                    isPassword: false,
-                                    isOutline: true,
-                                    suffixIconPath: "assets/icons/scale.svg",
-                                    label: 'Measure Value',
-                                    onChanged: (value) => context
-                                        .read<StockCubit>()
-                                        .onFormChange('measureValue',
-                                            double.parse(value)),
-                                    hint: '0',
-                                    defaultValue: state.stockForm?.measureValue
-                                            ?.toString() ??
-                                        selectedStock?.measureValue
-                                            ?.toString() ??
-                                        '',
-                                  ),
-                                ),
+                               
                               ],
                             ),
                           ),

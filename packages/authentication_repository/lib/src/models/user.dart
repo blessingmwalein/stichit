@@ -9,39 +9,48 @@ import 'package:form_inputs/form_inputs.dart';
 /// {@endtemplate}
 class UserModel extends Equatable {
   /// {@macro user}
-  const UserModel(
-      {required this.id,
-      this.email,
-      this.fullName,
-      this.photo,
-      this.address,
-      this.gender,
-      this.mobile,
-      this.confirmPassword,
-      this.password});
+  const UserModel({
+    required this.id,
+    this.email,
+    this.fullName,
+    this.photo,
+    this.address,
+    this.gender,
+    this.mobile,
+    this.confirmPassword,
+    this.password,
+    this.isAdmin = false, // Default value for isAdmin
+  });
 
-  /// The current user's
+  /// The current user's email.
   final Email? email;
 
   /// The current user's id.
   final String id;
 
-  /// The current user's fullName (display fullName).
+  /// The current user's full name.
   final String? fullName;
 
+  /// The current user's gender.
   final String? gender;
 
+  /// The current user's mobile number.
   final String? mobile;
 
+  /// The current user's address.
   final String? address;
 
-  //password
+  /// The current user's password.
   final Password? password;
-  //confirm password
+
+  /// The current user's confirm password.
   final Password? confirmPassword;
 
-  /// Url for the current user's photo.
+  /// URL for the current user's photo.
   final String? photo;
+
+  /// Indicates if the user is an admin.
+  final bool isAdmin;
 
   /// Empty user which represents an unauthenticated user.
   static const empty = UserModel(id: '');
@@ -53,17 +62,31 @@ class UserModel extends Equatable {
   bool get isNotEmpty => this != UserModel.empty;
 
   /// Creates a UserModel instance from Firestore document snapshot.
-  factory UserModel.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  factory UserModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data()!;
     return UserModel(
       id: snapshot.id,
-      email: data['email'],
+      email: data['email'] != null ? Email.dirty(data['email']) : null,
       fullName: data['full_name'],
       photo: data['photo'],
       address: data['address'],
       gender: data['gender'],
       mobile: data['mobile'],
+      isAdmin: data['is_admin'] ?? false, // Default to false if not set
+    );
+  }
+
+  /// Creates a UserModel instance from a JSON map.
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['id'] as String,
+      email: json['email'] != null ? Email.dirty(json['email'] as String) : null,
+      fullName: json['full_name'] as String?,
+      photo: json['photo'] as String?,
+      address: json['address'] as String?,
+      gender: json['gender'] as String?,
+      mobile: json['mobile'] as String?,
+      isAdmin: json['is_admin'] as bool? ?? false,
     );
   }
 
@@ -76,30 +99,49 @@ class UserModel extends Equatable {
       'address': address,
       'gender': gender,
       'mobile': mobile,
+      'is_admin': isAdmin, // Include the isAdmin field
+    };
+  }
+
+  /// Converts the UserModel instance to a JSON map.
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email?.value ?? '',
+      'full_name': fullName,
+      'photo': photo,
+      'address': address,
+      'gender': gender,
+      'mobile': mobile,
+      'id': id,
+      'is_admin': isAdmin,
     };
   }
 
   /// Returns a copy of the UserModel instance with the specified fields replaced with new values.
-  UserModel copyWith(
-      {String? id,
-      Email? email,
-      String? fullName,
-      String? photo,
-      String? address,
-      String? gender,
-      String? mobile,
-      Password? confirmPassword,
-      Password? password}) {
+  UserModel copyWith({
+    String? id,
+    Email? email,
+    String? fullName,
+    String? photo,
+    String? address,
+    String? gender,
+    String? mobile,
+    Password? confirmPassword,
+    Password? password,
+    bool? isAdmin,
+  }) {
     return UserModel(
-        id: id ?? this.id,
-        email: email ?? this.email,
-        fullName: fullName ?? this.fullName,
-        photo: photo ?? this.photo,
-        address: address ?? this.address,
-        gender: gender ?? this.gender,
-        mobile: mobile ?? this.mobile,
-        confirmPassword: confirmPassword ?? this.confirmPassword,
-        password: password ?? this.password);
+      id: id ?? this.id,
+      email: email ?? this.email,
+      fullName: fullName ?? this.fullName,
+      photo: photo ?? this.photo,
+      address: address ?? this.address,
+      gender: gender ?? this.gender,
+      mobile: mobile ?? this.mobile,
+      confirmPassword: confirmPassword ?? this.confirmPassword,
+      password: password ?? this.password,
+      isAdmin: isAdmin ?? this.isAdmin,
+    );
   }
 
   /// Returns a copy of the UserModel instance with a specific field replaced with a new value.
@@ -107,7 +149,6 @@ class UserModel extends Equatable {
     switch (field) {
       case 'email':
         final email = Email.dirty(value);
-
         return copyWith(email: email);
       case 'fullName':
         return copyWith(fullName: value);
@@ -125,27 +166,16 @@ class UserModel extends Equatable {
       case 'confirmPassword':
         final confirmPassword = Password.dirty(value);
         return copyWith(confirmPassword: confirmPassword);
+      case 'isAdmin':
+        return copyWith(isAdmin: value);
       default:
         return this;
     }
   }
 
-  //tojson
-  Map<String, dynamic> toJson() {
-    return {
-      'email': email?.value ?? '',
-      'full_name': fullName,
-      'photo': photo,
-      'address': address,
-      'gender': gender,
-      'mobile': mobile,
-      'id': id,
-    };
-  }
-
-  //check form valid
+  // Check form validity
   bool get isValid {
-    return email?.displayError != null && password?.displayError != null;
+    return email?.displayError == null && password?.displayError == null;
   }
 
   @override
@@ -158,18 +188,7 @@ class UserModel extends Equatable {
         gender,
         mobile,
         password,
-        confirmPassword
+        confirmPassword,
+        isAdmin,
       ];
-}
-
-class Gender {
-  static const String male = 'Male';
-  static const String female = 'Female';
-
-  static const List<String> values = [male, female];
-
-  static String fromString(String name) {
-    return values.firstWhere((gender) => gender == name,
-        orElse: () => throw ArgumentError('Unknown Gender: $name'));
-  }
 }

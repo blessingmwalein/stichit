@@ -16,7 +16,7 @@ import 'package:stichit/ui_commons/loaders/error_page.dart';
 import 'package:stichit/ui_commons/loaders/no_data_page.dart';
 import 'package:stichit/ui_commons/loaders/page_loader.dart';
 import 'package:stichit/ui_commons/tables/custom_data_table.dart';
-import 'package:stock_repository/stock_repository.dart';
+import 'package:raw_materials_repository/raw_materials_repository.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class RugsPage extends StatefulWidget {

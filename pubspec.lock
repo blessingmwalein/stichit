@@ -1146,6 +1146,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.1"
+  raw_materials_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/raw_materials_repository"
+      relative: true
+    source: path
+    version: "0.0.1"
   rugs_repository:
     dependency: "direct main"
     description:
@@ -1254,13 +1261,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.1"
-  stock_repository:
-    dependency: "direct main"
-    description:
-      path: "packages/stock_repository"
-      relative: true
-    source: path
-    version: "0.0.1"
   stream_channel:
     dependency: transitive
     description:

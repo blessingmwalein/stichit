@@ -4,7 +4,7 @@ import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/stock/cubit/stock_cubit.dart';
 import 'package:stichit/ui_commons/buttons/copy_text_button.dart';
 import 'package:stichit/ui_commons/buttons/icon_drop_down_button.dart';
-import 'package:stock_repository/stock_repository.dart';
+import 'package:raw_materials_repository/raw_materials_repository.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class RugsDataSource extends DataGridSource {

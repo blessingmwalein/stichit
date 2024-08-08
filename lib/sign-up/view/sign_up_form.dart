@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rugs_repository/rugs_repository.dart';
+import 'package:stichit/app/bloc/app_bloc.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/app/routes/routes.dart';
 import 'package:stichit/login/view/login_form.dart';
@@ -225,6 +226,7 @@ class _GenderInout extends StatelessWidget {
           isOutline: true,
           label: 'Gender',
           selectedOption: 'Male',
+          primaryColor: CustomColors.black.withOpacity(0.4),
           options:
               Gender.values.map((e) => e.toString().split('.').last).toList(),
           onChanged: (value) {
@@ -316,6 +318,8 @@ class _ConfirmPasswordInput extends StatelessWidget {
 class _SignUpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final appBloc = BlocProvider.of<AppBloc>(context);
+
     return BlocBuilder<SignUpCubit, SignUpState>(
       builder: (context, state) {
         return SizedBox(
@@ -334,6 +338,10 @@ class _SignUpButton extends StatelessWidget {
                 context.read<SignUpCubit>().saveUser();
                 context.read<SignUpCubit>().stream.listen((state) {
                   if (state.formStatus == FormzSubmissionStatus.success) {
+                    if (appBloc.state.user.isAdmin) {
+                      // Admins trying to access the sign-up route should be redirected to admin dashboard
+                      GoRouter.of(context).go(AdminRoutes.admin);
+                    }
                     GoRouter.of(context).go(UserRoutes.home);
                   }
                 });

@@ -3,12 +3,12 @@ import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/stock/cubit/stock_cubit.dart';
 import 'package:stichit/ui_commons/buttons/copy_text_button.dart';
 import 'package:stichit/ui_commons/buttons/icon_drop_down_button.dart';
-import 'package:stock_repository/stock_repository.dart';
+import 'package:raw_materials_repository/raw_materials_repository.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class StockDataSource extends DataGridSource {
   StockDataSource({
-    required List<Stock> stockList,
+    required List<RawMaterial> stockList,
     required this.onEdit,
     required this.onView,
     required this.onDelete,
@@ -17,24 +17,19 @@ class StockDataSource extends DataGridSource {
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: 'id', value: e.id),
               DataGridCell<String>(columnName: 'name', value: e.name),
-              DataGridCell<String>(columnName: 'category', value: e.category),
               DataGridCell<String>(
-                  columnName: 'quantity', value: e.quantity.toString()),
+                  columnName: 'category', value: e.rawMaterialCategory.toString()),
               DataGridCell<String>(
-                  columnName: 'measureType', value: e.measureType),
-              DataGridCell<String>(
-                  columnName: 'measureValue', value: e.measureValue.toString()),
-              DataGridCell<String>(columnName: 'color', value: e.color),
-              DataGridCell<double>(columnName: 'price', value: e.price),
+                  columnName: 'measureType', value: e.measureType.toString()),
               DataGridCell<String>(
                   columnName: 'description', value: e.description),
             ]))
         .toList();
   }
 
-  final Function(Stock) onEdit;
-  final Function(Stock) onView;
-  final Function(Stock) onDelete;
+  final Function(RawMaterial) onEdit;
+  final Function(RawMaterial) onView;
+  final Function(RawMaterial) onDelete;
 
   List<DataGridRow> _stockList = [];
 
@@ -55,18 +50,13 @@ class StockDataSource extends DataGridSource {
     final stockDescription = row.getCells()[8].value.toString();
 
     // Assuming you have a way to get the selected stock
-    Stock selectedStock = Stock(
+    RawMaterial selectedStock = RawMaterial(
       id: stockId,
       name: stockName,
-      category: stockCategory,
-      quantity: int.parse(stockQuantity),
-      measureValue: double.parse(stockMeasureValue),
-      measureType: stockMeasureType,
-      color: stockColor,
-      price: double.parse(stockPrice),
+      rawMaterialCategory: RawMaterialCategory(),
+      measureType: MeasureType(),
       description: stockDescription,
     );
-
     return DataGridRowAdapter(cells: <Widget>[
       Container(
         alignment: Alignment.center,

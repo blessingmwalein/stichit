@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
-import 'package:stock_repository/stock_repository.dart';
+import 'package:raw_materials_repository/raw_materials_repository.dart';
 
 part 'stock_cubit_state.dart';
 
@@ -18,21 +18,21 @@ class StockCubit extends Cubit<StockCubitState> {
 
   void onFormChange(String field, dynamic value) {
     log("field: $field, value: $value");
-    final updatedStock = state.stockForm.copyWithField(field, value);
+    final updatedStock = state.rawMaterialForm.copyWithField(field, value);
     log("updatedStock: $updatedStock");
-    emit(state.copyWith(stockForm: updatedStock));
+    emit(state.copyWith(rawMaterialForm: updatedStock));
   }
 
   // Save stock
   void saveStock() {
-    final stockForm = state.stockForm;
+    final rawMaterialForm = state.rawMaterialForm;
     emit(state.copyWith(formStatus: FormzSubmissionStatus.inProgress));
     //check is isedit
     if (state.isEditing) {
-      _stockRepository.updateStock(stockForm).then((_) {
+      _stockRepository.updateStock(rawMaterialForm).then((_) {
         emit(state.copyWith(
             formStatus: FormzSubmissionStatus.success,
-            successMessage: "Stock updated successfully"));
+            successMessage: "RawMaterial updated successfully"));
         resetFormStatus();
       }).catchError((error) {
         emit(state.copyWith(
@@ -42,10 +42,10 @@ class StockCubit extends Cubit<StockCubitState> {
       });
       return;
     } else {
-      _stockRepository.addStock(stockForm).then((_) {
+      _stockRepository.addStock(rawMaterialForm).then((_) {
         emit(state.copyWith(
             formStatus: FormzSubmissionStatus.success,
-            successMessage: "Stock saved successfully"));
+            successMessage: "RawMaterial saved successfully"));
         resetFormStatus();
       }).catchError((error) {
         emit(state.copyWith(
@@ -61,19 +61,19 @@ class StockCubit extends Cubit<StockCubitState> {
   }
 
   // Onclick edit
-  void editStock(Stock stock) {
+  void editStock(RawMaterial stock) {
     emit(state.copyWith(
-      stockForm: stock,
+      rawMaterialForm: stock,
       isEditing: true,
       selectedStock: stock,
     ));
   }
 
   // Set selected stock
-  void setSelectedStock(Stock stock) {
+  void setSelectedStock(RawMaterial stock) {
     emit(state.copyWith(
       selectedStock: stock,
-      stockForm: stock,
+      rawMaterialForm: stock,
     ));
   }
 
@@ -106,15 +106,15 @@ class StockCubit extends Cubit<StockCubitState> {
   }
 
   // Search stock by category from state.stocks
-  List<Stock> searchStockByCategory(String category) {
+  List<RawMaterial> searchStockByCategory(String category) {
     final stocks = state.stocks;
-    return stocks.where((stock) => stock.category == category).toList();
+    return stocks.where((stock) => stock.rawMaterialCategory == category).toList();
   }
 
   //clearForm
   void clearForm() {
     emit(state.copyWith(
-      stockForm: Stock.empty(),
+      rawMaterialForm: RawMaterial.empty(),
       isEditing: false,
       selectedStock: null,
     ));

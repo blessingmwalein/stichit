@@ -38,8 +38,7 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       // Call the logIn method from the authentication repository
       await authenticationRepository.logInWithEmailAndPassword(
-          email: authRequest.email?.value ?? "",
-          password: authRequest.password?.value ?? "");
+          email: authRequest.email.value, password: authRequest.password.value);
       emit(state.copyWith(
         formStatus: FormzSubmissionStatus.success,
         successMessage: "User logged in successfully",

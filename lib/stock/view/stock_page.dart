@@ -12,7 +12,7 @@ import 'package:stichit/ui_commons/loaders/error_page.dart';
 import 'package:stichit/ui_commons/loaders/no_data_page.dart';
 import 'package:stichit/ui_commons/loaders/page_loader.dart';
 import 'package:stichit/ui_commons/tables/custom_data_table.dart';
-import 'package:stock_repository/stock_repository.dart';
+import 'package:raw_materials_repository/raw_materials_repository.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class StockPage extends StatefulWidget {
@@ -74,7 +74,7 @@ class _StockPageState extends State<StockPage> {
     return DefaultTabController(
       length: 3, // Number of tabs
       child: MainLayout(
-        crumbs: const ['Home', 'Stock'],
+        crumbs: const ['Home', 'RawMaterial'],
         isOpened: _isDrawerOpen,
         actionDrawers: [
           StockFormDrawer(
@@ -112,7 +112,7 @@ class _StockPageState extends State<StockPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: DropDownButton(
-                    items: StockCategory.values
+                    items: RawMaterialCategory.values
                         .map((e) => e.toString().split('.').last)
                         .toList(),
                     selectedValue: _selectedValue,
@@ -136,15 +136,15 @@ class _StockPageState extends State<StockPage> {
                     case FormzSubmissionStatus.success:
                       // Get stocks by category
 
-                      List<Stock> yarns =
+                      List<RawMaterial> yarns =
                           stockCubit.searchStockByCategory('Yarn');
-                      List<Stock> cloths =
+                      List<RawMaterial> cloths =
                           stockCubit.searchStockByCategory('Cloth');
-                      List<Stock> glues =
+                      List<RawMaterial> glues =
                           stockCubit.searchStockByCategory('Glue');
 
                       // Define a function to build data tables
-                      Widget buildDataTable(List<Stock> stockList) {
+                      Widget buildDataTable(List<RawMaterial> stockList) {
                         if (stockList.isEmpty) {
                           return const NoDataPage(
                               message: 'No stocks available');
@@ -152,17 +152,17 @@ class _StockPageState extends State<StockPage> {
                         return CustomerDataTable(
                           dataSource: StockDataSource(
                               stockList: stockList,
-                              onView: (Stock stock) {
+                              onView: (RawMaterial stock) {
                                 context
                                     .read<StockCubit>()
                                     .setSelectedStock(stock);
                                 _toggleViewDrawer();
                               },
-                              onDelete: (Stock stock) async {
+                              onDelete: (RawMaterial stock) async {
                                 final bool? isDelete =
                                     await showCustomConfirmationDialog(
                                   context,
-                                  'Delete Stock',
+                                  'Delete RawMaterial',
                                   'Are you sure you want to delete this stock?',
                                   'assets/icons/trash.svg',
                                 );
@@ -170,7 +170,7 @@ class _StockPageState extends State<StockPage> {
                                   // context.read<StockCubit>().deleteStock(stock);
                                 }
                               },
-                              onEdit: (Stock stock) {
+                              onEdit: (RawMaterial stock) {
                                 context.read<StockCubit>().editStock(stock);
                                 _toggleDrawer();
                               }),

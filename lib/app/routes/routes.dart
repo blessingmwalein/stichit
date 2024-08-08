@@ -20,3 +20,12 @@ abstract class UserRoutes {
   static const login = '/login';
   static const signUp = '/sign-up';
 }
+
+
+abstract class AdminRoutes {
+  static const admin = '/admin';
+  static const rawMaterials = '/admin/raw-materials';
+  static const orders = '/admin/orders';
+  static const customers = '/admin/customers';
+  static const production = '/admin/production';
+}

@@ -64,8 +64,8 @@ dependencies:
     path: packages/form_inputs
   ui_commons:
     path: packages/ui_commons
-  stock_repository:
-    path: packages/stock_repository
+  raw_materials_repository:
+    path: packages/raw_materials_repository
   rugs_repository:
     path: packages/rugs_repository
   collapsible_sidebar: ^2.0.7

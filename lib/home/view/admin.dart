@@ -3,13 +3,13 @@ import 'package:stichit/app/layouts/main_layout.dart';
 import 'package:stichit/ui_commons/cards/dashboard_card.dart';
 import 'package:stichit/ui_commons/cards/project_card.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class AdminDashboard extends StatelessWidget {
+  const AdminDashboard({super.key});
 
-  static Page<void> page() => const MaterialPage<void>(child: HomePage());
+  static Page<void> page() => const MaterialPage<void>(child: AdminDashboard());
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const HomePage());
+    return MaterialPageRoute<void>(builder: (_) => const AdminDashboard());
   }
 
   @override
