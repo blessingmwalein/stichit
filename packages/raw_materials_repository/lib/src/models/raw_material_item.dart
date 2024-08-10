@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:raw_materials_repository/raw_materials_repository.dart';
 
-class RawMaterial extends Equatable {
+class RawMaterialItem extends Equatable {
   final String id;
   final String description;
   final String name;
   final MeasureType measureType;
   final RawMaterialCategory rawMaterialCategory;
 
-  const RawMaterial({
+  const RawMaterialItem({
     required this.id,
     required this.description,
     required this.name,
@@ -18,11 +18,11 @@ class RawMaterial extends Equatable {
   });
 
   // from firestore
-  factory RawMaterial.fromFirestore(
+  factory RawMaterialItem.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
   ) {
     final data = snapshot.data()!;
-    return RawMaterial(
+    return RawMaterialItem(
       id: snapshot.id,
       description: data['description'],
       name: data['name'],
@@ -42,7 +42,7 @@ class RawMaterial extends Equatable {
   }
 
   // CopyWith method to update a specific field
-  RawMaterial copyWithField(String field, dynamic value) {
+  RawMaterialItem copyWithField(String field, dynamic value) {
     switch (field) {
       case 'description':
         return copyWith(description: value);
@@ -57,8 +57,8 @@ class RawMaterial extends Equatable {
     }
   }
 
-  factory RawMaterial.empty() {
-    return RawMaterial(
+  factory RawMaterialItem.empty() {
+    return RawMaterialItem(
       id: '',
       description: '',
       name: '',
@@ -69,14 +69,14 @@ class RawMaterial extends Equatable {
     );
   }
   // CopyWith method
-  RawMaterial copyWith({
+  RawMaterialItem copyWith({
     String? id,
     String? description,
     String? name,
     MeasureType? measureType,
     RawMaterialCategory? rawMaterialCategory,
   }) {
-    return RawMaterial(
+    return RawMaterialItem(
       id: id ?? this.id,
       description: description ?? this.description,
       name: name ?? this.name,

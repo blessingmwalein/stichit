@@ -2,31 +2,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:raw_materials_repository/raw_materials_repository.dart';
 
-class RawMaterial extends Equatable {
+class Supplier extends Equatable {
   final String id;
-  final String description;
   final String name;
-  final MeasureType measureType;
+  final String phoneNumber;
+  final String email;
+  final String address;
   final RawMaterialCategory rawMaterialCategory;
 
-  const RawMaterial({
+  const Supplier({
     required this.id,
-    required this.description,
     required this.name,
-    required this.measureType,
+    required this.phoneNumber,
+    required this.email,
+    required this.address,
     required this.rawMaterialCategory,
   });
 
   // from firestore
-  factory RawMaterial.fromFirestore(
+  factory Supplier.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
   ) {
     final data = snapshot.data()!;
-    return RawMaterial(
+    return Supplier(
       id: snapshot.id,
-      description: data['description'],
       name: data['name'],
-      measureType: data['measure_type'],
+      phoneNumber: data['phone_number'],
+      email: data['email'],
+      address: data['address'],
       rawMaterialCategory: data['category'],
     );
   }
@@ -34,18 +37,14 @@ class RawMaterial extends Equatable {
   // to firestore
   Map<String, dynamic> toFirestore() {
     return {
-      'description': description,
       'name': name,
-      'measure_type': measureType,
       'category': rawMaterialCategory,
     };
   }
 
   // CopyWith method to update a specific field
-  RawMaterial copyWithField(String field, dynamic value) {
+  Supplier copyWithField(String field, dynamic value) {
     switch (field) {
-      case 'description':
-        return copyWith(description: value);
       case 'name':
         return copyWith(name: value);
       case 'measureType':
@@ -57,30 +56,32 @@ class RawMaterial extends Equatable {
     }
   }
 
-  factory RawMaterial.empty() {
-    return RawMaterial(
+  factory Supplier.empty() {
+    return Supplier(
       id: '',
-      description: '',
       name: '',
-      measureType: MeasureType(),
+      phoneNumber: '',
+      email: '',
+      address: '',
       // Default value for MeasureType
       rawMaterialCategory: RawMaterialCategory(),
       // Default value for RawMaterialCategory
     );
   }
   // CopyWith method
-  RawMaterial copyWith({
+  Supplier copyWith({
     String? id,
     String? description,
     String? name,
     MeasureType? measureType,
     RawMaterialCategory? rawMaterialCategory,
   }) {
-    return RawMaterial(
+    return Supplier(
       id: id ?? this.id,
-      description: description ?? this.description,
       name: name ?? this.name,
-      measureType: measureType ?? this.measureType,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      email: email ?? this.email,
+      address: address ?? this.address,
       rawMaterialCategory: rawMaterialCategory ?? this.rawMaterialCategory,
     );
   }
@@ -88,9 +89,10 @@ class RawMaterial extends Equatable {
   @override
   List<Object?> get props => [
         id,
-        description,
         name,
-        measureType,
+        phoneNumber,
+        email,
+        address,
         rawMaterialCategory,
       ];
 }
