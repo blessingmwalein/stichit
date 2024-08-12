@@ -18,6 +18,9 @@ class CustomColors {
   static const Color searchFormBack = Color(0xFFF0F0F0);
 
   static const Color clientBack = Color(0xFFF2F0F1);
+
+  //green
+  static const Color green = Color(0xFF00C853);
 }
 
 const Color blue = Color(0xff382FB8);

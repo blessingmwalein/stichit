@@ -17,6 +17,7 @@ class CustomTextFieldWidget extends StatefulWidget {
     this.suffixIconPath,
     this.isOutline = false,
     this.maxLines, // Added maxLines parameter for multi-line text fields
+    this.primaryColor, // Added primaryColor parameter for custom color
   });
 
   final String label;
@@ -31,6 +32,7 @@ class CustomTextFieldWidget extends StatefulWidget {
   final String? suffixIconPath;
   final bool isOutline;
   final int? maxLines; // Nullable parameter for the number of lines
+  final Color? primaryColor; // Primary color for text and border
 
   @override
   _CustomTextFieldWidgetState createState() => _CustomTextFieldWidgetState();
@@ -49,6 +51,8 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final Color primaryColor = widget.primaryColor ?? primaryWhite;
+
     return TextField(
       controller: _textEditingController,
       enabled: widget.isEnabled,
@@ -56,7 +60,7 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
       onChanged: widget.onChanged,
       keyboardType: widget.textInputType,
       scrollPadding: EdgeInsets.zero,
-      style: TextStyle(color: primaryWhite.withOpacity(0.7)),
+      style: TextStyle(color: primaryColor.withOpacity(0.7)),
       maxLines: widget.maxLines ?? 1, // Set maxLines with a default value of 1
       minLines: widget.maxLines ?? 1, // Set minLines for proper height
       decoration: InputDecoration(
@@ -64,42 +68,41 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
         fillColor: lightBlackForm,
         labelText: widget.label,
         labelStyle: TextStyle(
-          color: widget.isEnabled ? primaryWhite : Colors.grey,
+          color: widget.isEnabled ? primaryColor : Colors.grey,
         ),
         hintText: widget.hint,
         hintStyle: TextStyle(
-          color: widget.isEnabled ? primaryWhite.withOpacity(0.7) : Colors.grey,
+          color: widget.isEnabled ? primaryColor.withOpacity(0.7) : Colors.grey,
         ),
         errorText: widget.errorText,
         errorStyle: const TextStyle(color: Colors.yellow),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(40.0),
           borderSide:
-              BorderSide(width: 2.0, color: primaryWhite.withOpacity(0.7)),
+              BorderSide(width: 2.0, color: primaryColor.withOpacity(0.7)),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(40.0),
           borderSide: BorderSide(
-            color: primaryWhite.withOpacity(0.2),
+            color: primaryColor.withOpacity(0.2),
           ),
         ),
         enabledBorder: widget.isOutline
             ? OutlineInputBorder(
                 borderRadius: BorderRadius.circular(40.0),
                 borderSide: BorderSide(
-                    width: 2.0, color: primaryWhite.withOpacity(0.7)),
+                    width: 2.0, color: primaryColor.withOpacity(0.7)),
               )
             : OutlineInputBorder(
                 borderRadius: BorderRadius.circular(40.0),
                 borderSide: BorderSide(
-                  color: primaryWhite.withOpacity(0.2),
+                  color: primaryColor.withOpacity(0.2),
                 ),
               ),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(40.0),
-          // borderSide: BorderSide.none,
         ),
         suffixIcon: widget.isPassword
             ? IconButton(
@@ -111,7 +114,7 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                 },
                 icon: Icon(
                   _obscureText ? Icons.visibility : Icons.visibility_off,
-                  color: primaryWhite,
+                  color: primaryColor,
                 ),
               )
             : (widget.suffixIconPath != null
@@ -120,7 +123,7 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                         const EdgeInsets.all(12.0), // Adjust padding as needed
                     child: customSvgIcon(
                       path: widget.suffixIconPath!,
-                      iconColor: primaryWhite.withOpacity(0.7),
+                      iconColor: primaryColor.withOpacity(0.7),
                       width: 20,
                       height: 20,
                     ),

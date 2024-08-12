@@ -14,12 +14,12 @@ class ClientHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClientLayout(
         child: Container(
-          //infinitive height
-          width: double.infinity,
-        decoration: const BoxDecoration(
-          color: CustomColors.white,
-        ),
-      child:const SingleChildScrollView(
+      //infinitive height
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: CustomColors.white,
+      ),
+      child: const SingleChildScrollView(
         child: Column(
           children: [
             // SizedBox(height: 10),
