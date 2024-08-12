@@ -4,3 +4,9 @@ enum RugDrawerType {
   edit,
   view,
 }
+
+enum DraweType {
+  add,
+  edit,
+  view,
+}

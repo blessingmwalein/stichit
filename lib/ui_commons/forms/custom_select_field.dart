@@ -29,7 +29,7 @@ class CustomSelectTextFieldWidget<T> extends StatefulWidget {
   final String? bindValue;
   final String? bindName;
   final Color primaryColor; // Optional primary color
-  final Color borderColor;  // Optional border color
+  final Color borderColor; // Optional border color
 
   @override
   _CustomSelectTextFieldWidgetState<T> createState() =>
@@ -71,12 +71,10 @@ class _CustomSelectTextFieldWidgetState<T>
         labelText: widget.label,
         focusColor: widget.primaryColor,
         filled: !widget.isOutline,
-        fillColor: widget.isOutline ? null : widget.primaryColor,
+        fillColor: widget.isOutline ? null : CustomColors.darkBackGround,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-        labelStyle:  TextStyle(
-          color: widget.primaryColor
-        ),
+        labelStyle: TextStyle(color: widget.primaryColor),
         hintStyle: TextStyle(
           color: widget.primaryColor.withOpacity(0.7),
         ),

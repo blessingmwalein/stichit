@@ -1,4 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:customer_repository/customer_repository.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/bloc/app_bloc.dart';
 import 'package:stichit/app/routes/app.dart';
 import 'package:stichit/app/routes/routes.dart';
+import 'package:stichit/customers/cubit/customer_cubit.dart';
 import 'package:stichit/login/login.dart';
 import 'package:stichit/rugs/cubit/rugs_cubit.dart';
 import 'package:stichit/sign-up/cubit/sign_up_cubit.dart';
@@ -23,6 +25,7 @@ class App extends StatelessWidget {
       AuthenticationRepository();
   final StockRepository _stockRepository = StockRepository();
   final RugsRepositoryBase _rugsRepositoryBase = RugsRepositoryBase();
+  final CustomerRepository _customerRepository = CustomerRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +39,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<RugsRepositoryBase>.value(
           value: _rugsRepositoryBase,
+        ),
+        RepositoryProvider<CustomerRepository>.value(
+          value: _customerRepository,
         ),
       ],
       child: MultiBlocProvider(
@@ -63,6 +69,11 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (context) => SignUpCubit(
               authenticationRepository: _authenticationRepository,
+            ),
+          ),
+          BlocProvider(
+            create: (context) => CustomerCubit(
+              customerRepository: _customerRepository,
             ),
           ),
         ],

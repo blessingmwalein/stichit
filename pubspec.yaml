@@ -68,6 +68,8 @@ dependencies:
     path: packages/raw_materials_repository
   rugs_repository:
     path: packages/rugs_repository
+  customer_repository:
+    path: packages/customer_repository
   collapsible_sidebar: ^2.0.7
   syncfusion_localizations: ^26.1.39
   syncfusion_flutter_core: ^26.1.39
