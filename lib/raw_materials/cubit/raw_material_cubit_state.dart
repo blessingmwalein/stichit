@@ -1,7 +1,7 @@
-part of 'stock_cubit.dart';
+part of 'raw_material_cubit.dart';
 
-final class StockCubitState extends Equatable {
-  StockCubitState({
+final class RawMaterialCubitState extends Equatable {
+  RawMaterialCubitState({
     this.formStatus = FormzSubmissionStatus.initial,
     this.pageStatus = FormzSubmissionStatus.initial,
     this.isFormValid = false,
@@ -23,7 +23,7 @@ final class StockCubitState extends Equatable {
   final List<RawMaterial> stocks;
   final RawMaterial? selectedStock;
 
-  StockCubitState copyWith({
+  RawMaterialCubitState copyWith({
     FormzSubmissionStatus? formStatus,
     FormzSubmissionStatus? pageStatus,
     bool? isFormValid,
@@ -34,7 +34,7 @@ final class StockCubitState extends Equatable {
     List<RawMaterial>? stocks,
     RawMaterial? selectedStock,
   }) {
-    return StockCubitState(
+    return RawMaterialCubitState(
       formStatus: formStatus ?? this.formStatus,
       pageStatus: pageStatus ?? this.pageStatus,
       isFormValid: isFormValid ?? this.isFormValid,

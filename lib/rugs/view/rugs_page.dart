@@ -11,13 +11,10 @@ import 'package:stichit/rugs/view/widgets/rug_form_drawer.dart';
 import 'package:stichit/rugs/view/widgets/view_rug_drawer.dart';
 import 'package:stichit/ui_commons/alerts/confirm_dialog.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
-import 'package:stichit/ui_commons/buttons/dropdown_button.dart';
 import 'package:stichit/ui_commons/loaders/error_page.dart';
 import 'package:stichit/ui_commons/loaders/no_data_page.dart';
 import 'package:stichit/ui_commons/loaders/page_loader.dart';
 import 'package:stichit/ui_commons/tables/custom_data_table.dart';
-import 'package:raw_materials_repository/raw_materials_repository.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class RugsPage extends StatefulWidget {
   const RugsPage({super.key});
@@ -29,10 +26,10 @@ class RugsPage extends StatefulWidget {
   }
 
   @override
-  _StockPageState createState() => _StockPageState();
+  StockPageState createState() => StockPageState();
 }
 
-class _StockPageState extends State<RugsPage> {
+class StockPageState extends State<RugsPage> {
   @override
   void initState() {
     super.initState();
@@ -41,7 +38,7 @@ class _StockPageState extends State<RugsPage> {
 
   bool _isCreateRugDrawerOpen = false;
   bool _isViewDrawerOpen = false;
-  String _selectedValue = 'Rugs';
+  final String _selectedValue = 'Rugs';
 
   void _toggleDrawer(
     RugDrawerType drawerType,
@@ -82,7 +79,7 @@ class _StockPageState extends State<RugsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final rugCubit = context.read<RugsCubit>();
+    // final rugCubit = context.read<RugsCubit>();
 
     return MainLayout(
       crumbs: const ['Home', 'Rug'],
@@ -142,7 +139,9 @@ class _StockPageState extends State<RugsPage> {
                         );
                       },
                       onView: (Rug rug) {
-                        context.read<RugsCubit>().setSelectedRug(rug);
+                        context.read<RugsCubit>().setSelectedRug(
+                              rug,
+                            );
                         _toggleDrawer(
                           RugDrawerType.view,
                         );
@@ -158,10 +157,8 @@ class _StockPageState extends State<RugsPage> {
                   columns: const [
                     "ID",
                     "Name",
-                    "Type",
-                    "Shape",
-                    "Measures",
-                    "Price",
+                    "Aprox Price",
+                    "Description",
                     "Actions",
                   ],
                 );

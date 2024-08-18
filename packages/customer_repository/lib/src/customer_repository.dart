@@ -107,4 +107,14 @@ class CustomerRepository {
       throw Exception('Failed to get users by email: ${e.toString()}');
     }
   }
+
+  //deleteUser
+  Future<void> deleteUser(UserModel user) async {
+    try {
+      await _firestore.collection('users').doc(user.id).delete();
+    } catch (e) {
+      log('data: $e');
+      throw Exception('Failed to delete user: ${e.toString()}');
+    }
+  }
 }

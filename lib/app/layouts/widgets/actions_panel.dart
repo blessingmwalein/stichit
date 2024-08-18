@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/ui_commons/icons/custom_svg_icon.dart';
 import 'package:ui_commons/ui_commons.dart';
@@ -97,10 +95,10 @@ class _RightActionsPanelState extends State<RightActionsPanel> {
       {required String img, required String message, required String time}) {
     return Row(
       children: [
-        Container(
+        const SizedBox(
           width: 50,
           height: 50,
-          child: const BlingUserCircleAvatar(
+          child: BlingUserCircleAvatar(
             imagePath: "assets/icons/profile.jpg",
             isOnline: false,
           ),
@@ -118,7 +116,7 @@ class _RightActionsPanelState extends State<RightActionsPanel> {
             ),
             const SizedBox(height: 5),
             Text(
-              time ?? "Just now",
+              time,
               style: TextStyle(
                   color: CustomColors.white.withOpacity(0.6),
                   fontSize: 12,

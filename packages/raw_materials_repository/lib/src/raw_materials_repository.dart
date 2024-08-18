@@ -3,40 +3,44 @@ import 'package:raw_materials_repository/raw_materials_repository.dart';
 import 'package:raw_materials_repository/src/models/stock_batch.dart';
 import 'dart:developer';
 
-class StockRepository {
+class RawMaterialsRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  Future<void> addStock(RawMaterial rawMaterial) async {
+  Future<void> addRawMaterial(RawMaterial rawMaterial) async {
     // Add rawMaterial to database
     try {
-      await _firestore.collection('rawMaterials').add(rawMaterial.toFirestore());
+      await _firestore
+          .collection('raw_materials')
+          .add(rawMaterial.toFirestore());
     } catch (e) {
       log('data: $e');
-      throw Exception('Failed to add rawMaterial: ${e.toString()}');
+      throw Exception('Failed to add raw material: ${e.toString()}');
     }
   }
 
-  Future<void> removeStock(RawMaterial rawMaterial) async {
+  Future<void> removeRawMaterial(RawMaterial rawMaterial) async {
     // Remove rawMaterial from database
     try {
-      await _firestore.collection('rawMaterials').doc(rawMaterial.id).delete();
+      await _firestore.collection('raw_materials').doc(rawMaterial.id).delete();
     } catch (e) {
       log('data: $e');
-      throw Exception('Failed to remove rawMaterial: ${e.toString()}');
+      throw Exception('Failed to remove raw material: ${e.toString()}');
     }
   }
 
-  Future<List<RawMaterial>> getStocks() async {
+  Future<List<RawMaterial>> getRawMaterilas() async {
     // Get rawMaterials from database
     try {
-      final snapshot = await _firestore.collection('rawMaterials').get();
-      return snapshot.docs.map((doc) => RawMaterial.fromFirestore(doc)).toList();
+      final snapshot = await _firestore.collection('raw_materials').get();
+      return snapshot.docs
+          .map((doc) => RawMaterial.fromFirestore(doc))
+          .toList();
     } catch (e) {
       log('data: $e');
       throw Exception('Failed to get rawMaterials: ${e.toString()}');
     }
   }
 
-  Future<void> updateStock(RawMaterial rawMaterial) async {
+  Future<void> updateRawMaterials(RawMaterial rawMaterial) async {
     // Update rawMaterial in database
     try {
       await _firestore
@@ -52,7 +56,9 @@ class StockRepository {
   Future<void> addStockBatch(StockBatch rawMaterial) async {
     // Add rawMaterial batch to database
     try {
-      await _firestore.collection('stock_batches').add(rawMaterial.toFirestore());
+      await _firestore
+          .collection('stock_batches')
+          .add(rawMaterial.toFirestore());
     } catch (e) {
       log('data: $e');
       throw Exception('Failed to add rawMaterial batch: ${e.toString()}');
@@ -101,22 +107,26 @@ class StockRepository {
           .collection('rawMaterials')
           .where('batch_number', isEqualTo: batchNumber)
           .get();
-      return snapshot.docs.map((doc) => RawMaterial.fromFirestore(doc)).toList();
+      return snapshot.docs
+          .map((doc) => RawMaterial.fromFirestore(doc))
+          .toList();
     } catch (e) {
       log('data: $e');
       throw Exception('Failed to get rawMaterials: ${e.toString()}');
     }
   }
 
-  //getStocksByCategory
-  Future<List<RawMaterial>> getStocksByCategory(String category) async {
+  //getRawMaterialByCategory
+  Future<List<RawMaterial>> getRawMaterialByCategory(String category) async {
     // Get rawMaterials from database
     try {
       final snapshot = await _firestore
-          .collection('rawMaterials')
+          .collection('raw_materials')
           .where('category', isEqualTo: category)
           .get();
-      return snapshot.docs.map((doc) => RawMaterial.fromFirestore(doc)).toList();
+      return snapshot.docs
+          .map((doc) => RawMaterial.fromFirestore(doc))
+          .toList();
     } catch (e) {
       log('data: $e');
       throw Exception('Failed to get rawMaterials: ${e.toString()}');
@@ -127,12 +137,13 @@ class StockRepository {
   Future<List<RawMaterial>> getAllStocks() async {
     // Get rawMaterials from database
     try {
-      final snapshot = await _firestore.collection('rawMaterials').get();
-      return snapshot.docs.map((doc) => RawMaterial.fromFirestore(doc)).toList();
+      final snapshot = await _firestore.collection('raw_materials').get();
+      return snapshot.docs
+          .map((doc) => RawMaterial.fromFirestore(doc))
+          .toList();
     } catch (e) {
       log('data: $e');
-      throw Exception('Failed to get rawMaterials: ${e.toString()}');
+      throw Exception('Failed to get raw materials: ${e.toString()}');
     }
   }
-
 }

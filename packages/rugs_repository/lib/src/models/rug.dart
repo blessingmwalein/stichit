@@ -9,38 +9,38 @@ class Rug extends Equatable {
   final String id;
   final String name;
   final String description;
-  final double pricePerUnit;
-  final String measureType;
-  final double measureValue;
-  final String type;
-  final String shape;
-  final List<RugImage>? images;
+  final double approxPricePerUnit;
+  final List<RugSizes>? sizes;
+  final double? approxHoursComplete;
 
-  Rug({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.pricePerUnit,
-    required this.measureType,
-    required this.measureValue,
-    required this.type,
-    required this.shape,
-    this.images,
-  });
+  Rug(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.approxPricePerUnit,
+      this.sizes,
+      this.approxHoursComplete});
 
   // from firestore
   factory Rug.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data()!;
     return Rug(
-      id: snapshot.id,
-      name: data['name'],
-      description: data['description'],
-      pricePerUnit: data['price_per_unit'],
-      measureType: data['measure_type'] ?? RugMeasureType.lw,
-      measureValue: data['measure_value'],
-      type: RugType.fromString(data['type']),
-      shape: data['shape'],
-    );
+        id: snapshot.id,
+        name: data['name'],
+        description: data['description'],
+        approxPricePerUnit: _toDouble(data['approx_price_per_unit']),
+        approxHoursComplete: _toDouble(data['approx_hours_complete']));
+  }
+  static double _toDouble(dynamic value) {
+    if (value is String) {
+      return double.tryParse(value) ?? 0.0;
+    } else if (value is double) {
+      return value;
+    } else if (value is int) {
+      return value.toDouble();
+    } else {
+      return 0.0;
+    }
   }
 
   // to firestore
@@ -48,36 +48,24 @@ class Rug extends Equatable {
     return {
       'name': name,
       'description': description,
-      'price_per_unit': pricePerUnit,
-      'measure_type': measureType,
-      'measure_value': measureValue,
-      'type': type,
-      'shape': shape,
+      'approx_price_per_unit': approxPricePerUnit,
+      'appox_hours_complete': approxHoursComplete
     };
   }
 
   // copy with
-  Rug copyWith({
-    String? id,
-    String? name,
-    String? description,
-    double? pricePerUnit,
-    String? measureType,
-    double? measureValue,
-    String? type,
-    String? shape,
-    List<String>? colors,
-  }) {
+  Rug copyWith(
+      {String? id,
+      String? name,
+      String? description,
+      double? approxPricePerUnit,
+      double? approxHoursComplete}) {
     return Rug(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      description: description ?? this.description,
-      pricePerUnit: pricePerUnit ?? this.pricePerUnit,
-      measureType: measureType ?? this.measureType,
-      measureValue: measureValue ?? this.measureValue,
-      type: type ?? this.type,
-      shape: shape ?? this.shape,
-    );
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        approxPricePerUnit: approxPricePerUnit ?? this.approxPricePerUnit,
+        approxHoursComplete: approxPricePerUnit ?? this.approxHoursComplete);
   }
 
   // empty
@@ -85,11 +73,8 @@ class Rug extends Equatable {
       id: '',
       name: '',
       description: '',
-      pricePerUnit: 0.0,
-      measureType: RugMeasureType.lw,
-      measureValue: 0.0,
-      type: RugType.cutPile,
-      shape: RugShape.rectangle);
+      approxPricePerUnit: 0.0,
+      approxHoursComplete: 0.0);
 
   // copyWithField
   Rug copyWithField(String field, dynamic value) {
@@ -98,30 +83,16 @@ class Rug extends Equatable {
         return copyWith(name: value);
       case 'description':
         return copyWith(description: value);
-      case 'pricePerUnit':
-        return copyWith(pricePerUnit: value);
-      case 'measureType':
-        return copyWith(measureType: value);
-      case 'measureValue':
-        return copyWith(measureValue: value);
-      case 'type':
-        return copyWith(type: RugType.fromString(value) ?? type);
-      case 'shape':
-        return copyWith(shape: RugShape.fromString(value));
+      case 'approxPricePerUnit':
+        return copyWith(approxPricePerUnit: value);
+      case 'appoxHoursComplete':
+        return copyWith(approxHoursComplete: approxHoursComplete);
       default:
         return this;
     }
   }
 
   @override
-  List<Object?> get props => [
-        id,
-        name,
-        description,
-        pricePerUnit,
-        measureType,
-        measureValue,
-        type,
-        shape,
-      ];
+  List<Object?> get props =>
+      [id, name, description, approxPricePerUnit, approxHoursComplete];
 }

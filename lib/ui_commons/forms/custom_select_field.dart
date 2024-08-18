@@ -3,7 +3,7 @@ import 'package:stichit/app/const/colors.dart';
 
 class CustomSelectTextFieldWidget<T> extends StatefulWidget {
   const CustomSelectTextFieldWidget({
-    Key? key,
+    super.key,
     required this.label,
     this.controller,
     this.textInputType,
@@ -16,7 +16,7 @@ class CustomSelectTextFieldWidget<T> extends StatefulWidget {
     this.bindName,
     this.primaryColor = CustomColors.white,
     this.borderColor = CustomColors.white,
-  }) : super(key: key);
+  });
 
   final String label;
   final TextEditingController? controller;
@@ -32,11 +32,11 @@ class CustomSelectTextFieldWidget<T> extends StatefulWidget {
   final Color borderColor; // Optional border color
 
   @override
-  _CustomSelectTextFieldWidgetState<T> createState() =>
-      _CustomSelectTextFieldWidgetState<T>();
+  CustomSelectTextFieldWidgetState<T> createState() =>
+      CustomSelectTextFieldWidgetState<T>();
 }
 
-class _CustomSelectTextFieldWidgetState<T>
+class CustomSelectTextFieldWidgetState<T>
     extends State<CustomSelectTextFieldWidget<T>> {
   String getDisplayText(T? option) {
     if (option == null) return '';
@@ -48,9 +48,11 @@ class _CustomSelectTextFieldWidgetState<T>
     } else if (option is String) {
       // If option is a string, simply return the string
       return option;
+      // ignore: unnecessary_type_check
     } else if (option is Object) {
       // If option is a custom object, try to extract text using reflection
       final dynamic name =
+          // ignore: unnecessary_type_check
           option is Object ? (option as dynamic)[widget.bindName ?? ''] : '';
       return name != null ? name.toString() : '';
     }

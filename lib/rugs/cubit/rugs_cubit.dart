@@ -1,10 +1,7 @@
 import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
-import 'package:multi_image_picker_view/multi_image_picker_view.dart';
 import 'package:rugs_repository/rugs_repository.dart';
 
 part 'rugs_state.dart';
@@ -24,10 +21,16 @@ class RugsCubit extends Cubit<RugsState> {
     emit(state.copyWith(rugForm: updatedRug));
   }
 
-  //update selected images
-  void updateImages(List<ImageFile> images) {
-    print('images: $images');
-    emit(state.copyWith(images: images));
+  //update selected rugSizes
+  ///update rug sizes
+  void updateRugSizes(List<RugSizes>? rugSizes) {
+    emit(state.copyWith(rugSizes: rugSizes));
+  }
+
+  ///add rug size
+  void addRugSize(RugSizes rugSize) {
+    final rugSizes = [...state.rugSizes, rugSize];
+    emit(state.copyWith(rugSizes: rugSizes));
   }
 
   // Save stock
@@ -36,9 +39,15 @@ class RugsCubit extends Cubit<RugsState> {
     emit(state.copyWith(formStatus: FormzSubmissionStatus.inProgress));
     //check is isedit
     if (state.isEditing) {
-      _rugRepository.updateRug(rugForm, state.images).then((_) {
+      _rugRepository.updateRug(rugForm, state.rugSizes).then((_) {
+        //get rugs after updating
+        getRugs();
         emit(state.copyWith(
             formStatus: FormzSubmissionStatus.success,
+            isEditing: false,
+            selectedRug: null,
+            rugForm: Rug.empty,
+            rugSizes: [],
             successMessage: "Rug updated successfully"));
       }).catchError((error) {
         emit(state.copyWith(
@@ -47,9 +56,15 @@ class RugsCubit extends Cubit<RugsState> {
       });
       return;
     } else {
-      _rugRepository.addRug(rugForm, state.images).then((_) {
+      _rugRepository.addRug(rugForm, state.rugSizes).then((_) {
+        //get rugs after saving
+        getRugs();
         emit(state.copyWith(
             formStatus: FormzSubmissionStatus.success,
+            isEditing: false,
+            selectedRug: null,
+            rugForm: Rug.empty,
+            rugSizes: [],
             successMessage: "Rug saved successfully"));
       }).catchError((error) {
         emit(state.copyWith(
@@ -60,20 +75,22 @@ class RugsCubit extends Cubit<RugsState> {
   }
 
   // Onclick edit
-  void editRug(Rug stock) {
+  void editRug(Rug rug) {
+    //get rug sizes
+    getRugSizes(rug);
     emit(state.copyWith(
-      rugForm: stock,
+      rugForm: rug,
       isEditing: true,
-      selectedRug: stock,
+      selectedRug: rug,
     ));
   }
 
   // Set selected stock
-  void setSelectedRug(Rug stock) {
-    getRugImages(stock);
+  void setSelectedRug(Rug rug) {
+    getRugSizes(rug);
     emit(state.copyWith(
-      selectedRug: stock,
-      rugForm: stock,
+      selectedRug: rug,
+      rugForm: rug,
     ));
   }
 
@@ -100,15 +117,15 @@ class RugsCubit extends Cubit<RugsState> {
       formStatus: FormzSubmissionStatus.initial,
       successMessage: null,
       errorMessage: null,
-      images: [],
+      rugSizes: [],
       selectedImages: [],
     ));
   }
 
-  //get seleted rug images
-  void getRugImages(Rug rug) {
-    _rugRepository.getRugImages(rug.id).then((images) {
-      emit(state.copyWith(selectedImages: images));
+  //get seleted rug rugSizes
+  void getRugSizes(Rug rug) {
+    _rugRepository.getRugSizes(rug.id).then((rugSizes) {
+      emit(state.copyWith(rugSizes: rugSizes));
     }).catchError((error) {
       emit(state.copyWith(errorMessage: error.toString()));
     });

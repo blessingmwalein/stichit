@@ -1,20 +1,15 @@
-import 'dart:typed_data';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:multi_image_picker_view/multi_image_picker_view.dart';
-import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/customers/cubit/customer_cubit.dart';
-import 'package:stichit/rugs/cubit/rugs_cubit.dart';
 import 'package:stichit/ui_commons/alerts/snack_bar.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
 import 'package:stichit/ui_commons/forms/custom_phone_number_text.dart';
 import 'package:stichit/ui_commons/forms/custom_select_field.dart';
 import 'package:stichit/ui_commons/forms/custom_text_input.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:stichit/util/picker.dart';
 
 class CustomerFormDrawer extends StatefulWidget {
   final VoidCallback closeDrawer;
@@ -75,7 +70,7 @@ class _RugFormDrawerState extends State<CustomerFormDrawer> {
         ),
         child: BlocBuilder<CustomerCubit, CustomerState>(
           builder: (context, state) {
-            final selectedCustomer = state.selectedCustomer;
+            // final selectedCustomer = state.selectedCustomer;
             return Stack(
               children: [
                 Padding(
@@ -128,7 +123,7 @@ class _RugFormDrawerState extends State<CustomerFormDrawer> {
                                           label: 'Full Name',
                                           onChanged: (value) => context
                                               .read<CustomerCubit>()
-                                              .onFormChange('name', value),
+                                              .onFormChange('fullName', value),
                                           hint: 'Blessing Mwale',
                                           defaultValue:
                                               state.customerForm.fullName,
@@ -144,7 +139,7 @@ class _RugFormDrawerState extends State<CustomerFormDrawer> {
                                               "assets/icons/mail.svg",
                                           onChanged: (value) => context
                                               .read<CustomerCubit>()
-                                              .onFormChange('Email', value),
+                                              .onFormChange('email', value),
                                           hint: '',
                                           defaultValue:
                                               state.customerForm.email?.value,
@@ -197,12 +192,15 @@ class _RugFormDrawerState extends State<CustomerFormDrawer> {
                                       Expanded(
                                         child: CustomPhoneNumberText(
                                           labelText: 'Phone Number',
+                                          defaultValue:
+                                              state.customerForm.mobile?.value,
                                           initialCountryCode: "ZW",
                                           isOutline: true,
                                           onChanged: (value) => {
                                             context
                                                 .read<CustomerCubit>()
-                                                .onFormChange('mobile', value)
+                                                .onFormChange(
+                                                    'mobile', value.number)
                                           },
                                         ),
                                       ),

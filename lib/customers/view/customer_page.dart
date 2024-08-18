@@ -2,7 +2,6 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/app/layouts/main_layout.dart';
 import 'package:stichit/customers/cubit/customer_cubit.dart';
@@ -10,17 +9,13 @@ import 'package:stichit/customers/data_sources/customers_data_source.dart';
 import 'package:stichit/customers/widgets/customer_form_drawer.dart';
 import 'package:stichit/customers/widgets/view_customer_drawer.dart';
 import 'package:stichit/rugs/constant.dart';
-import 'package:stichit/rugs/view/widgets/view_rug_drawer.dart';
 
 import 'package:stichit/ui_commons/alerts/confirm_dialog.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
-import 'package:stichit/ui_commons/buttons/dropdown_button.dart';
 import 'package:stichit/ui_commons/loaders/error_page.dart';
 import 'package:stichit/ui_commons/loaders/no_data_page.dart';
 import 'package:stichit/ui_commons/loaders/page_loader.dart';
 import 'package:stichit/ui_commons/tables/custom_data_table.dart';
-import 'package:raw_materials_repository/raw_materials_repository.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class CustomerPage extends StatefulWidget {
   const CustomerPage({super.key});
@@ -38,7 +33,7 @@ class _CustomerPageState extends State<CustomerPage> {
 
   bool _isCreatDrawerOpen = false;
   bool _isViewDrawerOpen = false;
-  String _selectedValue = 'Customers';
+  final String _selectedValue = 'Customers';
 
   void _toggleDrawer(
     DraweType drawerType,
@@ -79,7 +74,7 @@ class _CustomerPageState extends State<CustomerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final rugCubit = context.read<CustomerCubit>();
+    // final rugCubit = context.read<CustomerCubit>();
 
     return MainLayout(
       crumbs: const ['Home', 'Customers'],
@@ -126,43 +121,52 @@ class _CustomerPageState extends State<CustomerPage> {
                     ],
                   );
                 }
-                return CustomerDataTable(
-                  dataSource: CustomersDataSource(
-                      customerList: customerList,
-                      onDelete: (UserModel customer) async {
-                        // context.read<CustomerCubit>().deleteRug(customer);
-                        final bool? isDelete =
-                            await showCustomConfirmationDialog(
-                          context,
-                          'Delete Customer',
-                          'Are you sure you want to delete this customer?',
-                          'assets/icons/trash.svg',
-                        );
-                      },
-                      onView: (UserModel customer) {
-                        context
-                            .read<CustomerCubit>()
-                            .setSelectedCustomer(customer);
-                        _toggleDrawer(
-                          DraweType.view,
-                        );
-                      },
-                      onEdit: (UserModel customer) {
-                        context.read<CustomerCubit>().editCustomer(customer);
-                        _toggleDrawer(
-                          DraweType.add,
-                        );
-                      }),
-                  sort: true,
-                  filter: true,
-                  columns: const [
-                    "ID",
-                    "Name",
-                    "Email",
-                    "Gender",
-                    "Mobile",
-                    "Actions",
-                  ],
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: CustomerDataTable(
+                    dataSource: CustomersDataSource(
+                        customerList: customerList,
+                        onDelete: (UserModel customer) async {
+                          final bool? isDelete =
+                              await showCustomConfirmationDialog(
+                            context,
+                            'Delete Customer',
+                            'Are you sure you want to delete this customer?',
+                            'assets/icons/trash.svg',
+                          );
+
+                          if (isDelete != null && isDelete) {
+                            // ignore: use_build_context_synchronously
+                            context
+                                .read<CustomerCubit>()
+                                .deleteCustomer(customer);
+                          }
+                        },
+                        onView: (UserModel customer) {
+                          context
+                              .read<CustomerCubit>()
+                              .setSelectedCustomer(customer);
+                          _toggleDrawer(
+                            DraweType.view,
+                          );
+                        },
+                        onEdit: (UserModel customer) {
+                          context.read<CustomerCubit>().editCustomer(customer);
+                          _toggleDrawer(
+                            DraweType.add,
+                          );
+                        }),
+                    sort: true,
+                    filter: true,
+                    columns: const [
+                      "ID",
+                      "Name",
+                      "Email",
+                      "Gender",
+                      "Mobile",
+                      "Actions",
+                    ],
+                  ),
                 );
               }
 

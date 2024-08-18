@@ -30,9 +30,14 @@ class CustomerCubit extends Cubit<CustomerState> {
 
     if (state.isEditing) {
       _customerRepository.updateUser(customerForm).then((_) {
+        //get customers after updating
+        getCustomers();
         emit(state.copyWith(
             formStatus: FormzSubmissionStatus.success,
-            successMessage: "UserModel updated successfully"));
+            isEditing: false,
+            selectedCustomer: null,
+            customerForm: UserModel.empty,
+            successMessage: "Customer updated successfully"));
         resetFormStatus();
       }).catchError((error) {
         emit(state.copyWith(
@@ -42,9 +47,14 @@ class CustomerCubit extends Cubit<CustomerState> {
       });
     } else {
       _customerRepository.addUser(customerForm).then((_) {
+        //get customers after saving
+        getCustomers();
         emit(state.copyWith(
             formStatus: FormzSubmissionStatus.success,
-            successMessage: "UserModel saved successfully"));
+            isEditing: false,
+            selectedCustomer: null,
+            customerForm: UserModel.empty,
+            successMessage: "Customer saved successfully"));
         resetFormStatus();
       }).catchError((error) {
         emit(state.copyWith(
@@ -70,6 +80,7 @@ class CustomerCubit extends Cubit<CustomerState> {
 
   // Set selected customer
   void setSelectedCustomer(UserModel customer) {
+    print("customer: $customer");
     emit(state.copyWith(
       selectedCustomer: customer,
       customerForm: customer,
@@ -108,6 +119,26 @@ class CustomerCubit extends Cubit<CustomerState> {
   List<UserModel> searchCustomerByEmail(String email) {
     final customers = state.customers;
     return customers.where((customer) => customer.email == email).toList();
+  }
+
+  // Delete customer
+  void deleteCustomer(UserModel customer) {
+    emit(state.copyWith(pageStatus: FormzSubmissionStatus.inProgress));
+
+    _customerRepository.deleteUser(customer).then((_) {
+      //get customers after deleting
+      getCustomers();
+      emit(state.copyWith(
+          pageStatus: FormzSubmissionStatus.success,
+          customerForm: UserModel.empty,
+          isEditing: false,
+          selectedCustomer: null,
+          successMessage: "Customer deleted successfully"));
+    }).catchError((error) {
+      emit(state.copyWith(
+          errorMessage: error.toString(),
+          pageStatus: FormzSubmissionStatus.failure));
+    });
   }
 
   //clearForm

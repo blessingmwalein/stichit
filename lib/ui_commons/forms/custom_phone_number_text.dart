@@ -8,6 +8,7 @@ class CustomPhoneNumberText extends StatefulWidget {
   final String labelText;
   final String initialCountryCode;
   final ValueChanged<PhoneNumber>? onChanged;
+  final String? defaultValue;
   final bool isOutline;
   final String? suffixIconPath; // Added suffixIconPath parameter for SVG icon
 
@@ -15,6 +16,7 @@ class CustomPhoneNumberText extends StatefulWidget {
     super.key,
     required this.labelText,
     required this.initialCountryCode,
+    this.defaultValue,
     this.onChanged,
     this.isOutline =
         false, // Added isOutline parameter with default value false
@@ -30,6 +32,7 @@ class _CustomPhoneNumberTextState extends State<CustomPhoneNumberText> {
   Widget build(BuildContext context) {
     return IntlPhoneField(
       initialCountryCode: widget.initialCountryCode,
+      initialValue: widget.defaultValue,
       dropdownIcon: const Icon(Icons.arrow_drop_down, color: primaryWhite),
       dropdownTextStyle: const TextStyle(color: primaryWhite),
       style: TextStyle(color: primaryWhite.withOpacity(0.7)),

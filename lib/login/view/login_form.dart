@@ -1,4 +1,3 @@
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +10,6 @@ import 'package:stichit/ui_commons/alerts/snack_bar.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
 import 'package:stichit/ui_commons/forms/custom_text_input.dart';
 import 'package:stichit/ui_commons/icons/custom_svg_icon.dart';
-import 'package:ui_commons/ui_commons.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -76,7 +74,7 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 Container(
                   child: Padding(
-                    padding: const EdgeInsets.only(left:70.0, right: 70),
+                    padding: const EdgeInsets.only(left: 70.0, right: 70),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

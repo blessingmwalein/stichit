@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/ui_commons/icons/custom_svg_icon.dart';
@@ -20,8 +19,8 @@ class NoDataPage extends StatelessWidget {
           const SizedBox(height: 40),
           Text(
             message ?? 'No available data',
-            style:  TextStyle(
-              color:primaryWhite.withOpacity(0.5),
+            style: TextStyle(
+              color: primaryWhite.withOpacity(0.5),
               fontSize: 30,
             ),
           ),

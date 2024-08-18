@@ -2,19 +2,18 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
 import 'package:raw_materials_repository/raw_materials_repository.dart';
 
-part 'stock_cubit_state.dart';
+part 'raw_material_cubit_state.dart';
 
-class StockCubit extends Cubit<StockCubitState> {
-  StockCubit({
-    required StockRepository stockRepository,
-  })  : _stockRepository = stockRepository,
-        super(StockCubitState());
+class RawMaterialCubit extends Cubit<RawMaterialCubitState> {
+  RawMaterialCubit({
+    required RawMaterialsRepository rawMaterialRepository,
+  })  : _rawMaterialsRepository = rawMaterialRepository,
+        super(RawMaterialCubitState());
 
-  final StockRepository _stockRepository;
+  final RawMaterialsRepository _rawMaterialsRepository;
 
   void onFormChange(String field, dynamic value) {
     log("field: $field, value: $value");
@@ -29,10 +28,10 @@ class StockCubit extends Cubit<StockCubitState> {
     emit(state.copyWith(formStatus: FormzSubmissionStatus.inProgress));
     //check is isedit
     if (state.isEditing) {
-      _stockRepository.updateStock(rawMaterialForm).then((_) {
+      _rawMaterialsRepository.updateRawMaterials(rawMaterialForm).then((_) {
         emit(state.copyWith(
             formStatus: FormzSubmissionStatus.success,
-            successMessage: "RawMaterial updated successfully"));
+            successMessage: "Raw Material updated successfully"));
         resetFormStatus();
       }).catchError((error) {
         emit(state.copyWith(
@@ -42,7 +41,7 @@ class StockCubit extends Cubit<StockCubitState> {
       });
       return;
     } else {
-      _stockRepository.addStock(rawMaterialForm).then((_) {
+      _rawMaterialsRepository.addRawMaterial(rawMaterialForm).then((_) {
         emit(state.copyWith(
             formStatus: FormzSubmissionStatus.success,
             successMessage: "RawMaterial saved successfully"));
@@ -81,7 +80,7 @@ class StockCubit extends Cubit<StockCubitState> {
   void getStocksByCategory(String category) {
     emit(state.copyWith(pageStatus: FormzSubmissionStatus.inProgress));
 
-    _stockRepository.getStocksByCategory(category).then((stocks) {
+    _rawMaterialsRepository.getRawMaterialByCategory(category).then((stocks) {
       emit(state.copyWith(
           stocks: stocks, pageStatus: FormzSubmissionStatus.success));
     }).catchError((error) {
@@ -95,7 +94,7 @@ class StockCubit extends Cubit<StockCubitState> {
   void getStocks() {
     emit(state.copyWith(pageStatus: FormzSubmissionStatus.inProgress));
 
-    _stockRepository.getStocks().then((stocks) {
+    _rawMaterialsRepository.getRawMaterilas().then((stocks) {
       emit(state.copyWith(
           stocks: stocks, pageStatus: FormzSubmissionStatus.success));
     }).catchError((error) {
@@ -108,7 +107,9 @@ class StockCubit extends Cubit<StockCubitState> {
   // Search stock by category from state.stocks
   List<RawMaterial> searchStockByCategory(String category) {
     final stocks = state.stocks;
-    return stocks.where((stock) => stock.rawMaterialCategory == category).toList();
+    return stocks
+        .where((stock) => stock.rawMaterialCategory == category)
+        .toList();
   }
 
   //clearForm

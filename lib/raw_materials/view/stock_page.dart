@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:stichit/app/const/colors.dart';
-import 'package:stichit/app/layouts/main_layout.dart';
-import 'package:stichit/stock/cubit/stock_cubit.dart';
-import 'package:stichit/stock/data_sources/stock_data_source.dart';
-import 'package:stichit/stock/view/widgets/stock_form_drawer.dart'; // Import the new view drawer
+import 'package:stichit/app/layouts/main_layout.dart'; // Import the new view drawer
+import 'package:stichit/raw_materials/cubit/raw_material_cubit.dart';
+import 'package:stichit/raw_materials/data_sources/stock_data_source.dart';
+import 'package:stichit/raw_materials/view/widgets/stock_form_drawer.dart';
 import 'package:stichit/ui_commons/alerts/confirm_dialog.dart';
 import 'package:stichit/ui_commons/buttons/dropdown_button.dart';
 import 'package:stichit/ui_commons/loaders/error_page.dart';
@@ -13,22 +13,22 @@ import 'package:stichit/ui_commons/loaders/no_data_page.dart';
 import 'package:stichit/ui_commons/loaders/page_loader.dart';
 import 'package:stichit/ui_commons/tables/custom_data_table.dart';
 import 'package:raw_materials_repository/raw_materials_repository.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class StockPage extends StatefulWidget {
-  const StockPage({super.key});
+class RawMaterialPage extends StatefulWidget {
+  const RawMaterialPage({super.key});
 
-  static Page<void> page() => const MaterialPage<void>(child: StockPage());
+  static Page<void> page() =>
+      const MaterialPage<void>(child: RawMaterialPage());
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const StockPage());
+    return MaterialPageRoute<void>(builder: (_) => const RawMaterialPage());
   }
 
   @override
-  _StockPageState createState() => _StockPageState();
+  RawMaterialPageState createState() => RawMaterialPageState();
 }
 
-class _StockPageState extends State<StockPage> {
+class RawMaterialPageState extends State<RawMaterialPage> {
   @override
   void initState() {
     super.initState();
@@ -57,19 +57,13 @@ class _StockPageState extends State<StockPage> {
     });
 
     // Clear form and selected stock from bloc
-    context.read<StockCubit>().clearForm();
-  }
-
-  void _closeViewDrawer() {
-    setState(() {
-      _isViewDrawerOpen = false;
-    });
+    context.read<RawMaterialCubit>().clearForm();
   }
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<StockCubit>(context).getStocks();
-    final stockCubit = context.read<StockCubit>();
+    BlocProvider.of<RawMaterialCubit>(context).getStocks();
+    final stockCubit = context.read<RawMaterialCubit>();
 
     return DefaultTabController(
       length: 3, // Number of tabs
@@ -128,7 +122,7 @@ class _StockPageState extends State<StockPage> {
               ],
             ),
             Expanded(
-              child: BlocBuilder<StockCubit, StockCubitState>(
+              child: BlocBuilder<RawMaterialCubit, RawMaterialCubitState>(
                 builder: (context, state) {
                   switch (state.pageStatus) {
                     case FormzSubmissionStatus.inProgress:
@@ -154,7 +148,7 @@ class _StockPageState extends State<StockPage> {
                               stockList: stockList,
                               onView: (RawMaterial stock) {
                                 context
-                                    .read<StockCubit>()
+                                    .read<RawMaterialCubit>()
                                     .setSelectedStock(stock);
                                 _toggleViewDrawer();
                               },
@@ -162,16 +156,18 @@ class _StockPageState extends State<StockPage> {
                                 final bool? isDelete =
                                     await showCustomConfirmationDialog(
                                   context,
-                                  'Delete RawMaterial',
+                                  'Delete raw material',
                                   'Are you sure you want to delete this stock?',
                                   'assets/icons/trash.svg',
                                 );
                                 if (isDelete == true) {
-                                  // context.read<StockCubit>().deleteStock(stock);
+                                  // context.read<RawMaterialCubit>().deleteStock(stock);
                                 }
                               },
                               onEdit: (RawMaterial stock) {
-                                context.read<StockCubit>().editStock(stock);
+                                context
+                                    .read<RawMaterialCubit>()
+                                    .editStock(stock);
                                 _toggleDrawer();
                               }),
                           sort: true,

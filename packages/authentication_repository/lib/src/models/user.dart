@@ -35,7 +35,7 @@ class UserModel extends Equatable {
   final String? gender;
 
   /// The current user's mobile number.
-  final String? mobile;
+  final PhoneNumber? mobile;
 
   /// The current user's address.
   final String? address;
@@ -62,7 +62,8 @@ class UserModel extends Equatable {
   bool get isNotEmpty => this != UserModel.empty;
 
   /// Creates a UserModel instance from Firestore document snapshot.
-  factory UserModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  factory UserModel.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data()!;
     return UserModel(
       id: snapshot.id,
@@ -71,7 +72,7 @@ class UserModel extends Equatable {
       photo: data['photo'],
       address: data['address'],
       gender: data['gender'],
-      mobile: data['mobile'],
+      mobile: data['mobile'] != null ? PhoneNumber.dirty(data['mobile']) : null,
       isAdmin: data['is_admin'] ?? false, // Default to false if not set
     );
   }
@@ -80,12 +81,15 @@ class UserModel extends Equatable {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'] as String,
-      email: json['email'] != null ? Email.dirty(json['email'] as String) : null,
+      email:
+          json['email'] != null ? Email.dirty(json['email'] as String) : null,
       fullName: json['full_name'] as String?,
       photo: json['photo'] as String?,
       address: json['address'] as String?,
       gender: json['gender'] as String?,
-      mobile: json['mobile'] as String?,
+      mobile: json['mobile'] != null
+          ? PhoneNumber.dirty(json['mobile'] as String)
+          : null,
       isAdmin: json['is_admin'] as bool? ?? false,
     );
   }
@@ -98,7 +102,7 @@ class UserModel extends Equatable {
       'photo': photo,
       'address': address,
       'gender': gender,
-      'mobile': mobile,
+      'mobile': mobile?.value ?? '',
       'is_admin': isAdmin, // Include the isAdmin field
     };
   }
@@ -111,7 +115,7 @@ class UserModel extends Equatable {
       'photo': photo,
       'address': address,
       'gender': gender,
-      'mobile': mobile,
+      'mobile': mobile?.value ?? '',
       'id': id,
       'is_admin': isAdmin,
     };
@@ -125,7 +129,7 @@ class UserModel extends Equatable {
     String? photo,
     String? address,
     String? gender,
-    String? mobile,
+    PhoneNumber? mobile,
     Password? confirmPassword,
     Password? password,
     bool? isAdmin,
@@ -159,7 +163,8 @@ class UserModel extends Equatable {
       case 'gender':
         return copyWith(gender: value);
       case 'mobile':
-        return copyWith(mobile: value);
+        final mobile = PhoneNumber.dirty(value);
+        return copyWith(mobile: mobile);
       case 'password':
         final password = Password.dirty(value);
         return copyWith(password: password);

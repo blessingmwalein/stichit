@@ -1,8 +1,3 @@
-import 'package:flutter/widgets.dart';
-import 'package:stichit/app/bloc/app_bloc.dart';
-import 'package:stichit/home/view/admin.dart';
-import 'package:stichit/login/view/login_page.dart';
-
 // List<Page<dynamic>> onGenerateAppViewPages(
 //   AppStatus state,
 //   List<Page<dynamic>> pages,
@@ -21,11 +16,11 @@ abstract class UserRoutes {
   static const signUp = '/sign-up';
 }
 
-
 abstract class AdminRoutes {
   static const admin = '/admin';
   static const rawMaterials = '/admin/raw-materials';
   static const orders = '/admin/orders';
   static const customers = '/admin/customers';
   static const production = '/admin/production';
+  static const rugs = '/admin/rugs';
 }

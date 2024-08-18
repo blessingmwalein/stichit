@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:stichit/app/const/colors.dart';
 
@@ -45,11 +43,11 @@ class _IconDropDownButtonState extends State<IconDropDownButton> {
         onChanged: (String? newValue) {
           widget.onChanged(newValue);
         },
-        items: widget.items
-            .map<DropdownMenuItem<String>>((String item) {
+        items: widget.items.map<DropdownMenuItem<String>>((String item) {
           return DropdownMenuItem<String>(
             value: item,
-            child: Text(item, style: const TextStyle(fontSize: 14, color: CustomColors.grey)),
+            child: Text(item,
+                style: const TextStyle(fontSize: 14, color: CustomColors.grey)),
           );
         }).toList(),
       ),

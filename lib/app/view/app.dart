@@ -1,18 +1,15 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:customer_repository/customer_repository.dart';
-import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/bloc/app_bloc.dart';
 import 'package:stichit/app/routes/app.dart';
-import 'package:stichit/app/routes/routes.dart';
 import 'package:stichit/customers/cubit/customer_cubit.dart';
 import 'package:stichit/login/login.dart';
+import 'package:stichit/raw_materials/cubit/raw_material_cubit.dart';
 import 'package:stichit/rugs/cubit/rugs_cubit.dart';
 import 'package:stichit/sign-up/cubit/sign_up_cubit.dart';
-import 'package:stichit/stock/cubit/stock_cubit.dart';
 import 'package:stichit/theme.dart';
 import 'package:raw_materials_repository/raw_materials_repository.dart';
 
@@ -23,7 +20,8 @@ class App extends StatelessWidget {
 
   final AuthenticationRepository _authenticationRepository =
       AuthenticationRepository();
-  final StockRepository _stockRepository = StockRepository();
+  final RawMaterialsRepository _rawMaterialsRepository =
+      RawMaterialsRepository();
   final RugsRepositoryBase _rugsRepositoryBase = RugsRepositoryBase();
   final CustomerRepository _customerRepository = CustomerRepository();
 
@@ -34,8 +32,8 @@ class App extends StatelessWidget {
         RepositoryProvider<AuthenticationRepository>.value(
           value: _authenticationRepository,
         ),
-        RepositoryProvider<StockRepository>.value(
-          value: _stockRepository,
+        RepositoryProvider<RawMaterialsRepository>.value(
+          value: _rawMaterialsRepository,
         ),
         RepositoryProvider<RugsRepositoryBase>.value(
           value: _rugsRepositoryBase,
@@ -57,8 +55,8 @@ class App extends StatelessWidget {
             ),
           ),
           BlocProvider(
-            create: (context) => StockCubit(
-              stockRepository: _stockRepository,
+            create: (context) => RawMaterialCubit(
+              rawMaterialRepository: _rawMaterialsRepository,
             ),
           ),
           BlocProvider(

@@ -60,34 +60,30 @@ class AuthenticationRepository {
       UserModel? userDoc = await getUserByEmail(firebaseUser.email ?? '');
       if (userDoc == null) {
         _cache.write(key: userCacheKey, value: UserModel.empty);
-
         return UserModel.empty;
       }
-
-    print('User uyu yes $userDoc');
       _cache.write(key: userCacheKey, value: jsonEncode(userDoc.toJson()));
-
       return userDoc;
     });
   }
 
   /// Returns the current cached user.
   /// Defaults to [UserModel.empty] if there is no cached user.
-Future<UserModel> get currentUser async {
-  final userJson = await _storage.read(key: userCacheKey);
+  Future<UserModel> get currentUser async {
+    final userJson = await _storage.read(key: userCacheKey);
 
-  if (userJson == null) {
+    if (userJson == null) {
+      return UserModel.empty;
+    }
+
+    final decodedJson = jsonDecode(userJson);
+
+    if (decodedJson is Map<String, dynamic>) {
+      return UserModel.fromJson(decodedJson);
+    }
+
     return UserModel.empty;
   }
-
-  final decodedJson = jsonDecode(userJson);
-
-  if (decodedJson is Map<String, dynamic>) {
-    return UserModel.fromJson(decodedJson);
-  }
-
-  return UserModel.empty;
-}
 
   /// Signs out the current user which will emit
   /// [UserModel.empty] from the [user] Stream.

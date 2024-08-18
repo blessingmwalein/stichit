@@ -1,12 +1,10 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:form_inputs/form_inputs.dart';
-import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/const/colors.dart';
-import 'package:stichit/stock/cubit/stock_cubit.dart';
+import 'package:stichit/ui_commons/avatars/initial_avatar.dart';
 import 'package:stichit/ui_commons/buttons/copy_text_button.dart';
 import 'package:stichit/ui_commons/buttons/icon_drop_down_button.dart';
-import 'package:raw_materials_repository/raw_materials_repository.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class CustomersDataSource extends DataGridSource {
@@ -24,7 +22,8 @@ class CustomersDataSource extends DataGridSource {
               DataGridCell<String>(
                   columnName: 'gender', value: e.gender.toString()),
               DataGridCell<String>(
-                  columnName: 'mobile', value: e.mobile.toString()),
+                  columnName: 'mobile', value: e.mobile?.value),
+              DataGridCell<String>(columnName: 'address', value: e.address),
             ]))
         .toList();
   }
@@ -47,6 +46,7 @@ class CustomersDataSource extends DataGridSource {
     final email = row.getCells()[2].value.toString();
     final gender = row.getCells()[3].value.toString();
     final mobile = row.getCells()[4].value.toString();
+    final address = row.getCells()[5].value.toString();
 
     // Assuming you have a way to get the selected stock
     UserModel selectedCustomer = UserModel(
@@ -54,7 +54,8 @@ class CustomersDataSource extends DataGridSource {
         fullName: fullName,
         email: Email.dirty(email),
         gender: gender,
-        mobile: mobile);
+        address: address,
+        mobile: PhoneNumber.dirty(mobile));
 
     return DataGridRowAdapter(cells: <Widget>[
       Container(
@@ -65,9 +66,19 @@ class CustomersDataSource extends DataGridSource {
       Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
-        child: Text(fullName,
-            style: const TextStyle(
-                color: CustomColors.grey, fontWeight: FontWeight.normal)),
+        child: Row(
+          children: [
+            InitialsAvatar(
+              text: selectedCustomer.fullName ?? "",
+              height: 30,
+              width: 30,
+            ),
+            const SizedBox(width: 10),
+            Text(fullName,
+                style: const TextStyle(
+                    color: CustomColors.grey, fontWeight: FontWeight.normal)),
+          ],
+        ),
       ),
       Container(
         alignment: Alignment.centerLeft,
@@ -89,7 +100,7 @@ class CustomersDataSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
         child: Text(
-          '$mobile',
+          mobile,
           style: const TextStyle(
               color: CustomColors.grey, fontWeight: FontWeight.normal),
         ),
@@ -99,8 +110,6 @@ class CustomersDataSource extends DataGridSource {
         child: IconDropDownButton(
           items: const ['View', 'Edit', 'Delete'],
           onChanged: (String? newValue) {
-            // Handle the selected value here
-            print('Selected: $newValue');
             switch (newValue) {
               case 'View':
                 onView(selectedCustomer);

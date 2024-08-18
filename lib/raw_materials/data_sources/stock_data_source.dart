@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:stichit/app/const/colors.dart';
-import 'package:stichit/stock/cubit/stock_cubit.dart';
 import 'package:stichit/ui_commons/buttons/copy_text_button.dart';
 import 'package:stichit/ui_commons/buttons/icon_drop_down_button.dart';
 import 'package:raw_materials_repository/raw_materials_repository.dart';
@@ -18,7 +17,8 @@ class StockDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'id', value: e.id),
               DataGridCell<String>(columnName: 'name', value: e.name),
               DataGridCell<String>(
-                  columnName: 'category', value: e.rawMaterialCategory.toString()),
+                  columnName: 'category',
+                  value: e.rawMaterialCategory.toString()),
               DataGridCell<String>(
                   columnName: 'measureType', value: e.measureType.toString()),
               DataGridCell<String>(

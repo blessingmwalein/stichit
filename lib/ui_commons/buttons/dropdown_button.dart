@@ -1,7 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:stichit/app/const/colors.dart';
-import 'package:stichit/ui_commons/icons/custom_svg_icon.dart';
 
 class DropDownButton extends StatefulWidget {
   final List<String> items;
@@ -44,18 +43,20 @@ class _DropDownButtonState extends State<DropDownButton> {
           isExpanded: true,
           selectedItemBuilder: (context) {
             return widget.items.map((String item) {
-              return widget.isIcon ?? false ? const SizedBox(): Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Create $item',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: CustomColors.white,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              );
+              return widget.isIcon ?? false
+                  ? const SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Create $item',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: CustomColors.white,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    );
             }).toList();
           },
           // hint: Row(

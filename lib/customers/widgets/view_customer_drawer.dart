@@ -1,19 +1,10 @@
-import 'dart:typed_data';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:multi_image_picker_view/multi_image_picker_view.dart';
-import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/customers/cubit/customer_cubit.dart';
-import 'package:stichit/rugs/cubit/rugs_cubit.dart';
-import 'package:stichit/ui_commons/alerts/snack_bar.dart';
+import 'package:stichit/ui_commons/avatars/initial_avatar.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
-import 'package:stichit/ui_commons/forms/custom_select_field.dart';
-import 'package:stichit/ui_commons/forms/custom_text_input.dart';
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:stichit/util/picker.dart'; // Add this import
 
 class ViewCustomerDrawer extends StatefulWidget {
   final VoidCallback closeDrawer;
@@ -49,7 +40,7 @@ class _ViewCustomerDrawerState extends State<ViewCustomerDrawer> {
                 child: Text(
                   label,
                   style: TextStyle(
-                    color: CustomColors.white.withOpacity(0.6),
+                    color: CustomColors.white.withOpacity(0.7),
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -60,7 +51,7 @@ class _ViewCustomerDrawerState extends State<ViewCustomerDrawer> {
                 child: Text(
                   value,
                   style: TextStyle(
-                    color: CustomColors.white.withOpacity(0.6),
+                    color: CustomColors.white.withOpacity(0.7),
                     fontSize: 16,
                     fontWeight: FontWeight.normal,
                   ),
@@ -103,8 +94,14 @@ class _ViewCustomerDrawerState extends State<ViewCustomerDrawer> {
                   children: [
                     Row(
                       children: [
+                        InitialsAvatar(
+                          text: selectedCustomer?.fullName ?? '',
+                          height: 45,
+                          width: 45,
+                        ),
+                        const SizedBox(width: 20),
                         Text(
-                          'View Customer ${selectedCustomer?.fullName ?? ''}',
+                          selectedCustomer?.fullName ?? '',
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.normal,
@@ -140,8 +137,8 @@ class _ViewCustomerDrawerState extends State<ViewCustomerDrawer> {
                                     'Name', selectedCustomer.fullName ?? ''),
                                 _buildDetailRow('Email',
                                     selectedCustomer.email?.value ?? ''),
-                                _buildDetailRow(
-                                    'Phone', selectedCustomer.mobile ?? ''),
+                                _buildDetailRow('Phone',
+                                    selectedCustomer.mobile?.value ?? ''),
                                 _buildDetailRow(
                                     'Gender', selectedCustomer.gender ?? ''),
                                 _buildDetailRow(

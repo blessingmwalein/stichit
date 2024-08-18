@@ -55,6 +55,7 @@ class _CustomerDataTableState<T> extends State<CustomerDataTable<T>> {
         columnWidthMode: ColumnWidthMode.fill,
         allowSorting: widget.sort,
         allowFiltering: widget.filter,
+
         // gridLinesVisibility: GridLinesVisibility.none,
         columns: <GridColumn>[
           for (final column in widget.columns)

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/bloc/app_bloc.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/app/routes/routes.dart';
@@ -15,10 +14,9 @@ import 'package:stichit/ui_commons/buttons/custom_button.dart';
 import 'package:stichit/ui_commons/forms/custom_phone_number_text.dart';
 import 'package:stichit/ui_commons/forms/custom_select_field.dart';
 import 'package:stichit/ui_commons/forms/custom_text_input.dart';
-import 'package:ui_commons/ui_commons.dart';
 
 class SignUpForm extends StatelessWidget {
-  const SignUpForm({Key? key}) : super(key: key);
+  const SignUpForm({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -66,74 +64,71 @@ class SignUpForm extends StatelessWidget {
                 ),
               ),
               SingleChildScrollView(
-                child: Container(
-                  // 70% of the screen width
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 30.0, right: 30),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Create Stichit Account',
-                          style: TextStyle(
-                            color: primaryWhite,
-                            fontSize: 25,
-                            fontWeight: FontWeight.w500,
-                          ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 30.0, right: 30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Create Stichit Account',
+                        style: TextStyle(
+                          color: primaryWhite,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w500,
                         ),
-                        const SizedBox(height: 25),
-                        //row for full name and phone number
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(child: _FullNameInput()),
-                            const SizedBox(width: 20),
-                            Expanded(child: _GenderInout()),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        _PhoneNumberInput(),
-                        const SizedBox(height: 20),
-                        _EmailInput(),
-                        const SizedBox(height: 20),
-                        _AddressInput(),
-                        const SizedBox(height: 20),
-                        //passords in a row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(child: _PasswordInput()),
-                            const SizedBox(width: 20),
-                            Expanded(child: _ConfirmPasswordInput()),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextButton(
-                                onPressed: () {
-                                  // Navigator.of(context)
-                                  //     .push<void>(AccountTypePage.route());
-                                  GoRouter.of(context).go(UserRoutes.login);
-                                },
-                                child: const Text(
-                                  'Already have an account? Login',
-                                  style: TextStyle(
-                                    color: primaryWhite,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                      ),
+                      const SizedBox(height: 25),
+                      //row for full name and phone number
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(child: _FullNameInput()),
+                          const SizedBox(width: 20),
+                          Expanded(child: _GenderInout()),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      _PhoneNumberInput(),
+                      const SizedBox(height: 20),
+                      _EmailInput(),
+                      const SizedBox(height: 20),
+                      _AddressInput(),
+                      const SizedBox(height: 20),
+                      //passords in a row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(child: _PasswordInput()),
+                          const SizedBox(width: 20),
+                          Expanded(child: _ConfirmPasswordInput()),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextButton(
+                              onPressed: () {
+                                // Navigator.of(context)
+                                //     .push<void>(AccountTypePage.route());
+                                GoRouter.of(context).go(UserRoutes.login);
+                              },
+                              child: const Text(
+                                'Already have an account? Login',
+                                style: TextStyle(
+                                  color: primaryWhite,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            )
-                          ],
-                        ),
-                        _SignUpButton(),
-                        const SocialLoginButtons(),
-                      ],
-                    ),
+                            ),
+                          )
+                        ],
+                      ),
+                      _SignUpButton(),
+                      const SocialLoginButtons(),
+                    ],
                   ),
                 ),
               ),

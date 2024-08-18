@@ -1,11 +1,9 @@
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/app/routes/routes.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
 import 'package:stichit/ui_commons/cards/logo_card.dart';
-import 'package:stichit/ui_commons/forms/custom_select_field.dart';
 import 'package:stichit/ui_commons/icons/custom_svg_icon.dart';
 
 class ClientLayout extends StatefulWidget {
@@ -143,11 +141,10 @@ class _ClientLayoutState extends State<ClientLayout> {
             ),
           ),
           //divider line
-           Divider(
+          Divider(
             color: CustomColors.grey.withOpacity(0.4),
             thickness: 1,
           ),
-
 
           Expanded(
             child: widget.child,

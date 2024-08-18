@@ -11,7 +11,7 @@ final class RugsState extends Equatable {
     this.rugs = const [],
     this.isEditing = false,
     this.selectedRug,
-    this.images = const [],
+    this.rugSizes = const [],
     this.selectedImages = const [],
   }) : rugForm = rugForm ?? Rug.empty;
 
@@ -24,7 +24,7 @@ final class RugsState extends Equatable {
   final bool isEditing;
   final List<Rug> rugs;
   final Rug? selectedRug;
-  final List<ImageFile>? images;
+  final List<RugSizes> rugSizes;
   final List<RugImage>? selectedImages;
 
   RugsState copyWith({
@@ -37,7 +37,7 @@ final class RugsState extends Equatable {
     bool? isEditing,
     List<Rug>? rugs,
     Rug? selectedRug,
-    List<ImageFile>? images,
+    List<RugSizes>? rugSizes,
     List<RugImage>? selectedImages,
   }) {
     return RugsState(
@@ -50,7 +50,7 @@ final class RugsState extends Equatable {
       isEditing: isEditing ?? this.isEditing,
       rugs: rugs ?? this.rugs,
       selectedRug: selectedRug ?? this.selectedRug,
-      images: images ?? this.images,
+      rugSizes: rugSizes ?? this.rugSizes,
       selectedImages: selectedImages ?? this.selectedImages,
     );
   }
@@ -66,7 +66,7 @@ final class RugsState extends Equatable {
         isEditing,
         rugs,
         selectedRug,
-        images,
+        rugSizes,
         selectedImages,
       ];
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
 import 'dart:async';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
@@ -5,6 +7,7 @@ import 'package:equatable/equatable.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
+
 class AppBloc extends Bloc<AppEvent, AppState> {
   final AuthenticationRepository _authenticationRepository;
   late StreamSubscription _userSubscription;
@@ -12,7 +15,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({
     required AuthenticationRepository authenticationRepository,
   })  : _authenticationRepository = authenticationRepository,
-        super(const AppState.unauthenticated()) { // Initial state set to unauthenticated
+        super(const AppState.unauthenticated()) {
+    // Initial state set to unauthenticated
     // Load the initial state asynchronously
     _loadInitialState();
 

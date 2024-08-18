@@ -1,14 +1,10 @@
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stichit/app/const/colors.dart';
-import 'package:stichit/app/layouts/auth_layout.dart';
 import 'package:stichit/app/layouts/client_layout.dart';
 import 'package:stichit/home/widgets/banner.dart';
-import 'package:stichit/login/view/login_form.dart';
 
 class ClientHomePage extends StatelessWidget {
-  const ClientHomePage({Key? key}) : super(key: key);
+  const ClientHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

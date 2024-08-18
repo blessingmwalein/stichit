@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -6,12 +5,11 @@ import 'package:multi_image_picker_view/multi_image_picker_view.dart';
 import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/rugs/cubit/rugs_cubit.dart';
+import 'package:stichit/rugs/view/widgets/rug_sizes_form_fields.dart';
 import 'package:stichit/ui_commons/alerts/snack_bar.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
-import 'package:stichit/ui_commons/forms/custom_select_field.dart';
 import 'package:stichit/ui_commons/forms/custom_text_input.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:stichit/util/picker.dart';
 
 class RugFormDrawer extends StatefulWidget {
   final VoidCallback closeDrawer;
@@ -24,26 +22,14 @@ class RugFormDrawer extends StatefulWidget {
   });
 
   @override
-  _RugFormDrawerState createState() => _RugFormDrawerState();
+  RugFormDrawerState createState() => RugFormDrawerState();
 }
 
-class _RugFormDrawerState extends State<RugFormDrawer> {
+class RugFormDrawerState extends State<RugFormDrawer> {
   late MultiImagePickerController controller;
   @override
   void initState() {
     super.initState();
-    controller = MultiImagePickerController(
-      maxImages: 12,
-      picker: (bool allowMultiple) async {
-        final List<ImageFile> images =
-            await pickImagesUsingFilePicker(allowMultiple);
-        //update state images
-        if (mounted) {
-          context.read<RugsCubit>().updateImages(images);
-        }
-        return images;
-      },
-    );
   }
 
   @override
@@ -85,7 +71,7 @@ class _RugFormDrawerState extends State<RugFormDrawer> {
         ),
         child: BlocBuilder<RugsCubit, RugsState>(
           builder: (context, state) {
-            final selectedRug = state.selectedRug;
+            // final selectedRug = state.selectedRug;
             return Stack(
               children: [
                 Padding(
@@ -166,235 +152,67 @@ class _RugFormDrawerState extends State<RugFormDrawer> {
                                 const SizedBox(height: 15),
                                 Padding(
                                   padding: const EdgeInsets.all(13.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: CustomSelectTextFieldWidget(
-                                          isOutline: true,
-                                          label: 'Type',
-                                          selectedOption: state.isEditing &&
-                                                  selectedRug != null
-                                              ? selectedRug.type
-                                              : state.rugForm.type,
-                                          options: RugType.values
-                                              .map((e) =>
-                                                  e.toString().split('.').last)
-                                              .toList(),
-                                          onChanged: (value) {
-                                            context
-                                                .read<RugsCubit>()
-                                                .onFormChange('type', value);
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      Expanded(
-                                        child: CustomSelectTextFieldWidget(
-                                          isOutline: true,
-                                          label: 'Measure Type',
-                                          selectedOption: state.isEditing &&
-                                                  selectedRug != null
-                                              ? selectedRug.measureType
-                                              : state.rugForm.measureType,
-                                          options: RugMeasureType.values
-                                              .map((e) =>
-                                                  e.toString().split('.').last)
-                                              .toList(),
-                                          onChanged: (value) {
-                                            context
-                                                .read<RugsCubit>()
-                                                .onFormChange(
-                                                    'measureType', value);
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      Expanded(
-                                        child: CustomTextFieldWidget(
-                                          isPassword: false,
-                                          isOutline: true,
-                                          suffixIconPath:
-                                              "assets/icons/scale.svg",
-                                          label: 'Measure Value',
-                                          onChanged: (value) => context
-                                              .read<RugsCubit>()
-                                              .onFormChange('measureValue',
-                                                  double.parse(value)),
-                                          hint: '0',
-                                          defaultValue: state
-                                              .rugForm.measureValue
-                                              .toString(),
-                                        ),
-                                      ),
-                                    ],
+                                  child: CustomTextFieldWidget(
+                                    isPassword: false,
+                                    isOutline: true,
+                                    suffixIconPath:
+                                        "assets/icons/currency-dollar.svg",
+                                    label: 'Approx Price Per Unit(USD)',
+                                    onChanged: (value) => context
+                                        .read<RugsCubit>()
+                                        .onFormChange('approxPricePerUnit',
+                                            double.parse(value)),
+                                    hint: '0.00',
+                                    defaultValue: state
+                                        .rugForm.approxPricePerUnit
+                                        .toString(),
                                   ),
                                 ),
                                 const SizedBox(height: 15),
                                 Padding(
                                   padding: const EdgeInsets.all(13.0),
                                   child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Expanded(
-                                        child: CustomTextFieldWidget(
-                                          isPassword: false,
-                                          isOutline: true,
-                                          suffixIconPath:
-                                              "assets/icons/currency-dollar.svg",
-                                          label: 'Price Per Unit',
-                                          onChanged: (value) => context
-                                              .read<RugsCubit>()
-                                              .onFormChange('pricePerUnit',
-                                                  double.parse(value)),
-                                          hint: '0.00',
-                                          defaultValue: state
-                                              .rugForm.pricePerUnit
-                                              .toString(),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      Expanded(
-                                        child: CustomSelectTextFieldWidget(
-                                          isOutline: true,
-                                          label: 'Shape',
-                                          selectedOption: state.isEditing &&
-                                                  selectedRug != null
-                                              ? selectedRug.shape
-                                              : state.rugForm.shape,
-                                          options: RugShape.values
-                                              .map((e) =>
-                                                  e.toString().split('.').last)
-                                              .toList(),
-                                          onChanged: (value) {
-                                            context
-                                                .read<RugsCubit>()
-                                                .onFormChange(
-                                                    'rugShape', value);
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                Padding(
-                                  padding: const EdgeInsets.all(13.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Images',
+                                      Text(
+                                        'Rug Sizes',
                                         style: TextStyle(
-                                          fontSize: 16,
-                                          color: CustomColors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: CustomColors.white
+                                              .withOpacity(0.8),
                                         ),
                                       ),
-                                      const SizedBox(height: 15),
-                                      MultiImagePickerView(
-                                        controller: controller,
-                                        draggable: true,
-                                        longPressDelayMilliseconds: 250,
-                                        onDragBoxDecoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .shadow
-                                                  .withOpacity(0.3),
-                                              blurRadius: 8,
-                                            ),
-                                          ],
-                                        ),
-                                        shrinkWrap: true,
-                                        padding: const EdgeInsets.all(0),
-                                        gridDelegate:
-                                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                                          maxCrossAxisExtent: 150,
-                                          childAspectRatio: 0.8,
-                                          crossAxisSpacing: 4,
-                                          mainAxisSpacing: 4,
-                                        ),
-                                        builder: (context, imageFile) {
-                                          return Stack(
+                                      TextButton(
+                                          onPressed: () {
+                                            context
+                                                .read<RugsCubit>()
+                                                .updateRugSizes([
+                                              ...state.rugSizes,
+                                              RugSizes.empty,
+                                            ]);
+                                          },
+                                          child: Row(
                                             children: [
-                                              Positioned.fill(
-                                                child: ImageFileView(
-                                                    imageFile: imageFile),
+                                              const Icon(Icons.add),
+                                              const SizedBox(
+                                                width: 5,
                                               ),
-                                              Positioned(
-                                                top: 4,
-                                                right: 4,
-                                                child: DraggableItemInkWell(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                  onPressed: () => controller
-                                                      .removeImage(imageFile),
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(6),
-                                                    decoration: BoxDecoration(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary
-                                                          .withOpacity(0.5),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: Icon(
-                                                      Icons
-                                                          .delete_forever_rounded,
-                                                      size: 20,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .onSecondary,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                              Text(
+                                                'Add Size',
+                                                style: TextStyle(
+                                                    color: CustomColors.white
+                                                        .withOpacity(0.6)),
+                                              )
                                             ],
-                                          );
-                                        },
-                                        initialWidget: SizedBox(
-                                          height: 150,
-                                          width: double.infinity,
-                                          child: Center(
-                                            child: ElevatedButton.icon(
-                                              onPressed: () {
-                                                print('ndabaiwa');
-                                                controller.pickImages();
-                                              },
-                                              icon:
-                                                  const Icon(Icons.add_a_photo),
-                                              label: const Text('Pick Images'),
-                                            ),
-                                          ),
-                                        ),
-                                        addMoreButton: SizedBox(
-                                          height: 150,
-                                          width: double.infinity,
-                                          child: Center(
-                                            child: TextButton(
-                                              style: TextButton.styleFrom(
-                                                backgroundColor: Colors.black
-                                                    .withOpacity(0.2),
-                                                shape: const CircleBorder(),
-                                              ),
-                                              onPressed: controller.pickImages,
-                                              child: const Padding(
-                                                padding: EdgeInsets.all(12),
-                                                child: Icon(
-                                                  Icons.add,
-                                                  size: 32,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
+                                          )),
                                     ],
                                   ),
                                 ),
+                                const RugSizesFormFields(),
+
+                                // Add the sizes here
                               ],
                             ),
                           ),

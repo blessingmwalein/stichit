@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/const/colors.dart';
-import 'package:stichit/stock/cubit/stock_cubit.dart';
 import 'package:stichit/ui_commons/buttons/copy_text_button.dart';
 import 'package:stichit/ui_commons/buttons/icon_drop_down_button.dart';
-import 'package:raw_materials_repository/raw_materials_repository.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class RugsDataSource extends DataGridSource {
@@ -19,15 +17,7 @@ class RugsDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'id', value: e.id),
               DataGridCell<String>(columnName: 'name', value: e.name),
               DataGridCell<String>(
-                  columnName: 'type', value: e.type.toString()),
-              DataGridCell<String>(
-                  columnName: 'shape', value: e.shape.toString()),
-              DataGridCell<double>(
-                  columnName: 'pricePerUnit', value: e.pricePerUnit),
-              DataGridCell<String>(
-                  columnName: 'measureType', value: e.measureType),
-              DataGridCell<String>(
-                  columnName: 'measureValue', value: e.measureValue.toString()),
+                  columnName: 'price', value: e.approxPricePerUnit.toString()),
               DataGridCell<String>(
                   columnName: 'description', value: e.description.toString()),
             ]))
@@ -49,25 +39,16 @@ class RugsDataSource extends DataGridSource {
     final rugId = row.getCells()[0].value.toString();
     final rugName = row.getCells()[1].value.toString();
 
-    final rugType = row.getCells()[2].value.toString();
-    final rugShape = row.getCells()[3].value.toString();
-    final pricePerUnit = row.getCells()[4].value.toString();
-    final rugMeasureType = row.getCells()[5].value.toString();
+    final pricePerUnit = row.getCells()[2].value.toString();
 
-    final rugMeasureValue = row.getCells()[6].value.toString();
-
-    final rugDescription = row.getCells()[7].value.toString();
+    final rugDescription = row.getCells()[3].value.toString();
 
     // Assuming you have a way to get the selected stock
     Rug selectedStock = Rug(
       id: rugId,
       name: rugName,
-      type: RugType.fromString(rugType),
-      shape: rugShape,
-      measureValue: double.parse(rugMeasureValue),
-      measureType: rugMeasureType,
+      approxPricePerUnit: double.parse(pricePerUnit),
       description: rugDescription,
-      pricePerUnit: double.parse(pricePerUnit),
     );
 
     return DataGridRowAdapter(cells: <Widget>[
@@ -86,30 +67,6 @@ class RugsDataSource extends DataGridSource {
       Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
-        child: Text(rugType,
-            style: const TextStyle(
-                color: CustomColors.grey, fontWeight: FontWeight.normal)),
-      ),
-      Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          rugShape,
-          style: const TextStyle(
-              color: CustomColors.grey, fontWeight: FontWeight.normal),
-        ),
-      ),
-      Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-            style: const TextStyle(
-                color: CustomColors.grey, fontWeight: FontWeight.normal),
-            '$rugMeasureValue $rugMeasureType'),
-      ),
-      Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.all(8.0),
         child: Text(
           '\$$pricePerUnit',
           style: const TextStyle(
@@ -118,11 +75,16 @@ class RugsDataSource extends DataGridSource {
       ),
       Container(
         alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.all(8.0),
+        child: Text(rugDescription,
+            style: const TextStyle(
+                color: CustomColors.grey, fontWeight: FontWeight.normal)),
+      ),
+      Container(
+        alignment: Alignment.centerLeft,
         child: IconDropDownButton(
           items: const ['View', 'Edit', 'Delete'],
           onChanged: (String? newValue) {
-            // Handle the selected value here
-            print('Selected: $newValue');
             switch (newValue) {
               case 'View':
                 onView(selectedStock);

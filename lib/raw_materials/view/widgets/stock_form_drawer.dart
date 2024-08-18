@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:stichit/app/const/colors.dart';
-import 'package:stichit/stock/cubit/stock_cubit.dart';
+import 'package:stichit/raw_materials/cubit/raw_material_cubit.dart';
 import 'package:stichit/ui_commons/alerts/snack_bar.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
 import 'package:stichit/ui_commons/forms/custom_select_field.dart';
@@ -22,7 +22,7 @@ class StockFormDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<StockCubit, StockCubitState>(
+    return BlocListener<RawMaterialCubit, RawMaterialCubitState>(
       listener: (context, state) {
         if (state.formStatus == FormzSubmissionStatus.success) {
           showCustomSnackbar(
@@ -52,9 +52,9 @@ class StockFormDrawer extends StatelessWidget {
             ),
           ],
         ),
-        child: BlocBuilder<StockCubit, StockCubitState>(
+        child: BlocBuilder<RawMaterialCubit, RawMaterialCubitState>(
           builder: (context, state) {
-            final selectedStock = state.selectedStock;
+            // final selectedStock = state.selectedStock;
             return Stack(
               children: [
                 Padding(
@@ -106,12 +106,11 @@ class StockFormDrawer extends StatelessWidget {
                                               "assets/icons/user.svg",
                                           label: 'Name',
                                           onChanged: (value) => context
-                                              .read<StockCubit>()
+                                              .read<RawMaterialCubit>()
                                               .onFormChange('name', value),
                                           hint: 'Blessing Mwale',
-                                          defaultValue: state.rawMaterialForm?.name ??
-                                              selectedStock?.name ??
-                                              '',
+                                          defaultValue:
+                                              state.rawMaterialForm.name,
                                         ),
                                       ),
                                       const SizedBox(width: 16),
@@ -123,14 +122,12 @@ class StockFormDrawer extends StatelessWidget {
                                           suffixIconPath:
                                               "assets/icons/clipboard-list.svg",
                                           onChanged: (value) => context
-                                              .read<StockCubit>()
+                                              .read<RawMaterialCubit>()
                                               .onFormChange(
                                                   'description', value),
                                           hint: '',
                                           defaultValue:
-                                              state.rawMaterialForm?.description ??
-                                                  selectedStock?.description ??
-                                                  '',
+                                              state.rawMaterialForm.description,
                                         ),
                                       ),
                                     ],
@@ -149,7 +146,7 @@ class StockFormDrawer extends StatelessWidget {
                                       //         "assets/icons/color-swatch.svg",
                                       //     label: 'Color',
                                       //     onChanged: (value) => context
-                                      //         .read<StockCubit>()
+                                      //         .read<RawMaterialCubit>()
                                       //         .onFormChange('color', value),
                                       //     hint: '0',
                                       //     defaultValue:
@@ -167,7 +164,7 @@ class StockFormDrawer extends StatelessWidget {
                                       //         "assets/icons/scale.svg",
                                       //     label: 'Quantity',
                                       //     onChanged: (value) => context
-                                      //         .read<StockCubit>()
+                                      //         .read<RawMaterialCubit>()
                                       //         .onFormChange(
                                       //             'quantity', int.parse(value)),
                                       //     hint: '0',
@@ -184,15 +181,15 @@ class StockFormDrawer extends StatelessWidget {
                                         child: CustomSelectTextFieldWidget(
                                           isOutline: true,
                                           label: 'Category',
-                                          selectedOption:
-                                              state.rawMaterialForm.rawMaterialCategory,
+                                          selectedOption: state.rawMaterialForm
+                                              .rawMaterialCategory,
                                           options: RawMaterialCategory.values
                                               .map((e) =>
                                                   e.toString().split('.').last)
                                               .toList(),
                                           onChanged: (value) {
                                             context
-                                                .read<StockCubit>()
+                                                .read<RawMaterialCubit>()
                                                 .onFormChange(
                                                     'category', value);
                                           },
@@ -214,7 +211,7 @@ class StockFormDrawer extends StatelessWidget {
                                       //         "assets/icons/currency-dollar.svg",
                                       //     label: 'Buy Price',
                                       //     onChanged: (value) => context
-                                      //         .read<StockCubit>()
+                                      //         .read<RawMaterialCubit>()
                                       //         .onFormChange(
                                       //             'price', double.parse(value)),
                                       //     hint: '0.00',
@@ -231,16 +228,14 @@ class StockFormDrawer extends StatelessWidget {
                                           isOutline: true,
                                           label: 'Measure Type',
                                           selectedOption:
-                                              state.rawMaterialForm?.measureType ??
-                                                  selectedStock?.measureType ??
-                                                  'Cm',
+                                              state.rawMaterialForm.measureType,
                                           options: MeasureType.values
                                               .map((e) =>
                                                   e.toString().split('.').last)
                                               .toList(),
                                           onChanged: (value) {
                                             context
-                                                .read<StockCubit>()
+                                                .read<RawMaterialCubit>()
                                                 .onFormChange(
                                                     'measureType', value);
                                           },
@@ -250,7 +245,6 @@ class StockFormDrawer extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 15),
-                               
                               ],
                             ),
                           ),
@@ -285,12 +279,15 @@ class StockFormDrawer extends StatelessWidget {
                           isDisabled: state.formStatus ==
                               FormzSubmissionStatus.inProgress,
                           onPressed: () {
-                            context.read<StockCubit>().saveStock();
+                            context.read<RawMaterialCubit>().saveStock();
                             // Listen to the state and show snackbar
-                            context.read<StockCubit>().stream.listen((state) {
+                            context
+                                .read<RawMaterialCubit>()
+                                .stream
+                                .listen((state) {
                               if (state.formStatus ==
                                   FormzSubmissionStatus.success) {
-                                context.read<StockCubit>().clearForm();
+                                context.read<RawMaterialCubit>().clearForm();
 
                                 // Close the drawer
                                 closeDrawer();

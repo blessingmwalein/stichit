@@ -1,18 +1,11 @@
-import 'dart:typed_data';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:multi_image_picker_view/multi_image_picker_view.dart';
-import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/rugs/cubit/rugs_cubit.dart';
-import 'package:stichit/ui_commons/alerts/snack_bar.dart';
+import 'package:stichit/rugs/view/widgets/rug_size_display.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
-import 'package:stichit/ui_commons/forms/custom_select_field.dart';
-import 'package:stichit/ui_commons/forms/custom_text_input.dart';
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:stichit/util/picker.dart'; // Add this import
 
 class ViewRugDrawer extends StatefulWidget {
   final VoidCallback closeDrawer;
@@ -27,10 +20,10 @@ class ViewRugDrawer extends StatefulWidget {
   });
 
   @override
-  _ViewRugDrawerState createState() => _ViewRugDrawerState();
+  ViewRugDrawerState createState() => ViewRugDrawerState();
 }
 
-class _ViewRugDrawerState extends State<ViewRugDrawer> {
+class ViewRugDrawerState extends State<ViewRugDrawer> {
   late MultiImagePickerController controller;
 
   @override
@@ -141,55 +134,10 @@ class _ViewRugDrawerState extends State<ViewRugDrawer> {
                                 _buildDetailRow(
                                     'Description', selectedRug.description),
                                 _buildDetailRow('Price Per Unit',
-                                    '\$${selectedRug.pricePerUnit.toStringAsFixed(2)}'),
-                                _buildDetailRow(
-                                    'Measure Type', selectedRug.measureType),
-                                _buildDetailRow('Measure Value',
-                                    selectedRug.measureValue.toString()),
-                                _buildDetailRow('Type', selectedRug.type),
-                                _buildDetailRow('Shape', selectedRug.shape),
-                                if (state.selectedImages != null &&
-                                    state.selectedImages!.isNotEmpty)
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Images:',
-                                        style: TextStyle(
-                                          color: CustomColors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Wrap(
-                                        spacing: 8,
-                                        runSpacing: 8,
-                                        children:
-                                            state.selectedImages!.map((image) {
-                                          return Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            child: CachedNetworkImage(
-                                                imageUrl: image.imageUrl,
-                                                width: 100,
-                                                height: 100,
-                                                fit: BoxFit.cover,
-                                                placeholder: (context, url) =>
-                                                    const CircularProgressIndicator(),
-                                                errorWidget:
-                                                    (context, url, error) {
-                                                  print(
-                                                      'Error Iri ${image.imageUrl}');
-                                                  return Icon(Icons.error);
-                                                }),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ],
-                                  ),
+                                    '\$${selectedRug.approxPricePerUnit.toStringAsFixed(2)}'),
+
+                                //rug sizes
+                                RugSizesDisplay(rugSizes: state.rugSizes)
                               ],
                             ),
                           ),

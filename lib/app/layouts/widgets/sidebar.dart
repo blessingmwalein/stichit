@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:stichit/app/const/colors.dart';
-import 'package:stichit/rugs/view/rugs_page.dart';
-import 'package:stichit/stock/stock.dart';
+import 'package:stichit/app/routes/routes.dart';
 import 'package:stichit/ui_commons/cards/logo_card.dart';
 import 'package:stichit/ui_commons/icons/custom_svg_icon.dart';
 import 'package:ui_commons/ui_commons.dart';
@@ -76,14 +76,14 @@ class SideBar extends StatelessWidget {
               icon: 'assets/icons/puzzle.svg',
               subTitle: 'Sizes, Types, Color, Shape',
               onTap: () {
-                Navigator.of(context).push(RugsPage.route());
+                GoRouter.of(context).go(AdminRoutes.rugs);
               }),
           drawerTile(
               icon: 'assets/icons/shopping-cart.svg',
               title: 'Raw Materials',
               subTitle: 'Yarn, Cloth, Glue',
               onTap: () {
-                Navigator.of(context).push(StockPage.route());
+                GoRouter.of(context).go(AdminRoutes.rawMaterials);
               }),
           drawerTile(
               icon: 'assets/icons/calendar-outlined.svg',
@@ -92,19 +92,19 @@ class SideBar extends StatelessWidget {
               onTap: () {
                 // Navigator.of(context).push(EditProfilePage.route());
               }),
+          // drawerTile(
+          //     icon: 'assets/icons/shopping-bag.svg',
+          //     title: 'Orders',
+          //     subTitle: 'Pending, In Progress, Completed',
+          //     onTap: () {
+          //       // Navigator.of(context).push(EditProfilePage.route());
+          //     }),
           drawerTile(
-              icon: 'assets/icons/shopping-bag.svg',
-              title: 'Orders',
-              subTitle: 'Pending, In Progress, Completed',
+              icon: 'assets/icons/users.svg',
+              title: 'Customers & Orders',
+              subTitle: 'Customers List, Orders',
               onTap: () {
-                // Navigator.of(context).push(EditProfilePage.route());
-              }),
-          drawerTile(
-              icon: 'assets/icons/cog.svg',
-              title: 'Assets',
-              subTitle: 'Equiptment, Tools, Machines',
-              onTap: () {
-                // Navigator.of(context).push(EditProfilePage.route());
+                GoRouter.of(context).go(AdminRoutes.customers);
               }),
           drawerTile(
               icon: 'assets/icons/logout.svg',
