@@ -1,10 +1,11 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stichit/app/routes/admin-routes/customers_page_screen.dart';
 import 'package:stichit/app/routes/admin-routes/dashboard_page_screen.dart';
+import 'package:stichit/app/routes/admin-routes/orders_page_screen.dart';
 import 'package:stichit/app/routes/admin-routes/rugs_page_scree.dart';
 import 'package:stichit/app/routes/routes.dart';
-import 'package:stichit/app/routes/sub-routes/customers_page_screen.dart';
 import 'package:stichit/app/routes/sub-routes/home_page_screen.dart';
 import 'package:stichit/app/routes/sub-routes/login_screen.dart';
 import 'package:stichit/app/routes/sub-routes/sign_up_screen.dart';
@@ -20,6 +21,7 @@ abstract class AppRouter {
         SignUpScreenRouter.instance.route(),
         DashboardPageScreen.instance.route(),
         CustomersPageScreen.instance.route(),
+        OrdersPageScreen.instance.route(),
         RugsPageScreen.instance.route(),
       ],
       redirect: (BuildContext context, GoRouterState state) =>

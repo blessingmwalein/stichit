@@ -10,7 +10,7 @@ class OrdersRepositoryBase {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  Future<void> addOrder(CustomerOrder order, ImageFile image) async {
+  Future<void> addOrder(CustomerOrder order, ImageFile? image) async {
     // Add order to database
 
     try {

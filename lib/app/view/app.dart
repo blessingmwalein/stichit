@@ -2,6 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:customer_repository/customer_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:orders_repository/orders_repository.dart';
 import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/bloc/app_bloc.dart';
 import 'package:stichit/app/routes/app.dart';
@@ -24,6 +25,8 @@ class App extends StatelessWidget {
       RawMaterialsRepository();
   final RugsRepositoryBase _rugsRepositoryBase = RugsRepositoryBase();
   final CustomerRepository _customerRepository = CustomerRepository();
+  //order repository
+  final OrdersRepositoryBase _orderRepository = OrdersRepositoryBase();
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +43,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<CustomerRepository>.value(
           value: _customerRepository,
+        ),
+        RepositoryProvider<OrdersRepositoryBase>.value(
+          value: _orderRepository,
         ),
       ],
       child: MultiBlocProvider(
@@ -72,6 +78,7 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (context) => CustomerCubit(
               customerRepository: _customerRepository,
+              ordersRepository: _orderRepository,
             ),
           ),
         ],

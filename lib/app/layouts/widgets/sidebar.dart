@@ -101,10 +101,17 @@ class SideBar extends StatelessWidget {
           //     }),
           drawerTile(
               icon: 'assets/icons/users.svg',
-              title: 'Customers & Orders',
-              subTitle: 'Customers List, Orders',
+              title: 'Customers',
+              subTitle: 'Customers List,',
               onTap: () {
                 GoRouter.of(context).go(AdminRoutes.customers);
+              }),
+          drawerTile(
+              icon: 'assets/icons/users.svg',
+              title: 'Orders',
+              subTitle: 'COrders',
+              onTap: () {
+                GoRouter.of(context).go(AdminRoutes.orders);
               }),
           drawerTile(
               icon: 'assets/icons/logout.svg',

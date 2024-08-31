@@ -67,7 +67,7 @@ class CustomSelectTextFieldWidgetState<T>
       value: widget.selectedOption,
       onChanged: widget.isDisabled == true ? null : widget.onChanged,
       focusColor: widget.primaryColor.withOpacity(0.7),
-      // dropdownColor: lightBlackForm,
+      dropdownColor: lightBlackForm,
       style: TextStyle(color: widget.primaryColor.withOpacity(0.7)),
       decoration: InputDecoration(
         labelText: widget.label,

@@ -12,6 +12,9 @@ class CustomerOrder extends Equatable {
   final List<String>? colorPalet;
   final String? notes;
   final OrderStatus status;
+  final double? deposit;
+  final double totalCost;
+  final String? estimatedDeliveryDate;
 
   const CustomerOrder(
       {required this.id,
@@ -22,6 +25,9 @@ class CustomerOrder extends Equatable {
       this.colorPalet,
       required this.createdAt,
       required this.status,
+      this.deposit = 0.0,
+      required this.totalCost,
+      this.estimatedDeliveryDate,
       required this.notes});
 
   // from firestore
@@ -37,6 +43,9 @@ class CustomerOrder extends Equatable {
         colorPalet: List.from(data['color_palet']),
         createdAt: data['created_at'],
         status: data['status'],
+        deposit: _toDouble(data['deposit']),
+        totalCost: _toDouble(data['total_cost']),
+        estimatedDeliveryDate: data['estimated_delivery_date'],
         notes: data['notes']);
   }
   static double _toDouble(dynamic value) {
@@ -61,7 +70,10 @@ class CustomerOrder extends Equatable {
       'color_palet': colorPalet,
       'created_at': createdAt,
       'status': status,
-      'notes': notes
+      'notes': notes,
+      'deposit': deposit,
+      'total_cost': totalCost,
+      'estimated_delivery_date': estimatedDeliveryDate
     };
   }
 
@@ -74,16 +86,24 @@ class CustomerOrder extends Equatable {
       String? imageUrl,
       String? createdAt,
       OrderStatus? status,
+      double? deposit,
+      double? totalCost,
+      String? estimatedDeliveryDate,
       String? notes}) {
     return CustomerOrder(
-        id: id ?? this.id,
-        userId: userId ?? this.userId,
-        rugId: rugId ?? this.rugId,
-        rugSizeId: rugSizeId ?? this.rugSizeId,
-        imageUrl: imageUrl ?? this.imageUrl,
-        notes: notes ?? this.notes,
-        status: status ?? this.status,
-        createdAt: createdAt ?? this.createdAt);
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      rugId: rugId ?? this.rugId,
+      rugSizeId: rugSizeId ?? this.rugSizeId,
+      imageUrl: imageUrl ?? this.imageUrl,
+      notes: notes ?? this.notes,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      colorPalet: colorPalet,
+      deposit: deposit,
+      totalCost: totalCost ?? this.totalCost,
+      estimatedDeliveryDate: estimatedDeliveryDate,
+    );
   }
 
   // empty
@@ -95,6 +115,8 @@ class CustomerOrder extends Equatable {
       createdAt: '',
       imageUrl: '',
       status: OrderStatus.fromString('Created'),
+      totalCost: 0.0,
+      estimatedDeliveryDate: null,
       notes: '');
 
   // copyWithField
@@ -114,6 +136,12 @@ class CustomerOrder extends Equatable {
         return copyWith(notes: notes);
       case 'status':
         return copyWith(status: status);
+      case 'deposit':
+        return copyWith(deposit: value);
+      case 'totalCost':
+        return copyWith(totalCost: value);
+      case 'estimatedDeliveryDate':
+        return copyWith(estimatedDeliveryDate: value);
       default:
         return this;
     }

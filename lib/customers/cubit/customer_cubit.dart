@@ -5,22 +5,33 @@ import 'package:bloc/bloc.dart';
 import 'package:customer_repository/customer_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
+import 'package:orders_repository/orders_repository.dart';
 
 part 'customer_state.dart';
 
 class CustomerCubit extends Cubit<CustomerState> {
   CustomerCubit({
     required CustomerRepository customerRepository,
+    required OrdersRepositoryBase ordersRepository,
   })  : _customerRepository = customerRepository,
+        _ordersRepository = ordersRepository,
         super(CustomerState());
 
   final CustomerRepository _customerRepository;
+  final OrdersRepositoryBase _ordersRepository;
 
   void onFormChange(String field, dynamic value) {
     log("field: $field, value: $value");
     final updatedCustomer = state.customerForm.copyWithField(field, value);
-    log("updatedCustomer: $updatedCustomer");
+
     emit(state.copyWith(customerForm: updatedCustomer));
+  }
+
+  void onOrderFormChange(String field, dynamic value) {
+    log("field: $field, value: $value");
+    final updatedOrder = state.orderForm.copyWithField(field, value);
+    log("updatedOrder: $updatedOrder");
+    emit(state.copyWith(orderForm: updatedOrder));
   }
 
   // Save customer
@@ -65,6 +76,48 @@ class CustomerCubit extends Cubit<CustomerState> {
     }
   }
 
+  // Save order
+  void saveOrder() {
+    final orderForm = state.orderForm;
+    emit(state.copyWith(formStatus: FormzSubmissionStatus.inProgress));
+
+    if (state.isEditing) {
+      _ordersRepository.updateOrder(orderForm).then((_) {
+        //get orders after updating
+        getOrders();
+        emit(state.copyWith(
+            formStatus: FormzSubmissionStatus.success,
+            isEditing: false,
+            selectedOrder: null,
+            orderForm: CustomerOrder.empty,
+            successMessage: "Order updated successfully"));
+        resetFormStatus();
+      }).catchError((error) {
+        emit(state.copyWith(
+            formStatus: FormzSubmissionStatus.failure,
+            errorMessage: error.toString()));
+        resetFormStatus();
+      });
+    } else {
+      _ordersRepository.addOrder(orderForm, null).then((_) {
+        //get orders after saving
+        getOrders();
+        emit(state.copyWith(
+            formStatus: FormzSubmissionStatus.success,
+            isEditing: false,
+            selectedOrder: null,
+            orderForm: CustomerOrder.empty,
+            successMessage: "Order saved successfully"));
+        resetFormStatus();
+      }).catchError((error) {
+        emit(state.copyWith(
+            formStatus: FormzSubmissionStatus.failure,
+            errorMessage: error.toString()));
+        resetFormStatus();
+      });
+    }
+  }
+
   void resetFormStatus() {
     emit(state.copyWith(formStatus: FormzSubmissionStatus.initial));
   }
@@ -78,12 +131,27 @@ class CustomerCubit extends Cubit<CustomerState> {
     ));
   }
 
+  void editOrder(CustomerOrder order) {
+    emit(state.copyWith(
+      orderForm: order,
+      isEditing: true,
+      selectedOrder: order,
+    ));
+  }
+
   // Set selected customer
   void setSelectedCustomer(UserModel customer) {
-    print("customer: $customer");
     emit(state.copyWith(
       selectedCustomer: customer,
       customerForm: customer,
+    ));
+  }
+
+  // Set selected order
+  void setSelectedOrder(CustomerOrder order) {
+    emit(state.copyWith(
+      selectedOrder: order,
+      orderForm: order,
     ));
   }
 
@@ -108,6 +176,20 @@ class CustomerCubit extends Cubit<CustomerState> {
     _customerRepository.getCustomers().then((customers) {
       emit(state.copyWith(
           customers: customers, pageStatus: FormzSubmissionStatus.success));
+    }).catchError((error) {
+      emit(state.copyWith(
+          errorMessage: error.toString(),
+          pageStatus: FormzSubmissionStatus.failure));
+    });
+  }
+
+  // Get all orders
+  void getOrders() {
+    emit(state.copyWith(pageStatus: FormzSubmissionStatus.inProgress));
+
+    _ordersRepository.getOrders().then((orders) {
+      emit(state.copyWith(
+          orders: orders, pageStatus: FormzSubmissionStatus.success));
     }).catchError((error) {
       emit(state.copyWith(
           errorMessage: error.toString(),
@@ -141,12 +223,41 @@ class CustomerCubit extends Cubit<CustomerState> {
     });
   }
 
+  // Delete order
+  void deleteOrder(CustomerOrder order) {
+    emit(state.copyWith(pageStatus: FormzSubmissionStatus.inProgress));
+
+    _ordersRepository.removeOrder(order).then((_) {
+      //get orders after deleting
+      getOrders();
+      emit(state.copyWith(
+          pageStatus: FormzSubmissionStatus.success,
+          orderForm: CustomerOrder.empty,
+          isEditing: false,
+          selectedOrder: null,
+          successMessage: "Order deleted successfully"));
+    }).catchError((error) {
+      emit(state.copyWith(
+          errorMessage: error.toString(),
+          pageStatus: FormzSubmissionStatus.failure));
+    });
+  }
+
   //clearForm
   void clearForm() {
     emit(state.copyWith(
       customerForm: UserModel.empty,
       isEditing: false,
       selectedCustomer: null,
+    ));
+  }
+
+  //clearOrderForm
+  void clearOrderForm() {
+    emit(state.copyWith(
+      orderForm: CustomerOrder.empty,
+      isEditing: false,
+      selectedOrder: null,
     ));
   }
 }

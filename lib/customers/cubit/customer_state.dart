@@ -8,10 +8,14 @@ class CustomerState extends Equatable {
     this.errorMessage,
     this.successMessage,
     UserModel? customerForm,
+    CustomerOrder? orderForm,
     this.customers = const [],
+    this.orders = const [],
     this.isEditing = false,
     this.selectedCustomer,
-  }) : customerForm = customerForm ?? UserModel.empty;
+    this.selectedOrder,
+  })  : customerForm = customerForm ?? UserModel.empty,
+        orderForm = orderForm ?? CustomerOrder.empty;
 
   final FormzSubmissionStatus formStatus;
   final FormzSubmissionStatus pageStatus;
@@ -21,7 +25,10 @@ class CustomerState extends Equatable {
   final UserModel customerForm;
   final bool isEditing;
   final List<UserModel> customers;
+  final List<CustomerOrder> orders;
   final UserModel? selectedCustomer;
+  final CustomerOrder? selectedOrder;
+  final CustomerOrder orderForm;
 
   CustomerState copyWith({
     FormzSubmissionStatus? formStatus,
@@ -30,9 +37,12 @@ class CustomerState extends Equatable {
     String? errorMessage,
     String? successMessage,
     UserModel? customerForm,
+    CustomerOrder? orderForm,
     bool? isEditing,
     List<UserModel>? customers,
+    List<CustomerOrder>? orders,
     UserModel? selectedCustomer,
+    CustomerOrder? selectedOrder,
   }) {
     return CustomerState(
       formStatus: formStatus ?? this.formStatus,
@@ -41,9 +51,12 @@ class CustomerState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       successMessage: successMessage ?? this.successMessage,
       customerForm: customerForm ?? this.customerForm,
+      orderForm: orderForm ?? this.orderForm,
       isEditing: isEditing ?? this.isEditing,
       customers: customers ?? this.customers,
+      orders: orders ?? this.orders,
       selectedCustomer: selectedCustomer ?? this.selectedCustomer,
+      selectedOrder: selectedOrder ?? this.selectedOrder,
     );
   }
 
@@ -58,5 +71,8 @@ class CustomerState extends Equatable {
         isEditing,
         customers,
         selectedCustomer,
+        orders,
+        orderForm,
+        selectedOrder,
       ];
 }
