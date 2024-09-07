@@ -5,6 +5,8 @@ import 'package:bloc/bloc.dart';
 import 'package:customer_repository/customer_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker_view/multi_image_picker_view.dart';
 import 'package:orders_repository/orders_repository.dart';
 
 part 'customer_state.dart';
@@ -32,6 +34,11 @@ class CustomerCubit extends Cubit<CustomerState> {
     final updatedOrder = state.orderForm.copyWithField(field, value);
     log("updatedOrder: $updatedOrder");
     emit(state.copyWith(orderForm: updatedOrder));
+  }
+
+//ordr image change
+  void onOrderImageChange(XFile? image) {
+    emit(state.copyWith(orderImage: image));
   }
 
   // Save customer
@@ -79,10 +86,11 @@ class CustomerCubit extends Cubit<CustomerState> {
   // Save order
   void saveOrder() {
     final orderForm = state.orderForm;
+
     emit(state.copyWith(formStatus: FormzSubmissionStatus.inProgress));
 
     if (state.isEditing) {
-      _ordersRepository.updateOrder(orderForm).then((_) {
+      _ordersRepository.updateOrder(orderForm, state.orderImage).then((_) {
         //get orders after updating
         getOrders();
         emit(state.copyWith(
@@ -99,7 +107,12 @@ class CustomerCubit extends Cubit<CustomerState> {
         resetFormStatus();
       });
     } else {
-      _ordersRepository.addOrder(orderForm, null).then((_) {
+      //get current date in string
+      final date = DateTime.now().toIso8601String();
+
+      _ordersRepository
+          .addOrder(orderForm.copyWith(createdAt: date), state.orderImage)
+          .then((_) {
         //get orders after saving
         getOrders();
         emit(state.copyWith(

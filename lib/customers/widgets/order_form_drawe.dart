@@ -1,6 +1,9 @@
+import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/customers/cubit/customer_cubit.dart';
 import 'package:stichit/rugs/cubit/rugs_cubit.dart';
@@ -27,9 +30,24 @@ class OrdersFormDrawer extends StatefulWidget {
 }
 
 class OrdersFormDrawerState extends State<OrdersFormDrawer> {
-  @override
-  void initState() {
-    super.initState();
+  final ImagePicker _picker = ImagePicker();
+  XFile? _selectedImage;
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _selectedImage = image;
+      });
+      context.read<CustomerCubit>().onOrderImageChange(image);
+    }
+  }
+
+  void _removeImage() {
+    setState(() {
+      _selectedImage = null;
+    });
+    context.read<CustomerCubit>().onOrderImageChange(null);
   }
 
   @override
@@ -71,6 +89,10 @@ class OrdersFormDrawerState extends State<OrdersFormDrawer> {
         ),
         child: BlocBuilder<CustomerCubit, CustomerState>(
           builder: (context, state) {
+            // Determine the image URI to display
+            final String? imageUri =
+                _selectedImage?.path ?? state.orderForm.orderImage?.imageUrl;
+
             return Stack(
               children: [
                 Padding(
@@ -82,7 +104,7 @@ class OrdersFormDrawerState extends State<OrdersFormDrawer> {
                         children: [
                           Text(
                             state.selectedOrder != null
-                                ? 'Edit Order - ${state.selectedOrder?.id}'
+                                ? 'Edit Order - #${state.selectedOrder?.orderNumber}'
                                 : 'Add Order',
                             style: const TextStyle(
                               fontSize: 24,
@@ -118,7 +140,8 @@ class OrdersFormDrawerState extends State<OrdersFormDrawer> {
                                         child: CustomSelectTextFieldWidget(
                                           isOutline: true,
                                           label: 'Customer',
-                                          selectedOption: null,
+                                          selectedOption:
+                                              state.orderForm.user?.fullName,
                                           primaryColor: CustomColors.white,
                                           options: state.customers
                                               .map((e) => e.fullName)
@@ -131,7 +154,7 @@ class OrdersFormDrawerState extends State<OrdersFormDrawer> {
                                             );
                                             context
                                                 .read<CustomerCubit>()
-                                                .onFormChange('userId',
+                                                .onOrderFormChange('userId',
                                                     selectedCustomer.id);
                                           },
                                         ),
@@ -141,20 +164,10 @@ class OrdersFormDrawerState extends State<OrdersFormDrawer> {
                                     ],
                                   ),
                                 ),
-
                                 const SizedBox(height: 15),
-                                //total amount
-
-                                BlocBuilder<RugsCubit, RugsState>(
-                                  builder: (context, rugState) {
-                                    return rugState.selectedRug != null
-                                        ? const Padding(
-                                            padding: EdgeInsets.all(13.0),
-                                            child: RugSizeInput())
-                                        : const SizedBox();
-                                  },
-                                ),
-                                //status
+                                const Padding(
+                                    padding: EdgeInsets.all(13.0),
+                                    child: RugSizeInput()),
                                 Padding(
                                   padding: const EdgeInsets.all(13.0),
                                   child:
@@ -175,11 +188,13 @@ class OrdersFormDrawerState extends State<OrdersFormDrawer> {
                                       'Gray',
                                       'Pink'
                                     ],
-                                    selectedOptions: const [],
+                                    selectedOptions:
+                                        state.orderForm.colorPalet ?? [],
                                     onChanged: (value) {
                                       context
                                           .read<CustomerCubit>()
-                                          .onFormChange('colorPalet', value);
+                                          .onOrderFormChange(
+                                              'colorPalet', value);
                                     },
                                   ),
                                 ),
@@ -196,7 +211,7 @@ class OrdersFormDrawerState extends State<OrdersFormDrawer> {
                                           label: 'Deposit',
                                           onChanged: (value) => context
                                               .read<CustomerCubit>()
-                                              .onFormChange('deposit',
+                                              .onOrderFormChange('deposit',
                                                   double.parse(value)),
                                           hint: '0.00',
                                           defaultValue: state.orderForm.deposit
@@ -213,7 +228,7 @@ class OrdersFormDrawerState extends State<OrdersFormDrawer> {
                                           label: 'Total',
                                           onChanged: (value) => context
                                               .read<CustomerCubit>()
-                                              .onFormChange('totalCost',
+                                              .onOrderFormChange('totalCost',
                                                   double.parse(value)),
                                           hint: '0.00',
                                           defaultValue: state
@@ -226,15 +241,31 @@ class OrdersFormDrawerState extends State<OrdersFormDrawer> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(13.0),
-                                  child: CustomDatePickerWidget(
-                                    label: 'Estimate delivery date',
-                                    initialDate: DateTime.now()
-                                        .add(const Duration(days: 7)),
-                                    onDateChanged: (DateTime date) {
-                                      context
-                                          .read<CustomerCubit>()
-                                          .onFormChange(
-                                              'estimatedDeliveryDate', date);
+                                  child:
+                                      BlocBuilder<CustomerCubit, CustomerState>(
+                                    builder: (context, state) {
+                                      // Assuming state.estimatedDeliveryDate is a String
+                                      final DateTime initialDate = state
+                                                  .orderForm
+                                                  .estimatedDeliveryDate !=
+                                              null
+                                          ? DateTime.parse(state.orderForm
+                                                  .estimatedDeliveryDate ??
+                                              '')
+                                          : DateTime.now()
+                                              .add(const Duration(days: 7));
+
+                                      return CustomDatePickerWidget(
+                                        label: 'Estimate delivery date',
+                                        initialDate: initialDate,
+                                        onDateChanged: (DateTime date) {
+                                          context
+                                              .read<CustomerCubit>()
+                                              .onOrderFormChange(
+                                                  'estimatedDeliveryDate',
+                                                  date.toIso8601String());
+                                        },
+                                      );
                                     },
                                   ),
                                 ),
@@ -249,11 +280,66 @@ class OrdersFormDrawerState extends State<OrdersFormDrawer> {
                                     label: 'Notes',
                                     onChanged: (value) => context
                                         .read<CustomerCubit>()
-                                        .onFormChange('notes', value),
+                                        .onOrderFormChange('notes', value),
                                     hint: 'Enter notes here',
                                     defaultValue: state.orderForm.notes,
                                   ),
                                 ),
+                                if (imageUri != null)
+                                  Stack(
+                                    children: [
+                                      CachedNetworkImage(
+                                        imageUrl: imageUri,
+                                        width: double.infinity,
+                                        height: 400,
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            const SizedBox(
+                                                height: 100,
+                                                width: 100,
+                                                child:
+                                                    CircularProgressIndicator()),
+                                        errorWidget: (context, url, error) {
+                                          return const Icon(Icons.error);
+                                        },
+                                      ),
+                                      Positioned(
+                                        top: 5,
+                                        right: 5,
+                                        child: Row(
+                                          children: [
+                                            IconButton(
+                                              onPressed: _pickImage,
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            IconButton(
+                                              onPressed: _removeImage,
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                else
+                                  SizedBox(
+                                    height: 150,
+                                    width: double.infinity,
+                                    child: Center(
+                                      child: ElevatedButton.icon(
+                                        onPressed: _pickImage,
+                                        icon: const Icon(Icons.add_a_photo),
+                                        label: const Text('Choose Image'),
+                                      ),
+                                    ),
+                                  ),
+                                const SizedBox(height: 10),
                               ],
                             ),
                           ),
@@ -281,28 +367,24 @@ class OrdersFormDrawerState extends State<OrdersFormDrawer> {
                         const SizedBox(width: 16),
                         CustomButton(
                           label: 'Save',
-                          primaryColor: CustomColors.orange,
                           radius: 40,
-                          isLoading: state.formStatus ==
-                              FormzSubmissionStatus.inProgress,
-                          isDisabled: state.formStatus ==
-                              FormzSubmissionStatus.inProgress,
+                          primaryColor: CustomColors.orange,
+                          isLoading: state.formStatus.isInProgress,
                           onPressed: () {
                             context.read<CustomerCubit>().saveOrder();
-                            // Listen to the state and show snackbar
                             context
                                 .read<CustomerCubit>()
                                 .stream
                                 .listen((state) {
                               if (state.formStatus ==
                                   FormzSubmissionStatus.success) {
-                                context.read<CustomerCubit>().clearForm();
+                                context.read<RugsCubit>().clearForm();
                                 // Close the drawer
                                 widget.closeDrawer();
                               }
                             });
                           },
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -330,7 +412,7 @@ class RugTypeInput extends StatelessWidget {
             return CustomSelectTextFieldWidget(
               isOutline: true,
               label: 'Rug Type',
-              selectedOption: null,
+              selectedOption: state.orderForm.rug?.name,
               primaryColor: CustomColors.white,
               options: rugState.rugs.map((e) => e.name).toList(),
               onChanged: (value) {
@@ -339,7 +421,7 @@ class RugTypeInput extends StatelessWidget {
                 );
                 context
                     .read<CustomerCubit>()
-                    .onFormChange('rugId', slectedRug.id);
+                    .onOrderFormChange('rugId', slectedRug.id);
                 context.read<RugsCubit>().setSelectedRug(slectedRug);
               },
             );
@@ -359,12 +441,16 @@ class RugSizeInput extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.orderForm.rugSizeId != current.orderForm.rugSizeId,
       builder: (context, state) {
+        print('RugTypeInput: ${state.orderForm.rugId}');
+
         return BlocBuilder<RugsCubit, RugsState>(
           builder: (context, rugState) {
             return CustomSelectTextFieldWidget(
               isOutline: true,
               label: 'Rug Size',
-              selectedOption: null,
+              selectedOption: state.selectedOrder?.rugSize != null
+                  ? '${state.orderForm.rugSize?.length}cm x ${state.orderForm.rugSize?.width}cm'
+                  : null,
               primaryColor: CustomColors.white,
               options: rugState.rugSizes
                   .map((e) => '${e.length}cm x ${e.width}cm')
@@ -375,7 +461,7 @@ class RugSizeInput extends StatelessWidget {
                 );
                 context
                     .read<CustomerCubit>()
-                    .onFormChange('rugSizeId', slectedRug.id);
+                    .onOrderFormChange('rugSizeId', slectedRug.id);
               },
             );
           },

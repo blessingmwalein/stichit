@@ -17,6 +17,12 @@ dependencies:
   multi_image_picker_view: ^1.0.3
   file_picker: ^8.0.5
   firebase_storage: ^11.7.7
+  rugs_repository:
+    path: ../rugs_repository
+  authentication_repository:
+    path: ../authentication_repository
+  ui_commons:
+    path: ../ui_commons
 
 dev_dependencies:
   flutter_test:

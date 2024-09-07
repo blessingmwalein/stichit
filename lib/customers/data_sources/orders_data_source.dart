@@ -1,11 +1,13 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:form_inputs/form_inputs.dart';
-import 'package:orders_repository/orders_repository.dart';
+import 'package:rugs_repository/rugs_repository.dart';
+import 'package:stichit/ui_commons/alerts/status/status_pill.dart';
+import 'package:stichit/ui_commons/avatars/initial_avatar.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/ui_commons/buttons/copy_text_button.dart';
 import 'package:stichit/ui_commons/buttons/icon_drop_down_button.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:orders_repository/orders_repository.dart';
 
 class OrdersDataSource extends DataGridSource {
   OrdersDataSource({
@@ -15,19 +17,34 @@ class OrdersDataSource extends DataGridSource {
     required this.onDelete,
   }) {
     _ordersList = orderList
-        .map<DataGridRow>((e) => DataGridRow(cells: [
-              DataGridCell<String>(columnName: 'id', value: e.id),
-              DataGridCell<String>(columnName: 'userId', value: e.userId),
-              DataGridCell<String>(columnName: 'rugId', value: e.rugId),
-              DataGridCell<String>(columnName: 'rugSizeId', value: e.rugSizeId),
+        .map<DataGridRow>((CustomerOrder e) => DataGridRow(cells: [
+              DataGridCell<String>(columnName: 'orderId', value: e.id),
+              DataGridCell<String>(
+                  columnName: 'userName', value: e.user?.fullName),
+              DataGridCell<String>(columnName: 'rugName', value: e.rug?.name),
+              DataGridCell<String>(
+                  columnName: 'rugSize',
+                  value: '${e.rugSize?.length}cm x ${e.rugSize?.width}cm'),
+              DataGridCell<String>(columnName: 'orderDate', value: e.createdAt),
+              DataGridCell<String>(
+                  columnName: 'deposit', value: e.deposit.toStringAsFixed(2)),
+              DataGridCell<String>(
+                  columnName: 'total', value: e.totalCost.toStringAsFixed(2)),
+              DataGridCell<String>(columnName: 'status', value: e.status.name),
+              DataGridCell<UserModel>(columnName: 'user', value: e.user),
+              DataGridCell<Rug>(columnName: 'rug', value: e.rug),
+              DataGridCell<RugSizes>(columnName: 'size', value: e.rugSize),
               DataGridCell<String>(columnName: 'imageUrl', value: e.imageUrl),
-              DataGridCell<String>(columnName: 'createdAt', value: e.createdAt),
+              DataGridCell<int>(
+                  columnName: 'orderNumber', value: e.orderNumber ?? 0),
+              DataGridCell<String>(columnName: 'notes', value: e.notes),
               DataGridCell<String>(
-                  columnName: 'colorPalet',
-                  value: e.colorPalet?.join(', ') ?? ''),
-              DataGridCell<String>(columnName: 'notes', value: e.notes ?? ''),
-              DataGridCell<String>(
-                  columnName: 'status', value: e.status.toString()),
+                  columnName: 'estimatedDeliveryDate',
+                  value: e.estimatedDeliveryDate),
+              DataGridCell<List<String>>(
+                  columnName: 'colorPalet', value: e.colorPalet),
+              DataGridCell<OrderImage>(
+                  columnName: 'orderImage', value: e.orderImage),
             ]))
         .toList();
   }
@@ -43,90 +60,129 @@ class OrdersDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
+    // Retrieve data from the row cells
     final orderId = row.getCells()[0].value.toString();
-    final userId = row.getCells()[1].value.toString();
-    final rugId = row.getCells()[2].value.toString();
-    final rugSizeId = row.getCells()[3].value.toString();
-    final imageUrl = row.getCells()[4].value.toString();
-    final createdAt = row.getCells()[5].value.toString();
-    final colorPalet = row.getCells()[6].value.toString();
-    final notes = row.getCells()[7].value.toString();
-    final status = row.getCells()[8].value.toString();
+    final userName = row.getCells()[1].value.toString();
+    final rugName = row.getCells()[2].value.toString();
+    final rugSize = row.getCells()[3].value.toString();
+    final orderDate = row.getCells()[4].value.toString();
+    final deposit = row.getCells()[5].value.toString();
+    final total = row.getCells()[6].value.toString();
+    final status = row.getCells()[7].value.toString();
+    final user = row.getCells()[8].value;
+    final rug = row.getCells()[9].value;
+    final size = row.getCells()[10].value;
+    final imageUrl = row.getCells()[11].value;
+    final orderNumber = row.getCells()[12].value;
+    final notes = row.getCells()[13].value;
+    final estimatedDeliveryDate = row.getCells()[14].value;
+    final colorPalet = row.getCells()[15].value;
+    final orderImage = row.getCells()[16].value;
 
-    CustomerOrder selectedOrder = CustomerOrder(
-      id: orderId,
-      userId: userId,
-      rugId: rugId,
-      rugSizeId: rugSizeId,
-      imageUrl: imageUrl,
-      colorPalet: colorPalet.split(', '),
-      createdAt: createdAt,
-      status: OrderStatus.fromString(status),
-      notes: notes,
-      totalCost: 0,
-    );
+    // Create a selected CustomerOrder object
+    final selectedOrder = CustomerOrder(
+        id: orderId,
+        userId: user.id,
+        user: user,
+        rug: rug,
+        rugSize: size,
+        createdAt: orderDate,
+        deposit: double.parse(deposit),
+        totalCost: double.parse(total),
+        rugId: rug.id,
+        rugSizeId: size.id,
+        imageUrl: imageUrl,
+        status: OrderStatus.fromString(status),
+        notes: notes,
+        estimatedDeliveryDate: estimatedDeliveryDate,
+        colorPalet: colorPalet,
+        orderImage: orderImage,
+        orderNumber: orderNumber);
 
     return DataGridRowAdapter(cells: <Widget>[
       Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(8.0),
-        child: CopyTextButton(text: orderId),
+        child: CopyTextButton(text: orderNumber.toString()),
       ),
       Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
-        child: Text(userId,
-            style: const TextStyle(
-                color: CustomColors.grey, fontWeight: FontWeight.normal)),
+        child: Row(
+          children: [
+            InitialsAvatar(
+              text: userName,
+              height: 30,
+              width: 30,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                userName,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                    color: CustomColors.grey, fontWeight: FontWeight.normal),
+              ),
+            ),
+          ],
+        ),
       ),
       Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
-        child: Text(rugId,
-            style: const TextStyle(
-                color: CustomColors.grey, fontWeight: FontWeight.normal)),
+        child: Text(
+          rugName,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+              color: CustomColors.grey, fontWeight: FontWeight.normal),
+        ),
       ),
       Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
-        child: Text(rugSizeId,
-            style: const TextStyle(
-                color: CustomColors.grey, fontWeight: FontWeight.normal)),
+        child: Text(
+          rugSize,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+              color: CustomColors.grey, fontWeight: FontWeight.normal),
+        ),
       ),
       Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
-        child: Text(imageUrl,
-            style: const TextStyle(
-                color: CustomColors.grey, fontWeight: FontWeight.normal)),
+        child: Text(
+          orderDate,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+              color: CustomColors.grey, fontWeight: FontWeight.normal),
+        ),
       ),
       Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
-        child: Text(createdAt,
-            style: const TextStyle(
-                color: CustomColors.grey, fontWeight: FontWeight.normal)),
+        child: Text(
+          '\$$deposit',
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+              color: CustomColors.grey, fontWeight: FontWeight.normal),
+        ),
       ),
       Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
-        child: Text(colorPalet,
-            style: const TextStyle(
-                color: CustomColors.grey, fontWeight: FontWeight.normal)),
+        child: Text(
+          '\$$total',
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+              color: CustomColors.grey, fontWeight: FontWeight.normal),
+        ),
       ),
       Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
-        child: Text(notes,
-            style: const TextStyle(
-                color: CustomColors.grey, fontWeight: FontWeight.normal)),
-      ),
-      Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.all(8.0),
-        child: Text(status,
-            style: const TextStyle(
-                color: CustomColors.grey, fontWeight: FontWeight.normal)),
+        child: StatusPill(
+          status: status,
+        ),
       ),
       Container(
         alignment: Alignment.centerLeft,

@@ -8,7 +8,9 @@ class LoginState extends Equatable {
     this.successMessage,
     AuthRequest? authRequest,
   }) : authRequest = authRequest ??
-            const AuthRequest(email: Email.pure(), password: Password.pure());
+            const AuthRequest(
+                email: Email.dirty('blessingmwalein@gmail.com'),
+                password: Password.dirty("Xbling1999"));
 
   final FormzSubmissionStatus formStatus;
   final bool isFormValid;

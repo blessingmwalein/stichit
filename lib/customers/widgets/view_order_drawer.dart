@@ -1,8 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:orders_repository/orders_repository.dart';
+import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/customers/cubit/customer_cubit.dart';
+import 'package:stichit/rugs/view/widgets/rug_size_display.dart';
+import 'package:stichit/ui_commons/alerts/status/status_pill.dart';
 import 'package:stichit/ui_commons/avatars/initial_avatar.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
 
@@ -22,13 +28,23 @@ class ViewOrderDrawer extends StatefulWidget {
   _ViewOrderDrawerState createState() => _ViewOrderDrawerState();
 }
 
-class _ViewOrderDrawerState extends State<ViewOrderDrawer> {
+class _ViewOrderDrawerState extends State<ViewOrderDrawer>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 4, vsync: this); // 4 tabs
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildDetailRow(String label, String value, {Widget? trailing}) {
     return Column(
       children: [
         Padding(
@@ -46,17 +62,19 @@ class _ViewOrderDrawerState extends State<ViewOrderDrawer> {
                   ),
                 ),
               ),
-              Expanded(
-                flex: 7,
-                child: Text(
-                  value,
-                  style: TextStyle(
-                    color: CustomColors.white.withOpacity(0.7),
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ),
+              trailing == null
+                  ? Expanded(
+                      flex: 7,
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                          color: CustomColors.white.withOpacity(0.7),
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    )
+                  : Expanded(flex: 7, child: trailing),
             ],
           ),
         ),
@@ -71,7 +89,7 @@ class _ViewOrderDrawerState extends State<ViewOrderDrawer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.4,
+      width: MediaQuery.of(context).size.width * 0.5,
       decoration: const BoxDecoration(
         color: CustomColors.lightBackGround,
         boxShadow: [
@@ -85,72 +103,188 @@ class _ViewOrderDrawerState extends State<ViewOrderDrawer> {
       child: BlocBuilder<CustomerCubit, CustomerState>(
         builder: (context, state) {
           final selectedOrder = state.selectedOrder;
-          return Stack(
+          return Column(
             children: [
+              // Header
               Padding(
                 padding: const EdgeInsets.all(13.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        InitialsAvatar(
-                          text: selectedOrder?.userId ?? '',
-                          height: 45,
-                          width: 45,
-                        ),
-                        const SizedBox(width: 20),
-                        Text(
-                          selectedOrder?.userId ?? '',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.normal,
-                            color: CustomColors.white,
+                    InitialsAvatar(
+                      text: selectedOrder?.user?.fullName ?? '',
+                      height: 45,
+                      width: 45,
+                    ),
+                    const SizedBox(width: 20),
+                    Text(
+                      selectedOrder?.orderNumber.toString() ?? '',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.normal,
+                        color: CustomColors.white,
+                      ),
+                    ),
+                    const Spacer(),
+                    nextStatusButton(selectedOrder?.status.name ?? ''),
+                    state.selectedOrder?.orderConfirmed != true
+                        ? CustomButton(
+                            label: 'Order Confirmation',
+                            radius: 40,
+                            isOutline: true,
+                            icon: "assets/icons/mail.svg",
+                            primaryColor: Colors.white,
+                            onPressed: widget.closeDrawer,
+                          )
+                        : SizedBox(),
+                    IconButton(
+                      onPressed: widget.closeDrawer,
+                      icon: const Icon(Icons.close, color: CustomColors.white),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                color: CustomColors.grey.withOpacity(0.4),
+                height: 0.4,
+              ),
+              // Tabs
+              TabBar(
+                controller: _tabController,
+                labelColor: CustomColors.white,
+                unselectedLabelColor: CustomColors.white.withOpacity(0.5),
+                tabs: const [
+                  Tab(text: 'Order Details'),
+                  Tab(text: 'Customer Details'),
+                  Tab(text: 'Transaction Details'),
+                  Tab(text: 'Rug Details'),
+                ],
+                indicatorColor: CustomColors.orange,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      // Order Details Tab
+                      SingleChildScrollView(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: CustomColors.darkBackGround,
                           ),
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          onPressed: widget.closeDrawer,
-                          icon: const Icon(Icons.close,
-                              color: CustomColors.white),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Divider(
-                      color: CustomColors.grey.withOpacity(0.4),
-                      height: 0.4,
-                    ),
-                    const SizedBox(height: 15),
-                    if (selectedOrder != null)
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: CustomColors.darkBackGround,
-                            ),
-                            padding: const EdgeInsets.all(15),
-                            child: Column(
-                              children: [
-                                _buildDetailRow('Order ID', selectedOrder.id),
-                                _buildDetailRow(
-                                    'User ID', selectedOrder.userId),
-                                _buildDetailRow('Rug ID', selectedOrder.rugId),
-                                _buildDetailRow(
-                                    'Rug Size ID', selectedOrder.rugSizeId),
-                                _buildDetailRow(
-                                    'Created At', selectedOrder.createdAt),
-                                _buildDetailRow(
-                                    'Status', selectedOrder.status.toString()),
-                                _buildDetailRow(
-                                    'Notes', selectedOrder.notes ?? ''),
-                              ],
-                            ),
+                          padding: const EdgeInsets.all(15),
+                          child: Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      selectedOrder?.orderImage?.imageUrl ??
+                                          'https://via.placeholder.com/150',
+                                  width: double.infinity,
+                                  height: 400,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => const SizedBox(
+                                      height: 100,
+                                      width: 100,
+                                      child: CircularProgressIndicator()),
+                                  errorWidget: (context, url, error) {
+                                    return const Icon(Icons.error);
+                                  },
+                                ),
+                              ),
+                              _buildDetailRow('Order #',
+                                  selectedOrder?.orderNumber.toString() ?? ''),
+                              _buildDetailRow(
+                                  'Order Date', selectedOrder?.createdAt ?? ''),
+                              _buildDetailRow(
+                                  'Status', selectedOrder?.status.name ?? '',
+                                  trailing: SizedBox(
+                                    width: 100,
+                                    child: StatusPill(
+                                      status: selectedOrder?.status.name ?? '',
+                                    ),
+                                  )),
+                              _buildDetailRow(
+                                  'Notes', selectedOrder?.notes ?? ''),
+                            ],
                           ),
                         ),
                       ),
-                  ],
+                      // Customer Details Tab
+                      SingleChildScrollView(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: CustomColors.darkBackGround,
+                          ),
+                          padding: const EdgeInsets.all(15),
+                          child: Column(
+                            children: [
+                              _buildDetailRow('Full Name',
+                                  selectedOrder?.user?.fullName ?? ''),
+                              _buildDetailRow('Email',
+                                  selectedOrder?.user?.email?.value ?? ''),
+                              _buildDetailRow('Phone',
+                                  selectedOrder?.user?.mobile?.value ?? ''),
+                              _buildDetailRow('Address',
+                                  selectedOrder?.user?.address ?? ''),
+                              _buildDetailRow(
+                                  'Gender', selectedOrder?.user?.gender ?? ''),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // Transaction Details Tab
+                      SingleChildScrollView(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: CustomColors.darkBackGround,
+                          ),
+                          padding: const EdgeInsets.all(15),
+                          child: Column(
+                            children: [
+                              _buildDetailRow('Deposit',
+                                  '\$${selectedOrder?.deposit.toStringAsFixed(2) ?? '0.00'}'),
+                              _buildDetailRow('Total Cost',
+                                  '\$${selectedOrder?.totalCost.toStringAsFixed(2) ?? '0.00'}'),
+                              _buildDetailRow('Estimated Delivery Date',
+                                  selectedOrder?.estimatedDeliveryDate ?? ''),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // Rug Details Tab
+                      SingleChildScrollView(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: CustomColors.darkBackGround,
+                          ),
+                          padding: const EdgeInsets.all(15),
+                          child: Column(
+                            children: [
+                              _buildDetailRow(
+                                  'Name', selectedOrder?.rug?.name ?? ''),
+                              _buildDetailRow('Size',
+                                  '${selectedOrder?.rugSize?.length}cm x ${selectedOrder?.rugSize?.width}cm',
+                                  trailing: RugSizeDisplay(
+                                      rugSize: selectedOrder?.rugSize ??
+                                          RugSizes.empty)),
+                              _buildDetailRow(
+                                  'Color Palette',
+                                  (selectedOrder?.colorPalet?.join(', ') ??
+                                      '')),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Positioned(
@@ -179,9 +313,11 @@ class _ViewOrderDrawerState extends State<ViewOrderDrawer> {
                         isDisabled: state.formStatus ==
                             FormzSubmissionStatus.inProgress,
                         onPressed: () {
-                          widget.editOrder!();
+                          if (widget.editOrder != null) {
+                            widget.editOrder!();
+                          }
                         },
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -191,5 +327,48 @@ class _ViewOrderDrawerState extends State<ViewOrderDrawer> {
         },
       ),
     );
+  }
+
+  Widget nextStatusButton(String status) {
+    switch (status) {
+      case OrderStatus.created || OrderStatus.reaceived:
+        return CustomButton(
+          label: 'Process',
+          radius: 40,
+          isOutline: true,
+          icon: "assets/icons/arrow-right.svg",
+          primaryColor: Colors.white,
+          onPressed: widget.closeDrawer,
+        );
+      case OrderStatus.processed:
+        return CustomButton(
+          label: 'Tuft',
+          radius: 40,
+          isOutline: true,
+          icon: "assets/icons/arrow-right.svg",
+          primaryColor: Colors.white,
+          onPressed: widget.closeDrawer,
+        );
+      case OrderStatus.inProgress:
+        return CustomButton(
+          label: 'Finish',
+          radius: 40,
+          isOutline: true,
+          icon: "assets/icons/arrow-right.svg",
+          primaryColor: Colors.white,
+          onPressed: widget.closeDrawer,
+        );
+      case OrderStatus.done:
+        return CustomButton(
+          label: 'Deliver',
+          radius: 40,
+          isOutline: true,
+          icon: "assets/icons/arrow-right.svg",
+          primaryColor: Colors.white,
+          onPressed: widget.closeDrawer,
+        );
+      default:
+        return SizedBox();
+    }
   }
 }

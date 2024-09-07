@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "stichit": "stichit-80063",
+    "default": "stichit-80063"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}

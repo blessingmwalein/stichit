@@ -39,7 +39,7 @@ class RugsCubit extends Cubit<RugsState> {
     emit(state.copyWith(formStatus: FormzSubmissionStatus.inProgress));
     //check is isedit
     if (state.isEditing) {
-      _rugRepository.updateRug(rugForm, state.rugSizes).then((_) {
+      _rugRepository.updateRug(rugForm, []).then((_) {
         //get rugs after updating
         getRugs();
         emit(state.copyWith(
@@ -56,7 +56,7 @@ class RugsCubit extends Cubit<RugsState> {
       });
       return;
     } else {
-      _rugRepository.addRug(rugForm, state.rugSizes).then((_) {
+      _rugRepository.addRug(rugForm, []).then((_) {
         //get rugs after saving
         getRugs();
         emit(state.copyWith(

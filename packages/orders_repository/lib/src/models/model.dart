@@ -3,3 +3,4 @@ export 'transaction.dart';
 //       String? receiptUrl,
 export 'transaction_status.dart';
 export 'order_status.dart';
+export 'order_image.dart';

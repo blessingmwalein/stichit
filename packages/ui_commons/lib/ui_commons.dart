@@ -6,4 +6,4 @@ export 'src/count_card.dart';
 export 'src/cutsom_page_loader.dart';
 export 'src/error_page.dart';
 export 'src/social_card.dart';
-
+export 'formatter.dart';

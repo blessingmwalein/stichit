@@ -3,6 +3,7 @@ class OrderStatus {
   static const String reaceived = 'Received';
   static const String processed = 'Processed';
   static const String inProgress = 'In Progress';
+  static const String done = 'Done';
   static const String delivered = 'Delivered';
 
   static const List<String> values = [
@@ -10,7 +11,8 @@ class OrderStatus {
     reaceived,
     processed,
     inProgress,
-    delivered
+    delivered,
+    done,
   ];
 
   final String name;

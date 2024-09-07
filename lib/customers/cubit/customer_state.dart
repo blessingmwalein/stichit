@@ -14,6 +14,7 @@ class CustomerState extends Equatable {
     this.isEditing = false,
     this.selectedCustomer,
     this.selectedOrder,
+    this.orderImage,
   })  : customerForm = customerForm ?? UserModel.empty,
         orderForm = orderForm ?? CustomerOrder.empty;
 
@@ -29,6 +30,7 @@ class CustomerState extends Equatable {
   final UserModel? selectedCustomer;
   final CustomerOrder? selectedOrder;
   final CustomerOrder orderForm;
+  final XFile? orderImage;
 
   CustomerState copyWith({
     FormzSubmissionStatus? formStatus,
@@ -43,6 +45,7 @@ class CustomerState extends Equatable {
     List<CustomerOrder>? orders,
     UserModel? selectedCustomer,
     CustomerOrder? selectedOrder,
+    XFile? orderImage,
   }) {
     return CustomerState(
       formStatus: formStatus ?? this.formStatus,
@@ -57,6 +60,7 @@ class CustomerState extends Equatable {
       orders: orders ?? this.orders,
       selectedCustomer: selectedCustomer ?? this.selectedCustomer,
       selectedOrder: selectedOrder ?? this.selectedOrder,
+      orderImage: orderImage ?? this.orderImage,
     );
   }
 
@@ -74,5 +78,6 @@ class CustomerState extends Equatable {
         orders,
         orderForm,
         selectedOrder,
+        orderImage,
       ];
 }

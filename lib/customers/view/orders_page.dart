@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:orders_repository/orders_repository.dart';
+import 'package:rugs_repository/rugs_repository.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/app/layouts/main_layout.dart';
 import 'package:stichit/customers/cubit/customer_cubit.dart';
@@ -30,9 +31,6 @@ class _CustomerOrderPageState extends State<CustomerOrderPage> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<CustomerCubit>(context).getOrders();
-    BlocProvider.of<CustomerCubit>(context).getCustomers();
-    BlocProvider.of<RugsCubit>(context).getRugs();
   }
 
   bool _isCreateDrawerOpen = false;
@@ -74,6 +72,10 @@ class _CustomerOrderPageState extends State<CustomerOrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<CustomerCubit>(context).getOrders();
+    BlocProvider.of<CustomerCubit>(context).getCustomers();
+    BlocProvider.of<RugsCubit>(context).getRugs();
+
     return MainLayout(
       crumbs: const ['Home', 'Orders'],
       isOpened: _isCreateDrawerOpen || _isViewDrawerOpen,
@@ -138,15 +140,21 @@ class _CustomerOrderPageState extends State<CustomerOrderPage> {
                         },
                         onEdit: (CustomerOrder order) {
                           context.read<CustomerCubit>().editOrder(order);
+                          context
+                              .read<RugsCubit>()
+                              .getRugSizes(order.rug ?? Rug.empty);
                           _toggleDrawer(DraweType.add);
                         }),
                     sort: true,
                     filter: true,
                     columns: const [
-                      "ID",
-                      "Customer Name",
+                      "Oder #",
+                      "Customer",
+                      "Rug Name",
+                      "Rug Size",
                       "Order Date",
-                      "Total Amount",
+                      "Deposit",
+                      "Cost",
                       "Status",
                       "Actions",
                     ],

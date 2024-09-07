@@ -11,16 +11,16 @@ class RugsRepositoryBase {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  Future<void> addRug(Rug rug, List<RugSizes>? rugSizes) async {
+  Future<void> addRug(Rug rug, List<ImageFile>? images) async {
     // Add rug to database
     try {
       DocumentReference rugRef =
           await _firestore.collection('rugs').add(rug.toFirestore());
 
-      if (rugSizes != null && rugSizes.isNotEmpty) {
-        for (var rugSize in rugSizes) {
-          RugSizes newRugSize = rugSize.copyWith(rugId: rugRef.id);
-          await _addRugSizeRecord(newRugSize);
+      if (images != null && images.isNotEmpty) {
+        for (var image in images) {
+          String imageUrl = await _uploadImage(image, rugRef.id);
+          await _addRugImageRecord(rugRef.id, imageUrl, image.name);
         }
       }
     } catch (e) {
@@ -29,12 +29,26 @@ class RugsRepositoryBase {
     }
   }
 
+  //get rug sizes
+  Future<List<RugSizes>> getRugSizes(String rugId) async {
+    try {
+      final snapshot = await _firestore
+          .collection('rug_sizes')
+          .where('rug_id', isEqualTo: rugId)
+          .get();
+      return snapshot.docs.map((doc) => RugSizes.fromFirestore(doc)).toList();
+    } catch (e) {
+      log('data: $e');
+      throw Exception('Failed to get rug sizes: ${e.toString()}');
+    }
+  }
+
   Future<void> removeRug(Rug rug) async {
     // Remove rug from database
     try {
       await _firestore.collection('rugs').doc(rug.id).delete();
-      // Optionally, remove associated rugSizes from Firebase Storage
-      await _removeRugSizes(rug.id);
+      // Optionally, remove associated images from Firebase Storage
+      await _removeRugImages(rug.id);
     } catch (e) {
       log('data: $e');
       throw Exception('Failed to remove rug: ${e.toString()}');
@@ -52,19 +66,19 @@ class RugsRepositoryBase {
     }
   }
 
-  Future<void> updateRug(Rug rug, List<RugSizes>? rugSizes) async {
+  Future<void> updateRug(Rug rug, List<ImageFile>? images) async {
     // Update rug in database
     try {
       await _firestore.collection('rugs').doc(rug.id).update(rug.toFirestore());
 
-      if (rugSizes != null && rugSizes.isNotEmpty) {
-        // Remove current rugSizes for the rug
-        await _removeRugSizes(rug.id);
+      if (images != null && images.isNotEmpty) {
+        // Remove current images for the rug
+        await _removeRugImages(rug.id);
 
-        // Upload new rugSizes and add records
-        for (var rugSize in rugSizes) {
-          RugSizes newRugSize = rugSize.copyWith(rugId: rug.id);
-          await _addRugSizeRecord(newRugSize);
+        // Upload new images and add records
+        for (var image in images) {
+          String imageUrl = await _uploadImage(image, rug.id);
+          await _addRugImageRecord(rug.id, imageUrl, image.name);
         }
       }
     } catch (e) {
@@ -73,18 +87,26 @@ class RugsRepositoryBase {
     }
   }
 
-  Future<void> _removeRugSizes(String rugId) async {
+  Future<void> _removeRugImages(String rugId) async {
     try {
       final snapshot = await _firestore
-          .collection('rug_sizes')
+          .collection('rug_images')
           .where('rug_id', isEqualTo: rugId)
           .get();
       for (var doc in snapshot.docs) {
-        await _firestore.collection('rug_sizes').doc(doc.id).delete();
+        final data = doc.data();
+        final imageUrl = data['image_url'] as String;
+
+        // Delete image from Firebase Storage
+        final storageRef = _storage.refFromURL(imageUrl);
+        await storageRef.delete();
+
+        // Delete image record from Firestore
+        await doc.reference.delete();
       }
     } catch (e) {
       log('data: $e');
-      throw Exception('Failed to remove rug rugSizes: ${e.toString()}');
+      throw Exception('Failed to remove rug images: ${e.toString()}');
     }
   }
 
@@ -106,25 +128,33 @@ class RugsRepositoryBase {
     }
   }
 
-  Future<void> _addRugSizeRecord(RugSizes rugSize) async {
+  Future<void> _addRugImageRecord(
+      String rugId, String imageUrl, String caption) async {
     try {
-      await _firestore.collection('rug_sizes').add(rugSize.toFirestore());
+      final rugImage = RugImage(
+        id: '', // Firestore will auto-generate an ID
+        rugId: rugId,
+        caption: caption,
+        imageUrl: imageUrl,
+      );
+
+      await _firestore.collection('rug_images').add(rugImage.toFirestore());
     } catch (e) {
       log('data: $e');
       throw Exception('Failed to add rug image record: ${e.toString()}');
     }
   }
 
-  Future<List<RugSizes>> getRugSizes(String rugId) async {
+  Future<List<RugImage>> getRugImages(String rugId) async {
     try {
       final snapshot = await _firestore
-          .collection('rug_sizes')
+          .collection('rug_images')
           .where('rug_id', isEqualTo: rugId)
           .get();
-      return snapshot.docs.map((doc) => RugSizes.fromFirestore(doc)).toList();
+      return snapshot.docs.map((doc) => RugImage.fromFirestore(doc)).toList();
     } catch (e) {
       log('data: $e');
-      throw Exception('Failed to get rug rugSizes: ${e.toString()}');
+      throw Exception('Failed to get rug images: ${e.toString()}');
     }
   }
 }

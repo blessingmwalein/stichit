@@ -1,6 +1,11 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:orders_repository/src/models/order_image.dart';
 import 'package:orders_repository/src/models/order_status.dart';
+
+import 'package:rugs_repository/rugs_repository.dart';
+import 'package:ui_commons/formatter.dart';
 
 class CustomerOrder extends Equatable {
   final String id;
@@ -12,9 +17,17 @@ class CustomerOrder extends Equatable {
   final List<String>? colorPalet;
   final String? notes;
   final OrderStatus status;
-  final double? deposit;
+  final double deposit;
   final double totalCost;
   final String? estimatedDeliveryDate;
+  final int? orderNumber;
+  final bool? orderConfirmed;
+
+  // Add relationships as optional fields
+  final Rug? rug;
+  final RugSizes? rugSize;
+  final UserModel? user;
+  final OrderImage? orderImage;
 
   const CustomerOrder(
       {required this.id,
@@ -25,14 +38,24 @@ class CustomerOrder extends Equatable {
       this.colorPalet,
       required this.createdAt,
       required this.status,
-      this.deposit = 0.0,
+      required this.deposit,
       required this.totalCost,
       this.estimatedDeliveryDate,
-      required this.notes});
+      this.notes,
+      this.rug,
+      this.rugSize,
+      this.user,
+      this.orderImage,
+      this.orderConfirmed,
+      required this.orderNumber});
 
-  // from firestore
+  // from Firestore
   factory CustomerOrder.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> snapshot) {
+      DocumentSnapshot<Map<String, dynamic>> snapshot,
+      Rug? rug,
+      RugSizes? rugSize,
+      UserModel? user,
+      OrderImage? orderImage) {
     final data = snapshot.data()!;
     return CustomerOrder(
         id: snapshot.id,
@@ -40,14 +63,64 @@ class CustomerOrder extends Equatable {
         rugId: data['rug_id'],
         rugSizeId: data['rug_size_id'],
         imageUrl: data['image_url'],
-        colorPalet: List.from(data['color_palet']),
-        createdAt: data['created_at'],
-        status: data['status'],
+        colorPalet: data['color_palet'] != null
+            ? List<String>.from(data['color_palet'])
+            : null,
+        createdAt: DateFormatter.formatDateString(data['created_at'],
+            includeTime: true),
+        status: OrderStatus.fromString(data['status']),
         deposit: _toDouble(data['deposit']),
         totalCost: _toDouble(data['total_cost']),
         estimatedDeliveryDate: data['estimated_delivery_date'],
-        notes: data['notes']);
+        rug: rug,
+        rugSize: rugSize,
+        user: user,
+        orderImage: orderImage,
+        notes: data['notes'],
+        orderConfirmed: data['order_confirmation'],
+        orderNumber: data['order_number']);
   }
+
+  // Fetch relationships
+  Future<CustomerOrder> fetchRelatedData() async {
+    final rugSnapshot =
+        await FirebaseFirestore.instance.collection('rugs').doc(rugId).get();
+    final rugSizeSnapshot = await FirebaseFirestore.instance
+        .collection('rug_sizes')
+        .doc(rugSizeId)
+        .get();
+    final userSnapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    // Fetch the OrderImage related to this order
+    final orderImageSnapshot = await FirebaseFirestore.instance
+        .collection('order_images')
+        .where('order_id', isEqualTo: id)
+        .get();
+
+    return CustomerOrder(
+        id: id,
+        userId: userId,
+        rugId: rugId,
+        rugSizeId: rugSizeId,
+        imageUrl: imageUrl,
+        colorPalet: colorPalet,
+        createdAt: createdAt,
+        status: status,
+        deposit: deposit,
+        totalCost: totalCost,
+        estimatedDeliveryDate: estimatedDeliveryDate,
+        notes: notes,
+        orderConfirmed: orderConfirmed,
+        rug: Rug.fromFirestore(rugSnapshot),
+        rugSize: RugSizes.fromFirestore(rugSizeSnapshot),
+        user: UserModel.fromFirestore(userSnapshot),
+        orderImage: orderImageSnapshot.docs.isNotEmpty
+            ? OrderImage.fromFirestore(orderImageSnapshot.docs.first)
+            : null,
+        orderNumber: orderNumber);
+  }
+
   static double _toDouble(dynamic value) {
     if (value is String) {
       return double.tryParse(value) ?? 0.0;
@@ -60,7 +133,7 @@ class CustomerOrder extends Equatable {
     }
   }
 
-  // to firestore
+  // to Firestore
   Map<String, dynamic> toFirestore() {
     return {
       'user_id': userId,
@@ -69,11 +142,12 @@ class CustomerOrder extends Equatable {
       'image_url': imageUrl,
       'color_palet': colorPalet,
       'created_at': createdAt,
-      'status': status,
+      'status': status.name,
       'notes': notes,
       'deposit': deposit,
       'total_cost': totalCost,
-      'estimated_delivery_date': estimatedDeliveryDate
+      'estimated_delivery_date': estimatedDeliveryDate,
+      'order_number': orderNumber
     };
   }
 
@@ -89,21 +163,34 @@ class CustomerOrder extends Equatable {
       double? deposit,
       double? totalCost,
       String? estimatedDeliveryDate,
-      String? notes}) {
+      String? notes,
+      List<String>? colorPalet,
+      Rug? rug,
+      RugSizes? rugSize,
+      OrderImage? orderImage,
+      UserModel? user,
+      bool? orderConfirmed,
+      int? orderNumber}) {
     return CustomerOrder(
-      id: id ?? this.id,
-      userId: userId ?? this.userId,
-      rugId: rugId ?? this.rugId,
-      rugSizeId: rugSizeId ?? this.rugSizeId,
-      imageUrl: imageUrl ?? this.imageUrl,
-      notes: notes ?? this.notes,
-      status: status ?? this.status,
-      createdAt: createdAt ?? this.createdAt,
-      colorPalet: colorPalet,
-      deposit: deposit,
-      totalCost: totalCost ?? this.totalCost,
-      estimatedDeliveryDate: estimatedDeliveryDate,
-    );
+        id: id ?? this.id,
+        userId: userId ?? this.userId,
+        rugId: rugId ?? this.rugId,
+        rugSizeId: rugSizeId ?? this.rugSizeId,
+        imageUrl: imageUrl ?? this.imageUrl,
+        notes: notes ?? this.notes,
+        status: status ?? this.status,
+        createdAt: createdAt ?? this.createdAt,
+        colorPalet: colorPalet ?? this.colorPalet,
+        deposit: deposit ?? this.deposit,
+        totalCost: totalCost ?? this.totalCost,
+        estimatedDeliveryDate:
+            estimatedDeliveryDate ?? this.estimatedDeliveryDate,
+        rug: rug ?? this.rug,
+        rugSize: rugSize ?? this.rugSize,
+        user: user ?? this.user,
+        orderConfirmed: orderConfirmed ?? this.orderConfirmed,
+        orderNumber: orderNumber ?? this.orderNumber,
+        orderImage: orderImage ?? this.orderImage);
   }
 
   // empty
@@ -117,7 +204,14 @@ class CustomerOrder extends Equatable {
       status: OrderStatus.fromString('Created'),
       totalCost: 0.0,
       estimatedDeliveryDate: null,
-      notes: '');
+      notes: '',
+      colorPalet: [],
+      rug: null,
+      rugSize: null,
+      deposit: 0,
+      user: null,
+      orderConfirmed: false,
+      orderNumber: 0);
 
   // copyWithField
   CustomerOrder copyWithField(String field, dynamic value) {
@@ -131,23 +225,50 @@ class CustomerOrder extends Equatable {
       case 'createdAt':
         return copyWith(createdAt: value);
       case 'imageUrl':
-        return copyWith(imageUrl: imageUrl);
+        return copyWith(imageUrl: value);
       case 'notes':
-        return copyWith(notes: notes);
+        return copyWith(notes: value);
       case 'status':
-        return copyWith(status: status);
+        return copyWith(status: value);
       case 'deposit':
         return copyWith(deposit: value);
       case 'totalCost':
         return copyWith(totalCost: value);
       case 'estimatedDeliveryDate':
         return copyWith(estimatedDeliveryDate: value);
+      case 'colorPalet':
+        return copyWith(colorPalet: List<String>.from(value));
+      case 'rug':
+        return copyWith(rug: value);
+      case 'rugSize':
+        return copyWith(rugSize: value);
+      case 'user':
+        return copyWith(user: value);
+      case 'orderNumber':
+        return copyWith(orderNumber: orderNumber);
       default:
         return this;
     }
   }
 
   @override
-  List<Object?> get props =>
-      [id, userId, rugId, rugSizeId, createdAt, imageUrl, notes, status];
+  List<Object?> get props => [
+        id,
+        userId,
+        rugId,
+        rugSizeId,
+        createdAt,
+        imageUrl,
+        notes,
+        status,
+        colorPalet,
+        deposit,
+        totalCost,
+        estimatedDeliveryDate,
+        rug,
+        rugSize,
+        user,
+        orderNumber,
+        orderImage
+      ];
 }
