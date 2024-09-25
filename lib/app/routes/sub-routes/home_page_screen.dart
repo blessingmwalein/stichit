@@ -16,7 +16,7 @@ class HomeScreenRouter implements ScreenRouter {
     return GoRoute(
       path: UserRoutes.home,
       name: 'Home',
-      builder: (context, state) => const ClientHomePage(),
+      builder: (context, state) => ClientHomePage(),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:stichit/app/const/colors.dart';
 import 'package:stichit/app/routes/routes.dart';
 import 'package:stichit/ui_commons/buttons/custom_button.dart';
+import 'package:stichit/ui_commons/buttons/icon_button.dart';
 import 'package:stichit/ui_commons/cards/logo_card.dart';
 import 'package:stichit/ui_commons/icons/custom_svg_icon.dart';
 
@@ -29,54 +30,54 @@ class _ClientLayoutState extends State<ClientLayout> {
               children: [
                 const LogoCard(
                     backgroundColor: CustomColors.white, width: 80, height: 80),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Text(
-                          'Rugs',
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: CustomColors.black,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Text(
-                          'About',
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: CustomColors.black,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Text(
-                          'Contact',
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: CustomColors.black,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     TextButton(
+                //       onPressed: () {},
+                //       child: const Padding(
+                //         padding: EdgeInsets.all(5.0),
+                //         child: Text(
+                //           'Rugs',
+                //           style: TextStyle(
+                //             fontSize: 17,
+                //             color: CustomColors.black,
+                //             fontWeight: FontWeight.normal,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //     const SizedBox(width: 15),
+                //     TextButton(
+                //       onPressed: () {},
+                //       child: const Padding(
+                //         padding: EdgeInsets.all(5.0),
+                //         child: Text(
+                //           'About',
+                //           style: TextStyle(
+                //             fontSize: 17,
+                //             color: CustomColors.black,
+                //             fontWeight: FontWeight.normal,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //     const SizedBox(width: 15),
+                //     TextButton(
+                //       onPressed: () {},
+                //       child: const Padding(
+                //         padding: EdgeInsets.all(5.0),
+                //         child: Text(
+                //           'Contact',
+                //           style: TextStyle(
+                //             fontSize: 17,
+                //             color: CustomColors.black,
+                //             fontWeight: FontWeight.normal,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 const Spacer(),
                 Row(
                   children: [
@@ -114,37 +115,41 @@ class _ClientLayoutState extends State<ClientLayout> {
                       ),
                     ),
                     const SizedBox(width: 20),
-                    CustomButton(
-                      label: 'Sign In',
-                      isOutline: false,
-                      radius: 40,
-                      primaryColor: orange,
-                      onPressed: () {
-                        GoRouter.of(context).go(UserRoutes.login);
-                      },
-                    ),
-                    const SizedBox(width: 15),
-                    CustomButton(
-                      label: 'Sign Up',
-                      isOutline: true,
-                      radius: 40,
-                      primaryColor: orange,
-                      primaryTextColor: CustomColors.white,
-                      backgroundColor: CustomColors.white,
-                      onPressed: () {
-                        GoRouter.of(context).go(UserRoutes.signUp);
-                      },
-                    ),
+                    CustomIconButton(
+                        backgroundColor: Colors.white,
+                        icon: "assets/icons/menu-alt-3.svg",
+                        iconColor: CustomColors.black,
+                        size: 40,
+                        onPressed: () {
+                          // GoRouter.of(context).go(UserRoutes.cart);
+                        }),
+                    // CustomButton(
+                    //   label: 'Sign In',
+                    //   isOutline: false,
+                    //   radius: 40,
+                    //   primaryColor: orange,
+                    //   onPressed: () {
+                    //     GoRouter.of(context).go(UserRoutes.login);
+                    //   },
+                    // ),
+                    // const SizedBox(width: 15),
+                    // CustomButton(
+                    //   label: 'Sign Up',
+                    //   isOutline: true,
+                    //   radius: 40,
+                    //   primaryColor: orange,
+                    //   primaryTextColor: CustomColors.white,
+                    //   backgroundColor: CustomColors.white,
+                    //   onPressed: () {
+                    //     GoRouter.of(context).go(UserRoutes.signUp);
+                    //   },
+                    // ),
                   ],
                 )
               ],
             ),
           ),
           //divider line
-          Divider(
-            color: CustomColors.grey.withOpacity(0.4),
-            thickness: 1,
-          ),
 
           Expanded(
             child: widget.child,

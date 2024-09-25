@@ -204,4 +204,15 @@ class OrdersRepositoryBase {
       throw Exception('Failed to upload image: ${e.toString()}');
     }
   }
+
+  //uodate order status
+  Future<void> updateOrderStatus(
+      {required String status, required String id}) async {
+    try {
+      await _firestore.collection('orders').doc(id).update({'status': status});
+    } catch (e) {
+      log('Failed to update order status: $e');
+      throw Exception('Failed to update order status: ${e.toString()}');
+    }
+  }
 }

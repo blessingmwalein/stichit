@@ -18,8 +18,9 @@ class ClientHomePage extends StatelessWidget {
       child: const SingleChildScrollView(
         child: Column(
           children: [
-            // SizedBox(height: 10),
-            HomeBanner(),
+            // SizedBox(h
+
+            // HomeBanner(),
           ],
         ),
       ),

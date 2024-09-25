@@ -71,7 +71,9 @@ class CustomerOrder extends Equatable {
         status: OrderStatus.fromString(data['status']),
         deposit: _toDouble(data['deposit']),
         totalCost: _toDouble(data['total_cost']),
-        estimatedDeliveryDate: data['estimated_delivery_date'],
+        estimatedDeliveryDate: data['estimated_delivery_date'] != null
+            ? DateFormatter.formatDateString(data['estimated_delivery_date'])
+            : "",
         rug: rug,
         rugSize: rugSize,
         user: user,

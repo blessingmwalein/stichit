@@ -260,6 +260,7 @@ class CustomerCubit extends Cubit<CustomerState> {
   void clearForm() {
     emit(state.copyWith(
       customerForm: UserModel.empty,
+      orderForm: CustomerOrder.empty,
       isEditing: false,
       selectedCustomer: null,
     ));
@@ -272,5 +273,35 @@ class CustomerCubit extends Cubit<CustomerState> {
       isEditing: false,
       selectedOrder: null,
     ));
+  }
+
+  updateOrderStatus({required String status}) {
+    //loading status
+    emit(state.copyWith(pageStatus: FormzSubmissionStatus.inProgress));
+    final order = state.selectedOrder;
+    final updatedOrder =
+        order?.copyWith(status: OrderStatus.fromString(status));
+
+    //try catch block
+    try {
+      _ordersRepository
+          .updateOrderStatus(status: status, id: updatedOrder?.id ?? "")
+          .then((_) {
+        //get orders after updating
+        // getOrders();
+        emit(state.copyWith(
+            pageStatus: FormzSubmissionStatus.success,
+            selectedOrder: null,
+            successMessage: "Order status updated successfully"));
+      }).catchError((error) {
+        emit(state.copyWith(
+            errorMessage: error.toString(),
+            pageStatus: FormzSubmissionStatus.failure));
+      });
+    } catch (error) {
+      emit(state.copyWith(
+          errorMessage: error.toString(),
+          pageStatus: FormzSubmissionStatus.failure));
+    }
   }
 }

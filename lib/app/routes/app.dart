@@ -35,6 +35,10 @@ abstract class AppRouter {
 
     final UserModel? user = await bloc.currentUser;
 
+    if (state.matchedLocation == UserRoutes.home) {
+      return UserRoutes.home;
+    }
+
     if (bloc.state.status != AppStatus.authenticated) {
       return UserRoutes.login;
     }

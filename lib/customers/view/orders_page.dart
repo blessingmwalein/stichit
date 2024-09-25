@@ -97,6 +97,31 @@ class _CustomerOrderPageState extends State<CustomerOrderPage> {
                 editOrder: () {
                   _toggleDrawer(DraweType.view);
                 },
+                onStatusChange: (status) async {
+                  _toggleDrawer(DraweType.view);
+
+                  final bool? isUpdate = await showCustomConfirmationDialog(
+                    context,
+                    'Update Order Status',
+                    'Are you sure you want to update status of this order to $status',
+                    'assets/icons/check.svg',
+                  );
+
+                  if (isUpdate != null && isUpdate) {
+                    context
+                        .read<CustomerCubit>()
+                        .updateOrderStatus(status: status);
+
+                    //li
+                    context.read<CustomerCubit>().stream.listen((state) {
+                      if (state.pageStatus == FormzSubmissionStatus.success) {
+                        // context.read<CustomerCubit>().clearForm();
+
+                        // Close the drawer
+                      }
+                    });
+                  }
+                },
               )
             : const SizedBox(),
       ],

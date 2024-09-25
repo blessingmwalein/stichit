@@ -6,8 +6,15 @@ class CustomIconButton extends StatelessWidget {
   final String icon;
   final double? size;
   final Function? onPressed;
+  final Color? backgroundColor;
+  final Color? iconColor;
   const CustomIconButton(
-      {super.key, required this.icon, this.onPressed, this.size = 25});
+      {super.key,
+      required this.icon,
+      this.onPressed,
+      this.size = 25,
+      this.backgroundColor,
+      this.iconColor});
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +26,12 @@ class CustomIconButton extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         //circle
         decoration: BoxDecoration(
-          color: primaryBackGroundBlack,
+          color: backgroundColor ?? primaryBackGroundBlack,
           borderRadius: BorderRadius.circular(50),
           // border: Border.all(color: primaryWhite, width: 1),
         ),
         child: customSvgIcon(
-            iconColor: primaryWhite,
+            iconColor: iconColor ?? primaryWhite,
             path: icon,
             width: size ?? 25,
             height: size ?? 25),
