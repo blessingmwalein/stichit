@@ -20,6 +20,8 @@
         "vue": "^3.3.13"
     },
     "dependencies": {
+        "@popperjs/core": "^2.11.8",
+        "v-calendar": "^3.1.2",
         "vue-multiselect": "^3.1.0"
     }
 }
