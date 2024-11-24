@@ -28,8 +28,9 @@
 
                         <template v-slot:actions="{ row }">
                             <div class="d-flex order-actions">
-                                <a href="javascript:;" class=""><i class="bx bxs-edit"></i></a>
-                                <a href="javascript:;" class="ms-3"><i class="bx bxs-trash"></i></a>
+                                <a href="#" @click="editCient(row)" class=""><i class="bx bxs-edit"></i></a>
+                                <a href="javascript:;" @click="deleteClient(row)" class="ms-3"><i
+                                        class="bx bxs-trash"></i></a>
                             </div>
                         </template>
                     </CustomDataTable>
@@ -46,7 +47,8 @@ import MainLayout from '@/Layouts/MainLayout.vue';
 import BreadCrumb from '@/Components/common/BreadCrumb.vue';
 import CustomButton from '@/Components/common/CustomButton.vue';
 import CustomDataTable from '@/Components/Tables/CustomDataTable.vue';
-import { router } from '@inertiajs/vue3'    // Add this line
+import { Link, router, useForm } from '@inertiajs/vue3'    // Add this line
+
 
 export default {
     components: {
@@ -82,7 +84,27 @@ export default {
     methods: {
         navigateCreateClient() {
             router.visit('/client/create')
+        },
+
+        editCient(client) {
+            router.visit(`/client/edit/${client.id}`)
+        },
+
+        //submit delete client
+        deleteClient(client) {
+            // Add delete client logic here
+
+            const deleteClientForm = useForm({});
+            deleteClientForm.delete(route('clients.delete', client.id), {
+                onFinish: () => {
+
+                },
+            });
+
         }
+
+
+
     }
 }
 </script>

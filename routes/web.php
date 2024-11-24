@@ -30,8 +30,35 @@ Route::middleware([
         //get all clients
         Route::get('/all', [App\Http\Controllers\ClientDetailController::class, 'all'])->name('clients.all');
         //create client
-        Route::post('/create', [App\Http\Controllers\ClientDetailController::class, 'create'])->name('clients.create');
+        Route::post('/store', [App\Http\Controllers\ClientDetailController::class, 'store'])->name('clients.store');
+        //update client
+        Route::put('/update/{id}', [App\Http\Controllers\ClientDetailController::class, 'update'])->name('clients.update');
+        //delete client
+        Route::delete('/delete/{id}', [App\Http\Controllers\ClientDetailController::class, 'delete'])->name('clients.delete');
         //g
-    
+        Route::get('/edit/{id}', [App\Http\Controllers\ClientDetailController::class, 'edit'])->name('clients.edit');
+    });
+
+    //rug routes
+    Route::group(['prefix' => 'rugs'], function () {
+        Route::get('/create', [App\Http\Controllers\RugController::class, 'create'])->name('rugs.create');
+        Route::post('/store', [App\Http\Controllers\RugController::class, 'store'])->name('rugs.store');
+        Route::put('/update/{id}', [App\Http\Controllers\RugController::class, 'update'])->name('rugs.update');
+        Route::get('/all', [App\Http\Controllers\RugController::class, 'all'])->name('rugs.all');
+        Route::get('/', [App\Http\Controllers\RugController::class, 'index'])->name('rugs.all');
+        Route::get('/edit/{id}', [App\Http\Controllers\RugController::class, 'edit'])->name('rugs.edit');
+        Route::delete('/delete/{id}', [App\Http\Controllers\RugController::class, 'delete'])->name('rugs.delete');
+        
+    });
+
+    //order routes
+    Route::group(['prefix' => 'orders'], function () {
+        Route::get('/create', [App\Http\Controllers\OrderController::class, 'create'])->name('orders.create');
+        Route::post('/store', [App\Http\Controllers\OrderController::class, 'store'])->name('orders.store');
+        Route::put('/update/{id}', [App\Http\Controllers\OrderController::class, 'update'])->name('orders.update');
+        Route::get('/all', [App\Http\Controllers\OrderController::class, 'all'])->name('orders.all');
+        Route::get('/', [App\Http\Controllers\OrderController::class, 'index'])->name('orders.all');
+        Route::get('/edit/{id}', [App\Http\Controllers\OrderController::class, 'edit'])->name('orders.edit');
+        Route::delete('/delete/{id}', [App\Http\Controllers\OrderController::class, 'delete'])->name('orders.delete');
     });
 });

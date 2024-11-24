@@ -32,8 +32,8 @@
                                             <label for="inputGender" class="form-label">Gender</label>
                                             <select v-model="form.gender" class="form-select" id="inputGender">
                                                 <option value="" disabled>Select gender</option>
-                                                <option value="male">Male</option>
-                                                <option value="female">Female</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
                                             </select>
                                             <span v-if="form.errors.gender" class="text-danger">
                                                 {{ form.errors.gender }}
@@ -53,11 +53,8 @@
                                     <div class="border border-3 p-4 rounded">
                                         <div class="mb-3">
                                             <label for="inputAddress" class="form-label">Address</label>
-                                            <!-- <input v-model="form.address" type="text" class="form-control"
-                                                id="inputAddress" placeholder="Enter address" /> -->
-
-                                            <textarea class="form-control" v-model="form.address"
-                                                id="inputProductDescription" rows="4"></textarea>
+                                            <textarea class="form-control" v-model="form.address" id="inputAddress"
+                                                rows="4"></textarea>
                                             <span v-if="form.errors.address" class="text-danger">
                                                 {{ form.errors.address }}
                                             </span>
@@ -72,7 +69,7 @@
                                         </div>
                                         <div class="d-grid">
                                             <button type="submit" class="btn btn-primary">
-                                                Save Client
+                                                Save Changes
                                             </button>
                                         </div>
                                     </div>
@@ -92,6 +89,9 @@ import BreadCrumb from '@/Components/common/BreadCrumb.vue';
 import { useForm } from '@inertiajs/vue3';
 
 export default {
+    props: {
+        client: Object,
+    },
     components: {
         BreadCrumb,
         MainLayout,
@@ -99,23 +99,24 @@ export default {
     data() {
         return {
             form: useForm({
-                name: '',
-                email: '',
-                gender: '',
-                phone_number: '',
-                address: '',
-                city: '',
+                id: this.client.data.id,
+                name: this.client.data.name || '',
+                email: this.client.data.email || '',
+                gender: this.client.data.gender || '',
+                phone_number: this.client.data.phone_number || '',
+                address: this.client.data.address || '',
+                city: this.client.data.city || '',
             }),
             breadcrumbLinks: [
                 { name: 'Home', url: 'javascript:;', icon: 'bx bx-home-alt' },
                 { name: 'Clients', url: 'javascript:;', icon: 'bx bx-user' },
-                { name: 'Create', url: 'javascript:;', icon: '' },
+                { name: 'Edit', url: 'javascript:;', icon: '' },
             ],
         };
     },
     methods: {
         submit() {
-            this.form.post(route('clients.store'), {
+            this.form.put(route('clients.update', this.form.id), {
                 onFinish: () => {
                     this.form.reset();
                 },

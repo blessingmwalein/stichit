@@ -89,12 +89,9 @@ const loaderStyle = computed(() => ({
 </script>
 
 <template>
-    <button
-        :type="purpose"
+    <button :type="purpose"
         :class="['btn', `btn-${type}`, { 'btn-outline': isOutlined, ' align-items-center justify-content-center': icon || isLoading }]"
-        :style="buttonStyle"
-        :disabled="disabled || isLoading"
-    >
+        :style="buttonStyle" :disabled="disabled || isLoading">
         <!-- Optional Icon -->
         <span v-if="icon && !isLoading" :class="`me-2 bx bx-${icon}`" :style="iconStyle"></span>
 
@@ -113,7 +110,8 @@ const loaderStyle = computed(() => ({
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.25em 1.5em; /* Adjusted padding for smaller height */
+    padding: 0.25em 1.5em;
+    /* Adjusted padding for smaller height */
     font-weight: normal;
     min-width: 0;
 }
@@ -140,6 +138,7 @@ const loaderStyle = computed(() => ({
 
 /* Optional extra space between icon and text */
 .me-2 {
-    margin-right: 0.5rem; /* Adjust this value as needed */
+    margin-right: 0.5rem;
+    /* Adjust this value as needed */
 }
 </style>

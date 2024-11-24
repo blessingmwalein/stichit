@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('rugs_id')->constrained('rugs')->onDelete('cascade');
+            $table->foreignId('rug_id')->constrained('rugs')->onDelete('cascade');
+            $table->foreignId('size_id');
             $table->foreignId('client_id')->constrained('client_details')->onDelete('cascade');
             $table->float('total_price')->default(0);
             $table->json('color_palet');

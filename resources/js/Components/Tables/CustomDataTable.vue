@@ -45,7 +45,7 @@
 
             <!-- Empty Data Widget -->
             <div v-else class="text-center my-3">
-                <p class="text-muted">No data available.</p>
+                <p class="text-gray">No data available.</p>
             </div>
 
             <!-- Pagination -->

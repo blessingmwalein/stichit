@@ -19,7 +19,7 @@ class ClientRepository implements ClientRepositoryInterface
     public function all(array $filters = [])
     {
         // Get the pagination limit from the .env file, with a default value of 10
-        $paginationLimit = env('DEFAULT_PAGE_ITEMS', 2);
+        $paginationLimit = env('DEFAULT_PAGE_ITEMS', 10);
 
         // Start building the query with the relationship
         $query = $this->model->with('user');  // Eager load the 'user' relationship

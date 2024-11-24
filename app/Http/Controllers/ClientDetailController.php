@@ -33,9 +33,11 @@ class ClientDetailController extends Controller
             $validatedData = $request->validated();
             $client = $this->clientRepositoryInterface->create($validatedData);
 
-            return ResponseHelper::success('Client created successfully', $client);
+            // return ResponseHelper::success('Client created successfully', $client);
+            return Inertia::render('Clients/Index')->with('success', 'Client created successfully');
         } catch (\Exception $e) {
-            return ResponseHelper::error('Failed to create client', $e->getMessage(), 500);
+            // return ResponseHelper::error('Failed to create client', $e->getMessage(), 500);
+            return Inertia::render('Clients/Create')->with('error', 'Failed to create client');
         }
     }
 
@@ -48,9 +50,9 @@ class ClientDetailController extends Controller
 
             $client = $this->clientRepositoryInterface->update($id, $validatedData);
 
-            return ResponseHelper::success('Client updated successfully', $client);
+            return Inertia::render('Clients/Index')->with('success', 'Client updated successfully');
         } catch (\Exception $e) {
-            return ResponseHelper::error('Failed to update client', $e->getMessage(), 500);
+            return Inertia::render('Clients/Edit')->with('error', 'Failed to update client');
         }
     }
 
@@ -75,9 +77,9 @@ class ClientDetailController extends Controller
         try {
             $client = $this->clientRepositoryInterface->delete($id);
 
-            return ResponseHelper::success('Client deleted successfully', $client);
+            return Inertia::render('Clients/Index')->with('success', 'Client deleted successfully');
         } catch (\Exception $e) {
-            return ResponseHelper::error('Failed to delete client', $e->getMessage(), 500);
+            return Inertia::render('Clients/Index')->with('error', 'Failed to delete client');
         }
     }
 
@@ -98,5 +100,13 @@ class ClientDetailController extends Controller
     public function index()
     {
         return Inertia::render('Clients/Index');
+    }
+
+    //edit client details
+    public function edit($id)
+    {
+        $client = $this->clientRepositoryInterface->findById($id);
+
+        return Inertia::render('Clients/Edit', ['client' => new ClientDetailResource($client)]);
     }
 }

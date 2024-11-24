@@ -6,7 +6,7 @@
                 <ol class="breadcrumb mb-0 p-0">
                     <li v-for="(link, index) in links" :key="index" class="breadcrumb-item"
                         :class="{ active: index === links.length - 1 }">
-                        <a v-if="index !== links.length - 1" :href="link.url"><i :class="link.icon"></i></a>
+                        <Link v-if="index !== links.length - 1" :href="link.url"><i :class="link.icon"></i></Link>
                         <span v-else>{{ link.name }}</span>
                     </li>
                 </ol>
@@ -19,8 +19,13 @@
 </template>
 
 <script>
+import { Link } from '@inertiajs/vue3';
+
 export default {
     name: 'Breadcrumb',
+    components: {
+        Link
+    },
     props: {
         title: {
             type: String,

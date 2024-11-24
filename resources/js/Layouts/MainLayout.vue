@@ -63,10 +63,10 @@ const logout = () => {
                     </a>
                     <ul>
                         <li>
-                            <Link :href="'client/accounts'"><i class='bx bx-radio-circle'></i>Accounts</Link>
+                            <Link :href="'/client/accounts'"><i class='bx bx-radio-circle'></i>Accounts</Link>
                         </li>
                         <li>
-                            <Link :href="'clients/orders'"><i class='bx bx-radio-circle'></i>Orders</Link>
+                            <Link :href="'/orders'"><i class='bx bx-radio-circle'></i>Orders</Link>
                         </li>
                     </ul>
                 </li>
@@ -79,10 +79,10 @@ const logout = () => {
                     </a>
                     <ul>
                         <li>
-                            <Link :href="'rugs/sizes'"><i class='bx bx-radio-circle'></i>Sizes</Link>
+                            <Link :href="'/rugs/sizes'"><i class='bx bx-radio-circle'></i>Sizes</Link>
                         </li>
                         <li>
-                            <Link :href="'rugs'"><i class='bx bx-radio-circle'></i>Rugs</Link>
+                            <Link :href="'/rugs'"><i class='bx bx-radio-circle'></i>Rugs</Link>
                         </li>
                     </ul>
                 </li>

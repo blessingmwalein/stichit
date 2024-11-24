@@ -17,6 +17,9 @@ return new class extends Migration
             $table->enum("type", ['small', 'medium', 'large']);
             $table->float('approx_production_cost')->default(0);
             $table->float('approx_cost')->default(0);
+
+            //approxe production hours
+            $table->integer('approx_production_hours')->default(0);
             $table->timestamps();
         });
     }
