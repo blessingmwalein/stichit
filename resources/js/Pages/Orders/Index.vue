@@ -28,7 +28,8 @@
                             <!-- rug name and approx cost in column -->
                             <div class="flex">
                                 <div class="me-2">{{ row.rug.name }}</div>
-                                <MoneyDisplay :value="row.rug.approx_cost" />
+                                <div class="me-2">{{ row.size.length }}cm x {{ row.size.width }}cm</div>
+
                             </div>
 
                         </template>

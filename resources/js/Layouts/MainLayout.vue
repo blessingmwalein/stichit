@@ -94,14 +94,14 @@ const logout = () => {
                     </a>
                     <ul>
                         <li>
-                            <Link :href="'production/materials'"><i class='bx bx-radio-circle'></i>Materials</Link>
+                            <Link :href="'/materials'"><i class='bx bx-radio-circle'></i>Materials</Link>
                         </li>
                         <li>
-                            <Link :href="'production/available-materials'"><i class='bx bx-radio-circle'></i>Available
+                            <Link :href="'/available-materials'"><i class='bx bx-radio-circle'></i>Available
                             Materials</Link>
                         </li>
                         <li>
-                            <Link :href="'production/work-in-progress'"><i class='bx bx-radio-circle'></i>Work In
+                            <Link :href="'/work-in-progress'"><i class='bx bx-radio-circle'></i>Work In
                             Progress</Link>
                         </li>
                     </ul>
