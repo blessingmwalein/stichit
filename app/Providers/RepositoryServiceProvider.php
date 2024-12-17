@@ -10,6 +10,8 @@ use App\Repositories\Order\OrderRepository;
 use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\Material\MaterialRepository;
 use App\Repositories\Material\MaterialRepositoryInterface;
+use App\Repositories\AvailableMaterial\AvailableMaterialRepository;
+use App\Repositories\AvailableMaterial\AvailableMaterialRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -24,6 +26,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(RugRepositoryInterface::class, RugRepository::class);
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
         $this->app->bind(MaterialRepositoryInterface::class, MaterialRepository::class);
+        $this->app->bind(AvailableMaterialRepositoryInterface::class, AvailableMaterialRepository::class);
+
     }
 
     /**

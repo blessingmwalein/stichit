@@ -1,18 +1,9 @@
 <template>
     <div>
         <label class="typo__label">{{ label }}</label>
-        <multiselect
-            v-model="localValue"
-            :options="formattedOptions"
-            :multiple="isMultiple"
-            :close-on-select="!isMultiple"
-            :clear-on-select="!isMultiple"
-            :preserve-search="true"
-            :placeholder="placeholder"
-            :label="useLabel"
-            :track-by="useTrackBy"
-            :preselect-first="false"
-        >
+        <multiselect v-model="localValue" :options="formattedOptions" :multiple="isMultiple"
+            :close-on-select="!isMultiple" :clear-on-select="!isMultiple" :preserve-search="true"
+            :placeholder="placeholder" :label="useLabel" :track-by="useTrackBy" :preselect-first="false">
             <!-- Custom Selection Template -->
             <template #selection="{ values, search, isOpen }">
                 <span class="multiselect__single" v-if="!isMultiple && values.length && !isOpen">
@@ -88,18 +79,16 @@ export default {
         localValue(newVal) {
             const emitValue = this.isMultiple
                 ? newVal.map((item) =>
-                      this.isSimple ? item : item.value || item
-                  )
+                    this.isSimple ? item : item.value || item
+                )
                 : this.isSimple
-                ? newVal
-                : newVal?.value || newVal;
+                    ? newVal
+                    : newVal?.value || newVal;
             this.$emit("update:modelValue", emitValue);
         },
     },
 };
 </script>
-
-
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
 .multiselect {

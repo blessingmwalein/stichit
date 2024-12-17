@@ -112,9 +112,8 @@
                                         </div>
 
                                         <div class="d-grid">
-                                            <button type="submit" class="btn btn-primary">
-                                                Save Order
-                                            </button>
+
+                                            <CustomButton title="Save Order" type="primary" />
                                         </div>
                                     </div>
                                 </div>
@@ -133,12 +132,14 @@ import MainLayout from '@/Layouts/MainLayout.vue';
 import BreadCrumb from '@/Components/common/BreadCrumb.vue';
 import { useForm } from '@inertiajs/vue3';
 import ColorMultipleSelect from '@/Components/common/ColorMultipleSelect.vue';
+import CustomButton from '@/Components/common/CustomButton.vue';
 
 export default {
     components: {
         BreadCrumb,
         MainLayout,
-        ColorMultipleSelect
+        ColorMultipleSelect,
+        CustomButton,
     },
     props: {
         rugs: Array,

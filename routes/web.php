@@ -71,4 +71,15 @@ Route::middleware([
         Route::get('/edit/{id}', [App\Http\Controllers\MaterialController::class, 'edit'])->name('materials.edit');
         Route::delete('/delete/{id}', [App\Http\Controllers\MaterialController::class, 'delete'])->name('materials.delete');
     });
+
+    //available material routes
+    Route::group(['prefix' => 'available-materials'], function () {
+        Route::get('/create', [App\Http\Controllers\AvailableMaterialController::class, 'create'])->name('available-materials.create');
+        Route::post('/store', [App\Http\Controllers\AvailableMaterialController::class, 'store'])->name('available-materials.store');
+        Route::put('/update/{id}', [App\Http\Controllers\AvailableMaterialController::class, 'update'])->name('available-materials.update');
+        Route::get('/all', [App\Http\Controllers\AvailableMaterialController::class, 'all'])->name('available-materials.all');
+        Route::get('/', [App\Http\Controllers\AvailableMaterialController::class, 'index'])->name('available-materials.all');
+        Route::get('/edit/{id}', [App\Http\Controllers\AvailableMaterialController::class, 'edit'])->name('available-materials.edit');
+        Route::delete('/delete/{id}', [App\Http\Controllers\AvailableMaterialController::class, 'delete'])->name('available-materials.delete');
+    });
 });
