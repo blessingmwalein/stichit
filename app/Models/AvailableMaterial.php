@@ -13,4 +13,4 @@ class AvailableMaterial extends Model
         return $this->belongsTo(Material::class);
     }
 }
-}
+

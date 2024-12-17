@@ -2,6 +2,7 @@
 
 namespace App\Repositories\AvailableMaterial;
 
+use App\Http\Requests\CreateAvailableMaterialRequest;
 use App\Http\Requests\CreateMaterialRequest;
 use App\Http\Requests\UpdateMaterialRequest;
 use App\Models\AvailbleMaterial;
@@ -60,7 +61,7 @@ class AvailableMaterialRepository implements AvailableMaterialRepositoryInterfac
         return $this->model->find($id);
     }
 
-    public function create(CreateMaterialRequest $data)
+    public function create(CreateAvailableMaterialRequest $data)
     {
         try {
             return $this->model->create($data->validated());
@@ -71,7 +72,7 @@ class AvailableMaterialRepository implements AvailableMaterialRepositoryInterfac
         }
     }
 
-    public function update($id, UpdateMaterialRequest $data)
+    public function update($id, CreateAvailableMaterialRequest $data)
     {
         try {
             $material = $this->model->find($id);
@@ -82,7 +83,7 @@ class AvailableMaterialRepository implements AvailableMaterialRepositoryInterfac
             return false;
         } catch (\Exception $e) {
             // Log the error for debugging purposes
-            Log::error('Availble Material update failed: ' . $e->getMessage());
+            Log::error('Available Material update failed: ' . $e->getMessage());
 
             // Throw a more user-friendly exception
             throw new \Exception($e->getMessage(), $e->getCode() ?: 500); // Handle both order and server errors

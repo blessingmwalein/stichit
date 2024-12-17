@@ -8,6 +8,7 @@ use App\Http\Resources\AvailableMaterialCollection;
 use App\Http\Resources\AvailableMaterialResource;
 use App\Repositories\AvailableMaterial\AvailableMaterialRepositoryInterface;
 use App\Repositories\Client\ClientRepositoryInterface;
+use App\Repositories\Rug\RugRepositoryInterface;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -27,7 +28,7 @@ class AvailableMaterialController extends Controller
     //create material details
     public function create()
     {
-        return Inertia::render('Materials/Available/Index', []);
+        return Inertia::render('Materials/Available/Create', []);
     }
 
     public function store(CreateAvailableMaterialRequest $request)
@@ -103,7 +104,7 @@ class AvailableMaterialController extends Controller
     public function index()
     {
 
-        return Inertia::render('Materials/Index');
+        return Inertia::render('Materials/Available/Index');
     }
 
     //edit material details
@@ -111,7 +112,7 @@ class AvailableMaterialController extends Controller
     {
         $material = $this->availableMaterialRepositoryInterface->findById($id);
 
-        return Inertia::render('Materials/Edit', [
+        return Inertia::render('Materials/Available/Edit', [
             'material' => new AvailableMaterialResource($material),
         ]);
     }

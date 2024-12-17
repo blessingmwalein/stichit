@@ -15,7 +15,8 @@
 
             <div class="card">
                 <div class="card-body">
-                    <CustomDataTable :filterableColumns="filters" :columns="columns" :apiEndpoint="'/materials/all'">
+                    <CustomDataTable :filterableColumns="filters" :columns="columns"
+                        :apiEndpoint="'/available-materials/all'">
 
 
                         <template v-slot:material_type="{ row }">
@@ -27,8 +28,20 @@
                             </div>
 
                         </template>
+                        <template v-slot:material_unit_price="{ row }">
+                            <MoneyDisplay :date="row.material_unit_price" />
+                        </template>
+                        <template v-slot:total_unit="{ row }">
+                            <MoneyDisplay :date="row.total_unit" />
+                        </template>
                         <template v-slot:created_at="{ row }">
                             <DateDisplay :date="row.created_at" />
+                        </template>
+                        <template v-slot:quantity="{ row }">
+                            <div class="flex">
+                                <div class="me-2">{{ row.quantity }}</div>
+                                <div class="me-2">{{ row.material_unit }}</div>
+                            </div>
                         </template>
 
 
@@ -42,7 +55,6 @@
                             </div>
                         </template>
                     </CustomDataTable>
-
                 </div>
             </div>
         </div>
@@ -86,28 +98,28 @@ export default {
             ],
             columns: [
                 { label: 'Name', key: 'name' },
-                { label: 'Material', key: 'material_type' },
-                { label: 'Unit Price', key: 'price_per_unit' },
-                { label: 'Unit', key: 'unit' },
-                { label: 'Brand', key: 'brand' },
+                { label: 'Quantity', key: 'quantity' },
+                { label: 'Unit Price', key: 'material_unit_price' },
+                { label: 'Total Price', key: 'total_unit' },
+                // { label: 'Unit', key: 'material_unit' },
+                { label: 'Type', key: 'material_type_name' },
                 { label: 'Created At', key: 'created_at' },
                 { label: 'Actions', key: 'actions' },
             ],
             selectedMaterial: null,
             filters:
                 [
-                    { label: 'Name', key: 'name' },
+                    { label: 'Desciption', key: 'name' },
                     { label: 'Material', key: 'material_type' },
-                    { label: 'Unit Price', key: 'price_per_unit' },
-                    { label: 'Unit', key: 'unit' },
-                    { label: 'Brand', key: 'brand' }
+                    { label: 'Total Price', key: 'total_unit' },
+                    { label: 'Unit', key: 'material_unit' },
                 ]
         };
     },
 
     methods: {
         navigateCreateMaterial() {
-            router.visit('/materials/create')
+            router.visit('/available-materials/create')
         },
 
         selectMaterial(material) {
@@ -115,14 +127,14 @@ export default {
         },
 
         editMaterial(material) {
-            router.visit(`/materials/edit/${material.id}`)
+            router.visit(`/available-materials/edit/${material.id}`)
         },
 
         //submit delete material
         deleteMaterial(material) {
             // Add delete material logic here
             const deleteMaterialForm = useForm({});
-            deleteMaterialForm.delete(route('materials.delete', material.id), {
+            deleteMaterialForm.delete(route('available-materials.delete', material.id), {
                 onFinish: () => {
                 },
             });
