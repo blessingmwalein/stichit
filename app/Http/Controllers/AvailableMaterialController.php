@@ -38,7 +38,7 @@ class AvailableMaterialController extends Controller
             $material = $this->availableMaterialRepositoryInterface->create($request);
 
             // return ResponseHelper::success('Material created successfully', $material);
-            return Inertia::render('Materials/Availbale/Index')->with('success', 'Material created successfully');
+            return Inertia::render('Materials/Available/Index')->with('success', 'Material created successfully');
         } catch (\Exception $e) {
             // return ResponseHelper::error('Failed to create material', $e->getMessage(), 500);
             return Inertia::render('Materials/Available/Create')->with('error', $e->getMessage());

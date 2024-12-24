@@ -29,7 +29,9 @@ class MaterialRepository implements MaterialRepositoryInterface
 
         // Filter by name
         if (!empty($filters['name'])) {
-            $query->where('name', $filters['name']);
+            // $query->where('name', $filters['name']);
+            // use like
+            $query->where('name', 'like', '%' . $filters['name'] . '%');
         }
 
         //filter by material type id relation

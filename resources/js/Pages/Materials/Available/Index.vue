@@ -19,28 +19,26 @@
                         :apiEndpoint="'/available-materials/all'">
 
 
-                        <template v-slot:material_type="{ row }">
+                        <template v-slot:name="{ row }">
                             <!-- rug name and approx cost in column -->
                             <div class="flex">
                                 <div class="me-2">{{ row.material_type_name }}</div>
-                                <div class="me-2">{{ row.material_type_description }}</div>
-
+                                <div class="me-2">{{ row.desciption }}</div>
                             </div>
-
                         </template>
                         <template v-slot:material_unit_price="{ row }">
-                            <MoneyDisplay :date="row.material_unit_price" />
+                            <MoneyDisplay :value="row.material_unit_price" />
                         </template>
                         <template v-slot:total_unit="{ row }">
-                            <MoneyDisplay :date="row.total_unit" />
+                            <MoneyDisplay :value="row.total_unit" />
                         </template>
                         <template v-slot:created_at="{ row }">
                             <DateDisplay :date="row.created_at" />
                         </template>
                         <template v-slot:quantity="{ row }">
-                            <div class="flex">
-                                <div class="me-2">{{ row.quantity }}</div>
-                                <div class="me-2">{{ row.material_unit }}</div>
+                            <div class="flex flex">
+                                <div class="me-2">{{ row.quantity }} {{ row.material_unit }}</div>
+
                             </div>
                         </template>
 
@@ -88,7 +86,8 @@ export default {
         MoneyDisplay,
         ColorPalet,
         UserDisplay,
-        ViewOrderModal
+        ViewOrderModal,
+        DateDisplay
     },
     data() {
         return {
@@ -102,7 +101,6 @@ export default {
                 { label: 'Unit Price', key: 'material_unit_price' },
                 { label: 'Total Price', key: 'total_unit' },
                 // { label: 'Unit', key: 'material_unit' },
-                { label: 'Type', key: 'material_type_name' },
                 { label: 'Created At', key: 'created_at' },
                 { label: 'Actions', key: 'actions' },
             ],

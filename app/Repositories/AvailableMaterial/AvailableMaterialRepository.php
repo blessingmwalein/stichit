@@ -5,6 +5,7 @@ namespace App\Repositories\AvailableMaterial;
 use App\Http\Requests\CreateAvailableMaterialRequest;
 use App\Http\Requests\CreateMaterialRequest;
 use App\Http\Requests\UpdateMaterialRequest;
+use App\Models\AvailableMaterial;
 use App\Models\AvailbleMaterial;
 use App\Models\MaterialType;
 use App\Models\User;
@@ -16,7 +17,7 @@ class AvailableMaterialRepository implements AvailableMaterialRepositoryInterfac
 {
     protected $model;
 
-    public function __construct(AvailbleMaterial $model)
+    public function __construct(AvailableMaterial $model)
     {
         $this->model = $model;
     }

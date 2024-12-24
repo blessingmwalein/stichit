@@ -18,7 +18,7 @@ class AvailableMaterialResource extends JsonResource
             'id' => $this->id,
             'quantity' =>$this->quantity,
             'total_unit' => $this->total_unit,
-            'desciption' => $this->total_unit,
+            'desciption' => $this->desciption,
             'material_id' => $this->material_id,
             'material_unit'=> $this->material->unit,
             'material_unit_price'=> $this->material->price_per_unit,

@@ -12,35 +12,39 @@
                                 <!-- Left Section -->
                                 <div class="col-lg-8">
                                     <div class="border border-3 p-4 rounded">
-                                        <!-- Client Dropdown -->
-                                        <div class="mb-3">
-                                            <label for="clientSelect" class="form-label">Client</label>
-                                            <select v-model="form.client_id" class="form-select" id="clientSelect">
-                                                <option value="" disabled>Select a client</option>
-                                                <option v-for="client in clients?.data" :key="client?.id"
-                                                    :value="client?.id">
-                                                    {{ client.name }}
-                                                </option>
-                                            </select>
-                                            <span v-if="form.errors.client_id" class="text-danger">
-                                                {{ form.errors.client_id }}
-                                            </span>
+
+                                        <div class="row">
+                                            <!-- Client Dropdown -->
+                                            <div class="mb-3">
+                                                <label for="clientSelect" class="form-label">Client</label>
+                                                <select v-model="form.client_id" class="form-select" id="clientSelect">
+                                                    <option value="" disabled>Select a client</option>
+                                                    <option v-for="client in clients?.data" :key="client?.id"
+                                                        :value="client?.id">
+                                                        {{ client.name }}
+                                                    </option>
+                                                </select>
+                                                <span v-if="form.errors.client_id" class="text-danger">
+                                                    {{ form.errors.client_id }}
+                                                </span>
+                                            </div>
+
+                                            <!-- Rug Dropdown -->
+                                            <div class="mb-3">
+                                                <label for="rugSelect" class="form-label">Rug</label>
+                                                <select v-model="form.rug_id" @change="updateRugSizes"
+                                                    class="form-select" id="rugSelect">
+                                                    <option value="" disabled>Select a rug</option>
+                                                    <option v-for="rug in rugs?.data" :key="rug?.id" :value="rug?.id">
+                                                        {{ rug.name }}
+                                                    </option>
+                                                </select>
+                                                <span v-if="form.errors.rug_id" class="text-danger">
+                                                    {{ form.errors.rug_id }}
+                                                </span>
+                                            </div>
                                         </div>
 
-                                        <!-- Rug Dropdown -->
-                                        <div class="mb-3">
-                                            <label for="rugSelect" class="form-label">Rug</label>
-                                            <select v-model="form.rug_id" @change="updateRugSizes" class="form-select"
-                                                id="rugSelect">
-                                                <option value="" disabled>Select a rug</option>
-                                                <option v-for="rug in rugs?.data" :key="rug?.id" :value="rug?.id">
-                                                    {{ rug.name }}
-                                                </option>
-                                            </select>
-                                            <span v-if="form.errors.rug_id" class="text-danger">
-                                                {{ form.errors.rug_id }}
-                                            </span>
-                                        </div>
 
                                         <!-- Rug Size Dropdown -->
                                         <div v-if="rugSizes.length > 0" class="mb-3">

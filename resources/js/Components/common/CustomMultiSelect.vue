@@ -1,26 +1,22 @@
 <template>
     <div>
         <label class="typo__label">{{ label }}</label>
-        <multiselect
-            v-model="localValue"
-            :options="formattedOptions"
-            :multiple="isMultiple"
-            :close-on-select="!isMultiple"
-            :clear-on-select="!isMultiple"
-            :preserve-search="true"
-            :placeholder="placeholder"
-            :label="useLabel"
-            :track-by="useTrackBy"
-            :preselect-first="false"
-            :searchable="true"
-            :internal-search="false"
-            :loading="isLoading"
-            @search-change="handleSearch"
-        >
+        <multiselect v-model="localValue" :options="formattedOptions" :multiple="isMultiple"
+            :close-on-select="!isMultiple" :clear-on-select="!isMultiple" :preserve-search="true"
+            :placeholder="placeholder" :label="!isListOfStrings ? displayColumn : ''"
+            :track-by="!isListOfStrings ? bindColumn : ''" :preselect-first="false" :searchable="true"
+            :internal-search="!searchUrl" :loading="isLoading" @search-change="handleSearch">
+            <!-- Custom Option Template -->
+            <template #option="{ option }">
+                <slot name="option" :option="option">
+                    <span>{{ isListOfStrings ? option : option[displayColumn] }}</span>
+                </slot>
+            </template>
+
             <!-- Custom Selection Template -->
-            <template #selection="{ values, search, isOpen }">
+            <template #selection="{ values, isOpen }">
                 <span class="multiselect__single" v-if="!isMultiple && values.length && !isOpen">
-                    {{ values[0][useLabel] || values[0] }}
+                    {{ isListOfStrings ? values[0] : values[0]?.[displayColumn] }}
                 </span>
                 <span class="multiselect__single" v-else-if="isMultiple && values.length && !isOpen">
                     {{ values.length }} options selected
@@ -37,7 +33,7 @@
 
 <script>
 import Multiselect from "vue-multiselect";
-import axios from "axios"; // Assuming you're using Axios for HTTP requests
+import axios from "axios";
 
 export default {
     name: "CustomMultiSelect",
@@ -76,49 +72,67 @@ export default {
             required: false,
             default: "query",
         },
+        displayColumn: {
+            type: String,
+            default: "name",
+        },
+        bindColumn: {
+            type: String,
+            default: "id",
+        },
     },
     data() {
         return {
             localValue: this.modelValue,
-            asyncOptions: [], // Options loaded from the API
-            isLoading: false, // Loading state for async search
+            asyncOptions: [],
+            isLoading: false,
         };
     },
     computed: {
-        isSimple() {
-            return (
-                this.options.length > 0 &&
-                (typeof this.options[0] === "string" || typeof this.options[0] === "number")
-            );
+        isListOfStrings() {
+            return this.options.length > 0 && typeof this.options[0] === "string";
         },
         formattedOptions() {
             return this.asyncOptions.length > 0 ? this.asyncOptions : this.options;
         },
-        useLabel() {
-            return this.isSimple ? "label" : "name";
-        },
-        useTrackBy() {
-            return this.isSimple ? "value" : "id";
-        },
     },
     watch: {
         modelValue(newVal) {
-            this.localValue = newVal;
+            this.localValue = this.isListOfStrings
+                ? newVal
+                : Array.isArray(newVal)
+                    ? this.formatSelected(newVal)
+                    : this.formatSelected([newVal])[0];
         },
         localValue(newVal) {
             const emitValue = this.isMultiple
-                ? newVal.map((item) =>
-                    this.isSimple ? item : item.value || item
-                )
-                : this.isSimple
+                ? newVal.map((item) => (this.isListOfStrings ? item : item[this.bindColumn]))
+                : this.isListOfStrings
                     ? newVal
-                    : newVal?.value || newVal;
+                    : newVal?.[this.bindColumn] || newVal;
+            console.log("emitValue", emitValue);
             this.$emit("update:modelValue", emitValue);
+        },
+        asyncOptions() {
+            // Ensure that selected values remain properly mapped when async options change
+            if (!this.isListOfStrings && this.localValue) {
+                this.localValue = this.formatSelected(this.localValue);
+            }
         },
     },
     methods: {
+        formatSelected(values) {
+            if (this.isListOfStrings) return values;
+            return values?.map((val) => {
+                const match = this.formattedOptions.find(
+                    (option) => option[this.bindColumn] === (val[this.bindColumn] || val)
+                );
+                return match || val;
+            });
+        },
         async handleSearch(query) {
             if (!this.searchUrl) return;
+
             if (!query) {
                 this.asyncOptions = [];
                 return;
@@ -128,7 +142,12 @@ export default {
             try {
                 const params = { [this.searchField]: query };
                 const response = await axios.get(this.searchUrl, { params });
-                this.asyncOptions = response.data; // Ensure your API response matches the expected format
+
+                // Ensure options are updated in a reactive manner
+                this.asyncOptions = [];
+                this.$nextTick(() => {
+                    this.asyncOptions = response.data.response.data;
+                });
             } catch (error) {
                 console.error("Error fetching search results:", error);
                 this.asyncOptions = [];

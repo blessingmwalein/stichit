@@ -22,9 +22,8 @@ class CreateAvailableMaterialRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'material_id' => 'required|string',
+            'material_id' => 'required|numeric',
             'quantity' => 'required|numeric',
-            'price_per_unit' => 'required|numeric',
             'total_unit' => 'required|numeric',
             'desciption' => 'nullable|string',
         ];
