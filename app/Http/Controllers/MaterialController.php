@@ -56,6 +56,8 @@ class MaterialController extends Controller
         try {
             $validatedData = $request->validated();
 
+            dd($validatedData);
+
             $material = $this->materialRepositoryInterface->update($id, $request);
 
             return Inertia::render('Materials/Index')->with('success', 'Material updated successfully');
@@ -118,6 +120,8 @@ class MaterialController extends Controller
 
         return Inertia::render('Materials/Edit', [
             'material' => new MaterialResource($material),
+            'materialTypes' => $this->materialRepositoryInterface->getMaterialTypes()
+
         ]);
     }
 }

@@ -6,6 +6,7 @@
             :placeholder="placeholder" :label="!isListOfStrings ? displayColumn : ''"
             :track-by="!isListOfStrings ? bindColumn : ''" :preselect-first="false" :searchable="true"
             :internal-search="!searchUrl" :loading="isLoading" @search-change="handleSearch">
+
             <!-- Custom Option Template -->
             <template #option="{ option }">
                 <slot name="option" :option="option">
@@ -97,12 +98,13 @@ export default {
         },
     },
     watch: {
-        modelValue(newVal) {
-            this.localValue = this.isListOfStrings
-                ? newVal
-                : Array.isArray(newVal)
+        modelValue: {
+            immediate: true,
+            handler(newVal) {
+                this.localValue = this.isMultiple
                     ? this.formatSelected(newVal)
-                    : this.formatSelected([newVal])[0];
+                    : this.formatSelected([newVal])[0] || null;
+            },
         },
         localValue(newVal) {
             const emitValue = this.isMultiple
@@ -110,22 +112,21 @@ export default {
                 : this.isListOfStrings
                     ? newVal
                     : newVal?.[this.bindColumn] || newVal;
-            console.log("emitValue", emitValue);
+
             this.$emit("update:modelValue", emitValue);
-        },
-        asyncOptions() {
-            // Ensure that selected values remain properly mapped when async options change
-            if (!this.isListOfStrings && this.localValue) {
-                this.localValue = this.formatSelected(this.localValue);
+
+            if (!this.isMultiple && newVal) {
+                this.asyncOptions = [];
             }
         },
     },
     methods: {
         formatSelected(values) {
-            if (this.isListOfStrings) return values;
-            return values?.map((val) => {
+            if (!Array.isArray(values)) return [];
+            return values.map((val) => {
+                if (this.isListOfStrings) return val;
                 const match = this.formattedOptions.find(
-                    (option) => option[this.bindColumn] === (val[this.bindColumn] || val)
+                    (option) => option[this.bindColumn] === (val?.[this.bindColumn] || val)
                 );
                 return match || val;
             });
@@ -143,7 +144,6 @@ export default {
                 const params = { [this.searchField]: query };
                 const response = await axios.get(this.searchUrl, { params });
 
-                // Ensure options are updated in a reactive manner
                 this.asyncOptions = [];
                 this.$nextTick(() => {
                     this.asyncOptions = response.data.response.data;
@@ -163,5 +163,16 @@ export default {
 <style>
 .multiselect {
     margin-top: 5px;
+}
+
+.multiselect__tags {
+    border: 1px solid rgb(255 255 255 / 15%) !important;
+    background-color: rgb(0 0 0 / 15%) !important;
+}
+
+.multiselect__input,
+.multiselect__single {
+    background-color: rgb(0 0 0 / 15%) !important;
+    color: white !important;
 }
 </style>

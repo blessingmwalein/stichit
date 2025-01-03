@@ -66,7 +66,7 @@ import CustomDataTable from '@/Components/Tables/CustomDataTable.vue';
 import { Link, router, useForm } from '@inertiajs/vue3'    // Add this line
 import OrderStatus from '@/Components/common/OrderStatus.vue';
 import MoneyDisplay from '@/Components/common/MoneyDisplay.vue';
-import ColorPalet from '@/Components/common/ColorPalet.vue';
+import ColorPalet from '@/Components/common/TextFields/ColorPalet.vue';
 import UserDisplay from '@/Components/common/UserDisplay.vue';
 import ViewOrderModal from '@/Components/Orders/ViewOrderModal.vue';
 import DateDisplay from '@/Components/common/DateDisplay.vue';

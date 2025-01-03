@@ -27,8 +27,8 @@
                                         <div class="mb-3">
                                             <!-- <label for="materialType" class="form-label">Material Type</label> -->
                                             <CustomMultiSelect :options="materialTypes" :isMultiple="false"
-                                                label="Select Material Type" placeholder="Choose material type"
-                                                v-model="form.material_type_id" />
+                                                :bind-column="'id'" label="Select Material Type"
+                                                placeholder="Choose material type" v-model="form.material_type_id" />
                                             <span v-if="form.errors.material_type_id" class="text-danger">
                                                 {{ form.errors.material_type_id }}
                                             </span>
@@ -119,17 +119,11 @@ export default {
             ],
             // Units for the unit dropdown
             units: ["Cm", "Meters", "Kgs", "Litres", "Gramms"],
-            brands: ["Stylecraft", "Charity", "Pullskein", "Gluedevil"],
+            brands: ["Stylecraft", "Charity", "Pullskein", "Gluedevil", "Other"],
         };
     },
     methods: {
         submit() {
-            //map the material type id to the form
-            this.form.material_type_id = this.form.material_type_id.id;
-            //map the brand to the form
-            this.form.brand = this.form.brand.value;
-            //map unit to the form
-            this.form.unit = this.form.unit.value;
             this.form.post(route("materials.store"), {
                 onFinish: () => {
                     this.form.reset();

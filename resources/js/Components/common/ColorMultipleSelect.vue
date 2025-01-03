@@ -1,18 +1,9 @@
 <template>
     <div>
         <label :for="id" class="form-label">{{ label }}</label>
-        <Multiselect
-        class="form-control"
-            v-model="selectedColors"
-            :options="defaultColors"
-            :multiple="true"
-            :close-on-select="false"
-            placeholder="Select or add colors"
-            tag-placeholder="Add custom color"
-            label="name"
-            track-by="value"
-            taggable
-            @tag="addCustomColor" />
+        <Multiselect v-model="selectedColors" :options="defaultColors" :multiple="true"
+            :close-on-select="false" placeholder="Select or add colors" tag-placeholder="Add custom color" label="name"
+            track-by="value" taggable @tag="addCustomColor" />
         <span v-if="errorMessage" class="text-danger">{{ errorMessage }}</span>
     </div>
 </template>
@@ -80,8 +71,16 @@ export default {
     margin-top: 5px;
 }
 
-.multiselect__tags{
-    border: none !important;
-    background-color: transparent !important;
+.multiselect__tags {
+    border: 1px solid rgb(255 255 255 / 15%) !important;
+
+    background-color: rgb(0 0 0 / 15%) !important;
+}
+
+.multiselect__input,
+.multiselect__single {
+    background-color: rgb(0 0 0 / 15%) !important;
+    color: white !important;
+
 }
 </style>
