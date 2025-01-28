@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SizeSeeder::class,
         ]);
+        $this->call(MaterialTypesSeeder::class);
 
         User::factory()->create([
             'name' => 'Test User',

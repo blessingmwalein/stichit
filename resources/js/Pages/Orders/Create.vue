@@ -12,35 +12,43 @@
                                 <!-- Left Section -->
                                 <div class="col-lg-8">
                                     <div class="border border-3 p-4 rounded">
-                                        <!-- Client Dropdown -->
-                                        <div class="mb-3">
-                                            <label for="clientSelect" class="form-label">Client</label>
-                                            <select v-model="form.client_id" class="form-select" id="clientSelect">
-                                                <option value="" disabled>Select a client</option>
-                                                <option v-for="client in clients?.data" :key="client?.id"
-                                                    :value="client?.id">
-                                                    {{ client.name }}
-                                                </option>
-                                            </select>
-                                            <span v-if="form.errors.client_id" class="text-danger">
-                                                {{ form.errors.client_id }}
-                                            </span>
+
+                                        <div class="row">
+                                            <!-- Client Dropdown -->
+                                            <div class="mb-3">
+                                                <!-- <label for="clientSelect" class="form-label">Client</label> -->
+                                                <CustomMultiSelect :display-column="'name'" :bind-column="'id'"
+                                                    searchUrl="/client/all" searchField="name" :isMultiple="false"
+                                                    label="Choose Client" placeholder="Search by name"
+                                                    v-model="form.client_id" />
+                                                <!-- <select v-model="form.client_id" class="form-select" id="clientSelect">
+                                                    <option value="" disabled>Select a client</option>
+                                                    <option v-for="client in clients?.data" :key="client?.id"
+                                                        :value="client?.id">
+                                                        {{ client.name }}
+                                                    </option>
+                                                </select> -->
+                                                <span v-if="form.errors.client_id" class="text-danger">
+                                                    {{ form.errors.client_id }}
+                                                </span>
+                                            </div>
+
+                                            <!-- Rug Dropdown -->
+                                            <div class="mb-3">
+                                                <label for="rugSelect" class="form-label">Rug</label>
+                                                <select v-model="form.rug_id" @change="updateRugSizes"
+                                                    class="form-select" id="rugSelect">
+                                                    <option value="" disabled>Select a rug</option>
+                                                    <option v-for="rug in rugs?.data" :key="rug?.id" :value="rug?.id">
+                                                        {{ rug.name }}
+                                                    </option>
+                                                </select>
+                                                <span v-if="form.errors.rug_id" class="text-danger">
+                                                    {{ form.errors.rug_id }}
+                                                </span>
+                                            </div>
                                         </div>
 
-                                        <!-- Rug Dropdown -->
-                                        <div class="mb-3">
-                                            <label for="rugSelect" class="form-label">Rug</label>
-                                            <select v-model="form.rug_id" @change="updateRugSizes" class="form-select"
-                                                id="rugSelect">
-                                                <option value="" disabled>Select a rug</option>
-                                                <option v-for="rug in rugs?.data" :key="rug?.id" :value="rug?.id">
-                                                    {{ rug.name }}
-                                                </option>
-                                            </select>
-                                            <span v-if="form.errors.rug_id" class="text-danger">
-                                                {{ form.errors.rug_id }}
-                                            </span>
-                                        </div>
 
                                         <!-- Rug Size Dropdown -->
                                         <div v-if="rugSizes.length > 0" class="mb-3">
@@ -58,6 +66,7 @@
 
                                         <!-- Color Palette -->
                                         <div class="mb-3">
+
                                             <ColorMultipleSelect id="colorPalette" label="Color Palette"
                                                 v-model="form.color_palet" :error-message="form.errors.color_palet" />
                                         </div>
@@ -93,9 +102,13 @@
 
                                         <!-- Total Price -->
                                         <div class="mb-3">
-                                            <label for="totalPrice" class="form-label">Total Price</label>
-                                            <input v-model="form.total_price" type="number" class="form-control"
-                                                id="totalPrice" placeholder="Enter total price" />
+                                            <!-- <label for="totalPrice" class="form-label">Total Price</label> -->
+                                            <!-- <input v-model="form.total_price" type="number" class="form-control"
+                                                id="totalPrice" placeholder="Enter total price" /> -->
+                                            <MoneyTextField v-model="form.total_price" id="total-price"
+                                                label="Total Price"
+                                                :currency-options="{ currency: 'USD', locale: 'en-US' }"
+                                                :disabled="false" :error="form.errors.total_price" />
                                             <span v-if="form.errors.total_price" class="text-danger">
                                                 {{ form.errors.total_price }}
                                             </span>
@@ -112,9 +125,8 @@
                                         </div>
 
                                         <div class="d-grid">
-                                            <button type="submit" class="btn btn-primary">
-                                                Save Order
-                                            </button>
+
+                                            <CustomButton title="Save Order" type="primary" />
                                         </div>
                                     </div>
                                 </div>
@@ -133,12 +145,18 @@ import MainLayout from '@/Layouts/MainLayout.vue';
 import BreadCrumb from '@/Components/common/BreadCrumb.vue';
 import { useForm } from '@inertiajs/vue3';
 import ColorMultipleSelect from '@/Components/common/ColorMultipleSelect.vue';
+import CustomButton from '@/Components/common/CustomButton.vue';
+import CustomMultiSelect from '@/Components/common/CustomMultiSelect.vue';
+import MoneyTextField from '@/Components/common/TextFields/MoneyTextField.vue';
 
 export default {
     components: {
         BreadCrumb,
         MainLayout,
-        ColorMultipleSelect
+        ColorMultipleSelect,
+        CustomButton,
+        CustomMultiSelect,
+        MoneyTextField,
     },
     props: {
         rugs: Array,

@@ -28,7 +28,8 @@
                             <!-- rug name and approx cost in column -->
                             <div class="flex">
                                 <div class="me-2">{{ row.rug.name }}</div>
-                                <MoneyDisplay :value="row.rug.approx_cost" />
+                                <div class="me-2">{{ row.size.length }}cm x {{ row.size.width }}cm</div>
+
                             </div>
 
                         </template>
@@ -68,7 +69,7 @@ import CustomDataTable from '@/Components/Tables/CustomDataTable.vue';
 import { Link, router, useForm } from '@inertiajs/vue3'    // Add this line
 import OrderStatus from '@/Components/common/OrderStatus.vue';
 import MoneyDisplay from '@/Components/common/MoneyDisplay.vue';
-import ColorPalet from '@/Components/common/ColorPalet.vue';
+import ColorPalet from '@/Components/common/TextFields/ColorPalet.vue';
 import UserDisplay from '@/Components/common/UserDisplay.vue';
 import ViewOrderModal from '@/Components/Orders/ViewOrderModal.vue';
 

@@ -22,6 +22,7 @@
     "dependencies": {
         "@popperjs/core": "^2.11.8",
         "v-calendar": "^3.1.2",
+        "vue-currency-input": "^3.1.0",
         "vue-multiselect": "^3.1.0"
     }
 }

@@ -48,7 +48,6 @@ Route::middleware([
         Route::get('/', [App\Http\Controllers\RugController::class, 'index'])->name('rugs.all');
         Route::get('/edit/{id}', [App\Http\Controllers\RugController::class, 'edit'])->name('rugs.edit');
         Route::delete('/delete/{id}', [App\Http\Controllers\RugController::class, 'delete'])->name('rugs.delete');
-        
     });
 
     //order routes
@@ -60,5 +59,27 @@ Route::middleware([
         Route::get('/', [App\Http\Controllers\OrderController::class, 'index'])->name('orders.all');
         Route::get('/edit/{id}', [App\Http\Controllers\OrderController::class, 'edit'])->name('orders.edit');
         Route::delete('/delete/{id}', [App\Http\Controllers\OrderController::class, 'delete'])->name('orders.delete');
+    });
+
+    //material routes
+    Route::group(['prefix' => 'materials'], function () {
+        Route::get('/create', [App\Http\Controllers\MaterialController::class, 'create'])->name('materials.create');
+        Route::post('/store', [App\Http\Controllers\MaterialController::class, 'store'])->name('materials.store');
+        Route::put('/update/{id}', [App\Http\Controllers\MaterialController::class, 'update'])->name('materials.update');
+        Route::get('/all', [App\Http\Controllers\MaterialController::class, 'all'])->name('materials.all');
+        Route::get('/', [App\Http\Controllers\MaterialController::class, 'index'])->name('materials.all');
+        Route::get('/edit/{id}', [App\Http\Controllers\MaterialController::class, 'edit'])->name('materials.edit');
+        Route::delete('/delete/{id}', [App\Http\Controllers\MaterialController::class, 'delete'])->name('materials.delete');
+    });
+
+    //available material routes
+    Route::group(['prefix' => 'available-materials'], function () {
+        Route::get('/create', [App\Http\Controllers\AvailableMaterialController::class, 'create'])->name('available-materials.create');
+        Route::post('/store', [App\Http\Controllers\AvailableMaterialController::class, 'store'])->name('available-materials.store');
+        Route::put('/update/{id}', [App\Http\Controllers\AvailableMaterialController::class, 'update'])->name('available-materials.update');
+        Route::get('/all', [App\Http\Controllers\AvailableMaterialController::class, 'all'])->name('available-materials.all');
+        Route::get('/', [App\Http\Controllers\AvailableMaterialController::class, 'index'])->name('available-materials.all');
+        Route::get('/edit/{id}', [App\Http\Controllers\AvailableMaterialController::class, 'edit'])->name('available-materials.edit');
+        Route::delete('/delete/{id}', [App\Http\Controllers\AvailableMaterialController::class, 'delete'])->name('available-materials.delete');
     });
 });
